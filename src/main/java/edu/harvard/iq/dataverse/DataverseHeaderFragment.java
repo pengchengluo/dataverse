@@ -13,8 +13,10 @@ import edu.harvard.iq.dataverse.settings.SettingsServiceBean;
 import static edu.harvard.iq.dataverse.util.JsfHelper.JH;
 import edu.harvard.iq.dataverse.util.SystemConfig;
 import java.io.UnsupportedEncodingException;
+import java.net.InetAddress;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -278,5 +280,13 @@ public class DataverseHeaderFragment implements java.io.Serializable {
             permissions.add(permission.name());
         }
         return permissions;
+    }
+
+    public String getHostname() {
+        try {
+            return InetAddress.getLocalHost().getHostName();
+        } catch (UnknownHostException ex) {
+            return null;
+        }
     }
 }

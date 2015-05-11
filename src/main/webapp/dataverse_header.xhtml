@@ -29,6 +29,7 @@
                     </ui:fragment>
                 </div>
                 <div class="collapse navbar-collapse" id="topNavBar">
+                    <h:outputText value="#{dataverseHeaderFragment.hostname}" rendered="#{systemConfig.debugEnabled}"/>
                     <ul class="nav navbar-nav navbar-right">
                         <li>
                             <a id="navbar-search-toggle" title="#{bundle['header.search.title']}">
