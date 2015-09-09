@@ -39,10 +39,12 @@ public class MyDataFilterParams {
     public static final List<String> defaultPublishedStates = Arrays.asList(IndexServiceBean.getPUBLISHED_STRING(),
                                                     IndexServiceBean.getUNPUBLISHED_STRING(),
                                                     IndexServiceBean.getDRAFT_STRING(),
+                                                    IndexServiceBean.getIN_REVIEW_STRING(),
                                                     IndexServiceBean.getDEACCESSIONED_STRING());
     public static final List<String> allPublishedStates = Arrays.asList(IndexServiceBean.getPUBLISHED_STRING(),
                                                     IndexServiceBean.getUNPUBLISHED_STRING(),
                                                     IndexServiceBean.getDRAFT_STRING(),
+                                                    IndexServiceBean.getIN_REVIEW_STRING(),
                                                     IndexServiceBean.getDEACCESSIONED_STRING());
             
     public static final HashMap<String, String> sqlToSolrSearchMap ;
@@ -250,6 +252,10 @@ public class MyDataFilterParams {
         if (this.publicationStatuses.size() > 1){
             valStr = "(" + valStr + ")";
         }
+        System.out.println("valStr before = " + valStr);
+        // quote "In Review" since it's two words
+        valStr = valStr.replaceFirst(IndexServiceBean.getIN_REVIEW_STRING(), "\"" + IndexServiceBean.getIN_REVIEW_STRING() + "\"");
+        System.out.println("valStr after  = " + valStr);
         
         return  "(" + SearchFields.PUBLICATION_STATUS + ":" + valStr + ")";
     }

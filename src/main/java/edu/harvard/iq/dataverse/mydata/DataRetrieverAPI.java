@@ -362,6 +362,7 @@ public class DataRetrieverAPI extends AbstractApiBean {
             logger.fine("No ids found for this search");
             return this.getJSONErrorString(DataRetrieverAPI.MSG_NO_RESULTS_FOUND, null);
         }
+        System.out.println("filterQueries: " + filterQueries);
         //msgt("myDataFinder.getSolrFilterQueries(): " + myDataFinder.getSolrFilterQueries().toString());
         
         //msg("Selected paginationStart: " + paginationStart);

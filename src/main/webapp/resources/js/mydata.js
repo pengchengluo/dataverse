@@ -1,4 +1,4 @@
-var MYDATA_DEBUG_ON = false; // activate to show json, form info, etc
+var MYDATA_DEBUG_ON = true; // activate to show json, form info, etc
 var SHOW_PAGINATION = false; // pagination is available
 var APPEND_CARDS_TO_BOTTOM = false;  // always starts as false
 
@@ -201,7 +201,7 @@ function regular_search(){
 // Reset the counts for DvObject and Publication Status facets 
 // --------------------------------
 var DTYPE_COUNT_VARS = ["datasets_count", "dataverses_count", "files_count"];   // matches variables in JSON
-var PUB_STATUS_COUNT_VARS = ["published_count", "unpublished_count", "draft_count", "deaccessioned_count"];   // matches variables in JSON
+var PUB_STATUS_COUNT_VARS = ["published_count", "unpublished_count", "draft_count", "deaccessioned_count", "in review_count"];   // matches variables in JSON
 
 function reset_filter_counts(){
      $.each( DTYPE_COUNT_VARS, function( key, attr_name ) {
