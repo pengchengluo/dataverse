@@ -67,8 +67,8 @@ public class DataverseRoleServiceBean implements java.io.Serializable {
             /**
              * @todo update permissionModificationTime here.
              */
-            IndexResponse indexDefinitionPountResult = indexDefinitionPoint(assignment.getDefinitionPoint());
-            logger.fine("output from indexing operations: " + indexDefinitionPountResult);
+//            IndexResponse indexDefinitionPountResult = indexDefinitionPoint(assignment.getDefinitionPoint());
+//            logger.fine("output from indexing operations: " + indexDefinitionPountResult);
                 return assignment;
 	}
 
@@ -134,8 +134,8 @@ public class DataverseRoleServiceBean implements java.io.Serializable {
             /**
              * @todo update permissionModificationTime here.
              */
-            IndexResponse indexDefinitionPointResult = indexDefinitionPoint(ra.getDefinitionPoint());
-            logger.fine("indexing operation results: " + indexDefinitionPointResult);
+//            IndexResponse indexDefinitionPointResult = indexDefinitionPoint(ra.getDefinitionPoint());
+//            logger.fine("indexing operation results: " + indexDefinitionPointResult);
 	}
 	
 	public RoleAssignmentSet roleAssignments( User user, Dataverse dv ) {
