@@ -1068,7 +1068,7 @@ public class DatasetPage implements java.io.Serializable {
            // If this DatasetVersion is unpublished and permission is doesn't have permissions:
            //  > Go to the Login page
            //
-           if (!(workingVersion.isReleased() || workingVersion.isDeaccessioned()) && !permissionService.on(dataset).has(Permission.ViewUnpublishedDataset)) {
+           if (!(workingVersion.isReleased() || workingVersion.isDeaccessioned()) && !permissionService.on(dataset).has(Permission.ViewUnpublishedDataset) && !isAbleToDownloadAnyFileInWorkingVersion()) {
                if(!session.getUser().isAuthenticated()){
                    return "/loginpage.xhtml" + DataverseHeaderFragment.getRedirectPage();
                } else {
@@ -3136,7 +3136,7 @@ public class DatasetPage implements java.io.Serializable {
         return "";
     }
     
-    public boolean isDownloadButtonAvailable(){
+    private boolean isAbleToDownloadAnyFileInWorkingVersion() {
         for (FileMetadata fmd : workingVersion.getFileMetadatas()) {
             if (canDownloadFile(fmd)) {
                 return true;
@@ -3144,7 +3144,11 @@ public class DatasetPage implements java.io.Serializable {
         }
         return false;
     }
-    
+
+    public boolean isDownloadButtonAvailable(){
+        return isAbleToDownloadAnyFileInWorkingVersion();
+    }
+
     public boolean isFileAccessRequestMultiButtonRequired(){
         if (!session.getUser().isAuthenticated()){
             return false;
