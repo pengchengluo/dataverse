@@ -2,13 +2,16 @@ package edu.harvard.iq.dataverse;
 
 import edu.harvard.iq.dataverse.harvest.client.HarvestingClient;
 import edu.harvard.iq.dataverse.authorization.DataverseRole;
+import edu.harvard.iq.dataverse.authorization.users.AuthenticatedUser;
 import edu.harvard.iq.dataverse.search.savedsearch.SavedSearch;
 import edu.harvard.iq.dataverse.util.BundleUtil;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
+import java.util.ResourceBundle;
 import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -68,6 +71,10 @@ public class Dataverse extends DvObjectContainer {
     @NotBlank(message = "Please enter a name.")
     @Column( nullable = false )
     private String name;
+    
+    @NotBlank(message = "请输入名称.")
+    @Column( name = "name_zh", nullable = false )
+    private String nameZh;
 
     /**
      * @todo add @Column(nullable = false) for the database to enforce non-null
@@ -81,6 +88,9 @@ public class Dataverse extends DvObjectContainer {
 
     @Column(name = "description", columnDefinition = "TEXT")
     private String description;
+    
+    @Column(name = "description_zh", columnDefinition = "TEXT")
+    private String descriptionZh;
 
     @Enumerated(EnumType.STRING)
     @NotNull(message = "Please select a category for your dataverse.")
@@ -92,7 +102,9 @@ public class Dataverse extends DvObjectContainer {
      * dataverses.
      */
     protected boolean permissionRoot;
-
+    
+    @Column(name = "dr_user_type")
+    private AuthenticatedUser.UserType defaultRegisterUserType;
     
     public DataverseType getDataverseType() {
         return dataverseType;
@@ -129,6 +141,31 @@ public class Dataverse extends DvObjectContainer {
                 return "";
         }    
     }
+        
+    public String getFriendlyCategoryName(Locale locale){
+       switch (this.dataverseType) {
+            case RESEARCHERS:
+                return ResourceBundle.getBundle("Bundle",locale).getString("dataverse.type.selectTab.researchers");
+            case RESEARCH_PROJECTS:
+                return ResourceBundle.getBundle("Bundle",locale).getString("dataverse.type.selectTab.researchProjects");
+            case JOURNALS:
+                return ResourceBundle.getBundle("Bundle",locale).getString("dataverse.type.selectTab.journals");           
+            case ORGANIZATIONS_INSTITUTIONS:
+                return ResourceBundle.getBundle("Bundle",locale).getString("dataverse.type.selectTab.organizationsAndInsitutions");           
+            case TEACHING_COURSES:
+                return ResourceBundle.getBundle("Bundle",locale).getString("dataverse.type.selectTab.teachingCourses");
+            case LABORATORY:
+               return ResourceBundle.getBundle("Bundle",locale).getString("dataverse.type.selectTab.laboratory");
+            case RESEARCH_GROUP:
+               return ResourceBundle.getBundle("Bundle",locale).getString("dataverse.type.selectTab.researchGroup");
+            case DEPARTMENT:
+                return ResourceBundle.getBundle("Bundle",locale).getString("dataverse.type.selectTab.department");
+            case UNCATEGORIZED:
+                return uncategorizedString;
+            default:
+                return "";
+        }  
+    }
 
     public String getIndexableCategoryName() {
         String friendlyName = getFriendlyCategoryName();
@@ -138,8 +175,20 @@ public class Dataverse extends DvObjectContainer {
             return friendlyName;
         }
     }
+    
+    public String getIndexableCategoryName(Locale locale) {
+        String friendlyName = getFriendlyCategoryName(locale);
+        if (friendlyName.equals(uncategorizedString)) {
+            return null;
+        } else {
+            return friendlyName;
+        }
+    }
 
     private String affiliation;
+    
+    @Column( name = "affiliation_zh")
+    private String affiliationZh;
 
 	// Note: We can't have "Remove" here, as there are role assignments that refer
     //       to this role. So, adding it would mean violating a forign key contstraint.
@@ -726,6 +775,12 @@ public class Dataverse extends DvObjectContainer {
     }
     
     @Override
+    public String getDisplayName(Locale locale) {
+        return locale != null && locale.getLanguage().equals("zh") ? 
+                getNameZh() : getName();
+    }
+    
+    @Override
     public boolean isPermissionRoot() {
         return permissionRoot;
     }
@@ -744,5 +799,36 @@ public class Dataverse extends DvObjectContainer {
         }
         return false;
     }
+    
+    public String getNameZh() {
+        return nameZh;
+    }
 
+    public void setNameZh(String nameZh) {
+        this.nameZh = nameZh;
+    }
+
+    public String getDescriptionZh() {
+        return descriptionZh;
+    }
+
+    public void setDescriptionZh(String descriptionZh) {
+        this.descriptionZh = descriptionZh;
+    }
+
+    public String getAffiliationZh() {
+        return affiliationZh;
+    }
+
+    public void setAffiliationZh(String affiliationZh) {
+        this.affiliationZh = affiliationZh;
+    }
+
+    public AuthenticatedUser.UserType getDefaultRegisterUserType() {
+        return defaultRegisterUserType;
+    }
+
+    public void setDefaultRegisterUserType(AuthenticatedUser.UserType defaultRegisterUserType) {
+        this.defaultRegisterUserType = defaultRegisterUserType;
+    }
 }

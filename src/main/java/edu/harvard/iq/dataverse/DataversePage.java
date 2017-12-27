@@ -1,5 +1,6 @@
 package edu.harvard.iq.dataverse;
 
+import cn.edu.pku.lib.dataverse.DataverseLocale;
 import edu.harvard.iq.dataverse.UserNotification.Type;
 import edu.harvard.iq.dataverse.authorization.Permission;
 import edu.harvard.iq.dataverse.authorization.users.AuthenticatedUser;
@@ -104,6 +105,9 @@ public class DataversePage implements java.io.Serializable {
     @EJB
     DataverseLinkingServiceBean linkingService;
     @Inject PermissionsWrapper permissionsWrapper;
+    
+    @Inject
+    DataverseLocale dataverseLocale;
 
     private Dataverse dataverse = new Dataverse();
     private EditMode editMode;
@@ -117,6 +121,7 @@ public class DataversePage implements java.io.Serializable {
     private List<SelectItem> linkingDVSelectItems;
     private Dataverse linkingDataverse;
     private List<ControlledVocabularyValue> selectedSubjects;
+    private String language;
 
     public List<ControlledVocabularyValue> getSelectedSubjects() {
         return selectedSubjects;
@@ -265,7 +270,14 @@ public class DataversePage implements java.io.Serializable {
 
     public String init() {
         //System.out.println("_YE_OLDE_QUERY_COUNTER_");  // for debug purposes
-
+        
+        if (StringUtils.isNotBlank(language)){
+            if(language.toLowerCase().startsWith("zh")){
+                this.dataverseLocale.setLocaleZh();
+            }else if(language.toLowerCase().startsWith("en")){
+                this.dataverseLocale.setLocaleEn();
+            }
+        }
         if (dataverse.getAlias() != null || dataverse.getId() != null || ownerId == null) {// view mode for a dataverse
             if (dataverse.getAlias() != null) {
                 dataverse = dataverseService.findByAlias(dataverse.getAlias());
@@ -1020,5 +1032,12 @@ public class DataversePage implements java.io.Serializable {
     private String returnRedirect(){
         return "/dataverse.xhtml?alias=" + dataverse.getAlias() + "&faces-redirect=true";  
     }
-
+    
+    public String getLanguage() {
+        return language;
+    }
+  
+    public void setLanguage(String language) {
+        this.language = language;
+    }
 }

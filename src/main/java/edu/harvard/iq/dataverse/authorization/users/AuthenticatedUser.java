@@ -62,6 +62,8 @@ import org.hibernate.validator.constraints.NotBlank;
 @Entity
 public class AuthenticatedUser implements User, Serializable {
     
+    public enum UserType{ORDINARY, ADVANCE};
+    
     public static final String IDENTIFIER_PREFIX = "@";
     
     @Id

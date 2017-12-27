@@ -4,6 +4,7 @@ import edu.harvard.iq.dataverse.authorization.users.AuthenticatedUser;
 import java.sql.Timestamp;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 import javax.persistence.*;
 
@@ -251,6 +252,8 @@ public abstract class DvObject extends DataverseEntity implements java.io.Serial
     }
     
     public abstract String getDisplayName();
+    
+    public abstract String getDisplayName(Locale locale);
     
     // helper method used to mimic instanceof on JSF pge
     public boolean isInstanceofDataverse() {

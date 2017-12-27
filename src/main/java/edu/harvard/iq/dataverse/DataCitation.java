@@ -11,6 +11,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.stream.Collectors;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
@@ -31,6 +32,17 @@ public class DataCitation {
 
     private List<DatasetField> optionalValues = new ArrayList<>();
     private int optionalURLcount = 0; 
+    
+    public DataCitation(DatasetVersion dsv, Locale locale) {
+        this(dsv);
+        if(locale.getLanguage().equals("zh")){
+            authors = dsv.getAuthorsStrZh(false);
+            title = dsv.getTitleZh();
+            if (!dsv.getDataset().isHarvested()) {
+                distributors = dsv.getRootDataverseNameforCitation(locale);
+            }
+        }
+    }
 
     public DataCitation(DatasetVersion dsv) {
         // authors (or producer)

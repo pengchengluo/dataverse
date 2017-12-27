@@ -1,5 +1,6 @@
 package edu.harvard.iq.dataverse;
 
+import cn.edu.pku.lib.dataverse.DataverseLocale;
 import edu.harvard.iq.dataverse.authorization.AuthenticationServiceBean;
 import edu.harvard.iq.dataverse.authorization.Permission;
 import edu.harvard.iq.dataverse.authorization.providers.builtin.BuiltinUserServiceBean;
@@ -94,6 +95,7 @@ import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringEscapeUtils;
+import org.apache.commons.lang.StringUtils;
 
 import org.primefaces.component.tabview.TabView;
 import org.primefaces.event.CloseEvent;
@@ -186,6 +188,8 @@ public class DatasetPage implements java.io.Serializable {
     ThumbnailServiceWrapper thumbnailServiceWrapper;
     @Inject
     SettingsWrapper settingsWrapper; 
+    @Inject
+    DataverseLocale dataverseLocale;
 
 
     private Dataset dataset = new Dataset();
@@ -247,6 +251,8 @@ public class DatasetPage implements java.io.Serializable {
     private boolean removeUnusedTags;
     
     private Boolean hasRsyncScript = false;
+
+    private String language;
     
     public Boolean isHasRsyncScript() {
         return hasRsyncScript;
@@ -1294,6 +1300,13 @@ public class DatasetPage implements java.io.Serializable {
     
     private String init(boolean initFull) {
         //System.out.println("_YE_OLDE_QUERY_COUNTER_");  // for debug purposes
+        if (StringUtils.isNotBlank(language)){
+            if(language.toLowerCase().startsWith("zh")){
+                this.dataverseLocale.setLocaleZh();
+            }else if(language.toLowerCase().startsWith("en")){
+                this.dataverseLocale.setLocaleEn();
+            }
+        }
                
         this.maxFileUploadSizeInBytes = systemConfig.getMaxFileUploadSize();
         setDataverseSiteUrl(systemConfig.getDataverseSiteUrl());
@@ -1393,7 +1406,7 @@ public class DatasetPage implements java.io.Serializable {
             }
             
             // init the citation
-            displayCitation = dataset.getCitation(true, workingVersion);
+            displayCitation = dataset.getCitation(true, workingVersion, dataverseLocale.getLocale());
             
 
             if (initFull) {
@@ -1958,7 +1971,7 @@ public class DatasetPage implements java.io.Serializable {
         } 
         fileMetadatasSearch = workingVersion.getFileMetadatasSorted();
 
-        displayCitation = dataset.getCitation(true, workingVersion);
+        displayCitation = dataset.getCitation(true, workingVersion, dataverseLocale.getLocale());
         stateChanged = false;
     }
     
@@ -4038,7 +4051,7 @@ public class DatasetPage implements java.io.Serializable {
     public List<DatasetField> getDatasetSummaryFields() {
        customFields  = settingsWrapper.getValueForKey(SettingsServiceBean.Key.CustomDatasetSummaryFields);
        
-        return DatasetUtil.getDatasetSummaryFields(workingVersion, customFields);
+        return DatasetUtil.getDatasetSummaryFields(workingVersion, customFields, dataverseLocale.getLocale());
     }
     
     Boolean thisLatestReleasedVersion = null;
@@ -4080,5 +4093,13 @@ public class DatasetPage implements java.io.Serializable {
             }
         }
         return "";
+    }
+    
+    public String getLanguage() {
+        return language;
+    }
+
+    public void setLanguage(String language) {
+        this.language = language;
     }
 }

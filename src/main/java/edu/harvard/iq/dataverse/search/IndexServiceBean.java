@@ -1,5 +1,6 @@
 package edu.harvard.iq.dataverse.search;
 
+import cn.edu.pku.lib.dataverse.search.IndexServiceBeanAuxiliary;
 import edu.harvard.iq.dataverse.ControlledVocabularyValue;
 import edu.harvard.iq.dataverse.DataFile;
 import edu.harvard.iq.dataverse.DataFileTag;
@@ -223,6 +224,7 @@ public class IndexServiceBean {
             }
         }
         solrInputDocument.addField(SearchFields.SUBTREE, dataversePaths);
+        IndexServiceBeanAuxiliary.processDataverseIndex(solrInputDocument, dataverse, rootDataverse);
         docs.add(solrInputDocument);
 
         String status;
@@ -803,6 +805,7 @@ public class IndexServiceBean {
             }
         }
 
+        IndexServiceBeanAuxiliary.processDatasetIndex(indexableDataset, state, majorVersionReleaseDate,solrInputDocument, datasetSortByDate, datasetVersion, dataset);
         docs.add(solrInputDocument);
 
         List<String> filesIndexed = new ArrayList<>();
@@ -1002,6 +1005,7 @@ public class IndexServiceBean {
                         }
                     }
 
+                    IndexServiceBeanAuxiliary.processDatafileIndex(indexableDataset, majorVersionReleaseDate, datasetVersion, datafile, datafileSolrInputDocument, filenameCompleteFinal, fileSortByDate);
                     if (indexableDataset.isFilesShouldBeIndexed()) {
                         filesIndexed.add(fileSolrDocId);
                         docs.add(datafileSolrInputDocument);

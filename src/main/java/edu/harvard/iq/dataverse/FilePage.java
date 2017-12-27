@@ -5,6 +5,7 @@
  */
 package edu.harvard.iq.dataverse;
 
+import cn.edu.pku.lib.dataverse.DataverseLocale;
 import edu.harvard.iq.dataverse.DatasetVersionServiceBean.RetrieveDatasetVersionResponse;
 import edu.harvard.iq.dataverse.dataaccess.SwiftAccessIO;
 import edu.harvard.iq.dataverse.authorization.AuthenticationServiceBean;
@@ -41,6 +42,7 @@ import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.validation.ConstraintViolation;
+import org.apache.commons.lang.StringUtils;
 import org.primefaces.component.tabview.TabView;
 import org.primefaces.event.TabChangeEvent;
 
@@ -64,6 +66,7 @@ public class FilePage implements java.io.Serializable {
     private Dataset dataset;
     private List<DatasetVersion> datasetVersionsForTab;
     private List<FileMetadata> fileMetadatasForTab;
+    private String language;
 
 
     @EJB
@@ -101,6 +104,8 @@ public class FilePage implements java.io.Serializable {
     @Inject
     TwoRavensHelper twoRavensHelper;
     @Inject WorldMapPermissionHelper worldMapPermissionHelper;
+    @Inject
+    DataverseLocale dataverseLocale;
 
     public WorldMapPermissionHelper getWorldMapPermissionHelper() {
         return worldMapPermissionHelper;
@@ -114,7 +119,14 @@ public class FilePage implements java.io.Serializable {
 
     private boolean fileDeleteInProgress = false;
     public String init() {
-     
+        
+        if (StringUtils.isNotBlank(language)){
+            if(language.toLowerCase().startsWith("zh")){
+                this.dataverseLocale.setLocaleZh();
+            }else if(language.toLowerCase().startsWith("en")){
+                this.dataverseLocale.setLocaleEn();
+            }
+        }
         
         if ( fileId != null ) { 
            
@@ -760,5 +772,12 @@ public class FilePage implements java.io.Serializable {
         
         return FileUtil.getPublicDownloadUrl(systemConfig.getDataverseSiteUrl(), fileId);
     }
+    
+    public String getLanguage() {
+        return language;
+    }
 
+    public void setLanguage(String language) {
+        this.language = language;
+    }
 }
