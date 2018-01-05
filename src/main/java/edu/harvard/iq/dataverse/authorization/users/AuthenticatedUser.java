@@ -63,6 +63,7 @@ import org.hibernate.validator.constraints.NotBlank;
 public class AuthenticatedUser implements User, Serializable {
     
     public enum UserType{ORDINARY, ADVANCE};
+    
     public static final String IDENTIFIER_PREFIX = "@";
     
     @Id
@@ -108,7 +109,7 @@ public class AuthenticatedUser implements User, Serializable {
     private Timestamp lastApiUseTime;   // last API use with user's token
             
     private boolean superuser;
-    
+
     private UserType userType;
     /**
      * @todo Consider storing a hash of *all* potentially interesting Shibboleth
@@ -424,10 +425,10 @@ public class AuthenticatedUser implements User, Serializable {
         }
         return null;
     }
-    
+
     public UserType getUserType() {
         return userType;
-    }
+}
 
     public void setUserType(UserType userType) {
         this.userType = userType;
