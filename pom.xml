@@ -15,6 +15,24 @@
 	<additionalparam>-Xdoclint:none</additionalparam>
         <aws.version>1.11.172</aws.version>
     </properties>
+    
+    <profiles>
+        <profile>
+            <id>dev</id>
+            <properties>
+                <profiles.active>dev</profiles.active>
+            </properties>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+        </profile>
+        <profile>
+            <id>product</id>
+            <properties>
+                <profiles.active>product</profiles.active>
+            </properties>
+        </profile>
+    </profiles>
 
     <repositories>
         <repository>
@@ -471,6 +489,9 @@
     </dependencies>
 
     <build>
+        <filters>
+            <filter>src/main/resources/environment/env-${profiles.active}.properties</filter>
+        </filters>
         <resources>
             <resource>
                 <directory>src/main/java</directory>
@@ -484,6 +505,13 @@
                 <directory>src/main/resources</directory>
                 <includes>
                     <include>**/*.xml</include>
+                </includes>
+            </resource>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+                <includes>
+                    <include>**/*.properties</include>
                 </includes>
             </resource>
         </resources>
@@ -620,6 +648,25 @@
                                     <include>javamail.providers</include>
                                 </includes>
                             </fileset>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>native2ascii-maven-plugin</artifactId>
+                <version>1.0-beta-1</version>
+                <executions>
+                    <execution>
+                        <phase>compile</phase>
+                        <goals>
+                            <goal>native2ascii</goal>
+                        </goals>
+                        <configuration>
+                            <encoding>UTF-8</encoding>
+                            <src>src/main/resources/cn/edu/pku/lib/dataverse/authorization/providers/iaaa</src> 
+                            <dest>target/native2ascii_tmp</dest> 
+                            <includes>**/*.properties</includes> 
                         </configuration>
                     </execution>
                 </executions>
