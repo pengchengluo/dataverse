@@ -33,3 +33,5 @@ scripts/api/setup-all.sh*
 
 # ctags generated tag file
 tags
+/src/main/resources/environment/env-product.properties
+/src/main/resources/environment/env-dev.properties
