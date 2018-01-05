@@ -85,6 +85,9 @@ public class AuthenticationServiceBean {
     BuiltinUserServiceBean builtinUserServiceBean;
     
     @EJB
+    cn.edu.pku.lib.dataverse.authorization.providers.iaaa.PKUIAAAUserServiceBean pkuIAAAUser;
+    
+    @EJB
     IndexServiceBean indexService;
     
     @EJB
@@ -116,6 +119,7 @@ public class AuthenticationServiceBean {
             registerProviderFactory( new BuiltinAuthenticationProviderFactory(builtinUserServiceBean, passwordValidatorService) );
             registerProviderFactory( new ShibAuthenticationProviderFactory() );
             registerProviderFactory( new OAuth2AuthenticationProviderFactory() );
+            registerProviderFactory( new cn.edu.pku.lib.dataverse.authorization.providers.iaaa.PKUIAAAAuthenticationProviderFactory(pkuIAAAUser) );
         
         } catch (AuthorizationSetupException ex) { 
             logger.log(Level.SEVERE, "Exception setting up the authentication provider factories: " + ex.getMessage(), ex);
