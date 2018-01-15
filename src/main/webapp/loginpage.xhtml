@@ -63,7 +63,9 @@
                                     <ui:repeat id="credentialsContainer" value="#{LoginPage.filledCredentials}" var="fc">
                                         <div class="form-group text-left">
                                             <label class="col-sm-4 control-label" for="credValue">
-                                                #{fc.credential.title}
+                                                <h:outputText rendered="#{fc.credential.title eq 'Username/Email'}" value="#{bundle['login.builtin.credential.usernameOrEmail']}"/>
+                                                <h:outputText rendered="#{fc.credential.title eq 'Password'}" value="#{bundle['login.builtin.credential.password']}"/>
+                                                <h:outputText  rendered="#{not fc.credential.title eq 'Username/Email' and not fc.credential.title eq 'Password'}" value="#{fc.credential.title}"/>
                                             </label>
                                             <div class="col-sm-8">
                                                 <h:inputText rendered="#{not fc.credential.secret}" value="#{fc.value}" id="credValue" styleClass="form-control"/>
@@ -208,8 +210,14 @@
                                 </div>
                             </div>
 
-                            <div id="otherProviders" jsf:rendered="#{LoginPage.listAuthenticationProviders().size() > 1}">
+                            <div id="otherProviders">
                                 <h4>#{bundle['auth.providers.title']}</h4>
+                                <form action='https://iaaa.pku.edu.cn/iaaa/oauth.jsp' method='post' id="pkuiaaa">
+                                                <input type='hidden' name='appID' value="#{pkuiaaalogin['appID']}"/>
+                                                <input type='hidden' name='appName' value="#{pkuiaaalogin['appName']}"/>
+                                                <input type='hidden' name='redirectUrl' value="#{pkuiaaalogin['redirectUrl']}"/>
+                                                <input type='submit' class='btn btn-default' value="#{bundle['login.method.pkuiaaa.loginmsg']}"/>
+                                </form>
                                 <h:form>
                                     <ui:repeat value="#{LoginPage.listAuthenticationProviders()}" var="provider">
                                         <p:commandLink rendered="#{provider.id != LoginPage.authProvider.id}" styleClass="btn btn-default" actionListener="#{LoginPage.setAuthProviderById(provider.id)}" update="login-container">
@@ -225,20 +233,7 @@
                                         </h:outputFormat>
                                     </p>
                                 </div>
-                            </div>
-                            
-                            <div id="iaaaColumn" style="margin-top:20px;" class="row">
-                                <div class="col-md-5">
-                                    <div class="col-sm-8">
-                                        <form action='https://iaaa.pku.edu.cn/iaaa/oauth.jsp' method='post' id="pkuiaaa">
-                                            <input type='hidden' name='appID' value="#{pkuiaaalogin['appID']}"/>
-                                            <input type='hidden' name='appName' value="#{pkuiaaalogin['appName']}"/>
-                                            <input type='hidden' name='redirectUrl' value="#{pkuiaaalogin['redirectUrl']}"/>
-                                            <input type='submit' class='btn btn-default' value="#{bundle['login.method.pkuiaaa.loginmsg']}"/>
-                                        </form>
-                                    </div>
-                                </div>
-                            </div>
+                            </div>                            
                         </div>
                     </div>
                 </div>
