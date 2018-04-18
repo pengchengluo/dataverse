@@ -8,6 +8,7 @@ package cn.edu.pku.lib.dataverse.authorization.providers.iaaa;
 import edu.harvard.iq.dataverse.ValidateEmail;
 import edu.harvard.iq.dataverse.authorization.AuthenticatedUserDisplayInfo;
 import edu.harvard.iq.dataverse.authorization.users.AuthenticatedUser.UserType;
+import static edu.harvard.iq.dataverse.util.StringUtil.nonEmpty;
 import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -41,12 +42,12 @@ public class PKUIAAAUser implements Serializable {
     @Column(nullable = false, unique = true)
     @NotBlank
     private String userName;
-    @NotBlank
+     @NotBlank(message = "Please enter your first name.")
     private String firstName;
-    @NotBlank
+    @NotBlank(message = "Please enter your last name.")
     private String lastName;
-    @ValidateEmail
-    @NotBlank
+    @ValidateEmail(message = "Please enter a valid email address.")
+    @NotBlank(message = "Please enter a valid email address.")
     @Column(nullable = false, unique = true)
     private String email;
     
@@ -71,6 +72,72 @@ public class PKUIAAAUser implements Serializable {
     private String address;
     private String zipCode;
     private UserType userType;
+    
+    public void applyDisplayInfo( AuthenticatedUserDisplayInfo inf ) {
+        setFirstName(inf.getFirstName());
+        setLastName(inf.getLastName());
+        if ( nonEmpty(inf.getEmailAddress()) ) {
+            setEmail(inf.getEmailAddress());
+        }
+        if ( nonEmpty(inf.getAffiliation()) ) {
+            setAffiliation( inf.getAffiliation() );
+        }
+        if ( nonEmpty(inf.getPosition()) ) {
+            setPosition( inf.getPosition());
+        }
+        if (nonEmpty(inf.getDepartment())){
+            this.setDepartment(inf.getDepartment());
+        }
+        if (nonEmpty(inf.getSpeciality())){
+            this.setSpeciality(inf.getSpeciality());
+        }
+        if (nonEmpty(inf.getResearchInterest())){
+            this.setResearchInterest(inf.getResearchInterest());
+        }
+        if (nonEmpty(inf.getGender())){
+            this.setGender(inf.getGender());
+        }
+        if (nonEmpty(inf.getEducation())){
+            this.setEducation(inf.getEducation());
+        }
+        if (nonEmpty(inf.getProfessionalTitle())){
+            this.setProfessionalTitle(inf.getProfessionalTitle());
+        }
+        if (nonEmpty(inf.getSupervisor())){
+            this.setSupervisor(inf.getSupervisor());
+        }
+        if (nonEmpty(inf.getCertificateType())){
+            this.setCertificateType(inf.getCertificateType());
+        }
+        if (nonEmpty(inf.getCertificateNumber())){
+            this.setCertificateNumber(inf.getCertificateNumber());
+        }
+        if (nonEmpty(inf.getOfficePhone())){
+            this.setOfficePhone(inf.getOfficePhone());
+        }
+        if (nonEmpty(inf.getCellphone())){
+            this.setCellphone(inf.getCellphone());
+        }
+        if (nonEmpty(inf.getOtherEmail())){
+            this.setOtherEmail(inf.getOtherEmail());
+        }
+        if (nonEmpty(inf.getCountry())){
+            this.setCountry(inf.getCountry());
+        }
+        if (nonEmpty(inf.getProvince())){
+            this.setProvince(inf.getProvince());
+        }
+        if (nonEmpty(inf.getCity())){
+            this.setCity(inf.getCity());
+        }
+        if (nonEmpty(inf.getAddress())){
+            this.setAddress(inf.getAddress());
+        }
+        if (nonEmpty(inf.getZipCode())){
+            this.setZipCode(inf.getZipCode());
+        }
+        setUserType(inf.getUserType());
+    }
 
     public Long getId() {
         return id;
@@ -153,8 +220,27 @@ public class PKUIAAAUser implements Serializable {
     }
 
     public AuthenticatedUserDisplayInfo getDisplayInfo() {
-        return new AuthenticatedUserDisplayInfo(firstName, lastName, email, 
-                affiliation, position, userType);
+        AuthenticatedUserDisplayInfo audi = new AuthenticatedUserDisplayInfo(
+                firstName, lastName, email, affiliation, position);
+        audi.setDepartment(department);
+        audi.setSpeciality(speciality);
+        audi.setResearchInterest(researchInterest);
+        audi.setGender(gender);
+        audi.setEducation(education);
+        audi.setProfessionalTitle(professionalTitle);
+        audi.setSupervisor(supervisor);
+        audi.setCertificateType(certificateType);
+        audi.setCertificateNumber(certificateNumber);
+        audi.setOfficePhone(officePhone);
+        audi.setCellphone(cellphone);
+        audi.setOtherEmail(otherEmail);
+        audi.setCountry(country);
+        audi.setProvince(province);
+        audi.setCity(city);
+        audi.setAddress(address);
+        audi.setZipCode(zipCode);
+        audi.setUserType(userType);
+        return audi;
     }
 
     public String getGender() {
