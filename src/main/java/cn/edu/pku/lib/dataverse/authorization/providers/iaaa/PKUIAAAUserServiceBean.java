@@ -52,4 +52,11 @@ public class PKUIAAAUserServiceBean {
             return em.merge(user);
         }
     }
+    
+    public void removeUser( String userName ) {
+        final PKUIAAAUser user = findByUserName(userName);
+        if ( user != null ) {
+            em.remove(user);
+        }
+    }
 }

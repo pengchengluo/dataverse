@@ -353,40 +353,50 @@
                                         </p>
                                     </div>
                                 </div>
+                                <!-- User type -->
+                                <div class="form-group col-sm-6">
+                                    <label for="userType" class="col-sm-4 control-label">
+                                        #{bundle['user.userType']}
+                                    </label>
+                                    <div class="col-sm-8">
+                                        <p jsf:rendered="#{DataverseUserPage.currentUser.userType == 'ADVANCE'}" class="form-control-static">#{bundle['user.userType.advance']}</p>
+                                        <p jsf:rendered="#{DataverseUserPage.currentUser.userType == 'ORDINARY'}" class="form-control-static">#{bundle['user.userType.ordinary']}</p>
+                                    </div>
+                                </div>
                                 <!-- Username -->
-                                <div class="form-group">
-                                    <label for="userNameEmail" class="col-sm-3 control-label">
+                                <div class="form-group col-sm-6">
+                                    <label for="userNameEmail" class="col-sm-4 control-label">
                                         #{bundle['user.username']}
                                     </label>
-                                    <div class="col-sm-9">
+                                    <div class="col-sm-8">
                                         <p class="form-control-static">#{DataverseUserPage.currentUser.identifier.replaceFirst("@", "")}</p>
                                     </div>
                                 </div>
                                 <!-- First Name -->
-                                <div class="form-group">
-                                    <label for="firstName" class="col-sm-3 control-label">
+                                <div class="form-group col-sm-6">
+                                    <label for="firstName" class="col-sm-4 control-label">
                                         #{bundle['user.firstName']}
                                     </label>
-                                    <div class="col-sm-9">
+                                    <div class="col-sm-8">
                                         <p class="form-control-static">#{DataverseUserPage.currentUser.firstName}</p>
                                     </div>
                                 </div>
                                 <!-- Last Name -->
-                                <div class="form-group">
-                                    <label for="lastName" class="col-sm-3 control-label">
+                                <div class="form-group col-sm-6">
+                                    <label for="lastName" class="col-sm-4 control-label">
                                         #{bundle['user.lastName']}
                                     </label>
-                                    <div class="col-sm-9">
+                                    <div class="col-sm-8">
                                         <p class="form-control-static">#{DataverseUserPage.currentUser.lastName}</p>
                                     </div>
                                 </div>
                                 <!-- Email -->
-                                <div class="form-group">
-                                    <label for="email" class="col-sm-3 control-label">
+                                <div class="form-group col-sm-6">
+                                    <label for="email" class="col-sm-4 control-label">
                                         #{bundle.email}
                                     </label>
-                                    <div class="col-sm-9 form-col-container">
-                                        <div class="col-sm-4 form-col-container">
+                                    <div class="col-sm-8 form-col-container">
+                                        <div class="col-sm-8 form-col-container">
                                             <p class="form-control-static">#{DataverseUserPage.currentUser.email}</p>
                                         </div>
                                         <div class="col-sm-2 form-col-container">
@@ -399,7 +409,7 @@
                                                 </ui:fragment>
                                             </p>
                                         </div>
-                                        <div class="col-sm-1">
+                                        <div class="col-sm-2">
                                             <h:commandLink rendered="#{DataverseUserPage.showVerifyEmailButton()}" styleClass="btn btn-default" action="#{DataverseUserPage.sendConfirmEmail()}">
                                                 <span class="glyphicon glyphicon-ok"></span> #{bundle['confirmEmail.submitRequest']}
                                             </h:commandLink>
@@ -407,11 +417,11 @@
                                     </div>
                                 </div>
                                 <!-- ORCID iD, for example -->
-                                <div class="form-group" jsf:rendered="#{DataverseUserPage.userAuthProvider.displayIdentifier}">
-                                    <label for="userPersistentId" class="col-sm-3 control-label">
+                                <div class="form-group col-sm-6" jsf:rendered="#{DataverseUserPage.userAuthProvider.displayIdentifier}">
+                                    <label for="userPersistentId" class="col-sm-4 control-label">
                                         #{DataverseUserPage.userAuthProvider.persistentIdName}
                                     </label>
-                                    <div class="col-sm-9">
+                                    <div class="col-sm-8">
                                         <p class="form-control-static">
                                             <h:graphicImage value="#{DataverseUserPage.userAuthProvider.logo}" height="16" width="16"/>&#160;
                                             <h:outputLink value="#{DataverseUserPage.userAuthProvider.persistentIdUrlPrefix}#{DataverseUserPage.currentUser.authenticatedUserLookup.persistentUserId}" title="#{DataverseUserPage.userAuthProvider.persistentIdName}" target="_blank">
@@ -421,23 +431,202 @@
                                     </div>
                                 </div>
                                 <!-- Affiliation -->
-                                <div class="form-group" jsf:rendered="#{!empty DataverseUserPage.currentUser.affiliation}">
-                                    <label for="affiliation" class="col-sm-3 control-label">
+                                <div class="form-group col-sm-6" jsf:rendered="#{!empty DataverseUserPage.currentUser.affiliation}">
+                                    <label for="affiliation" class="col-sm-4 control-label">
                                         #{bundle.affiliation}
                                     </label>
-                                    <div class="col-sm-9">
+                                    <div class="col-sm-8">
                                         <p class="form-control-static">#{DataverseUserPage.currentUser.affiliation}</p>
                                     </div>
                                 </div>
                                 <!-- Position (not populated for Shibboleth users) -->
-                                <div class="form-group" jsf:rendered="#{!empty DataverseUserPage.currentUser.position}">
-                                    <label for="position" class="col-sm-3 control-label">
+                                <div class="form-group col-sm-6" jsf:rendered="#{!empty DataverseUserPage.currentUser.position}">
+                                    <label for="position" class="col-sm-4 control-label">
                                         #{bundle['user.position']}
                                     </label>
-                                    <div class="col-sm-9">
+                                    <div class="col-sm-8">
                                         <p class="form-control-static">#{DataverseUserPage.currentUser.position}</p>
                                     </div>
                                 </div>
+                                <!-- Department -->
+                                <div class="form-group col-sm-6">
+                                    <label for="department" class="col-sm-4 control-label">
+                                        #{bundle.department}
+                                    </label>
+                                    <div class="col-sm-8">
+                                        <p class="form-control-static">#{DataverseUserPage.currentUser.department}</p>
+                                    </div>
+                                </div>
+                                <!-- Position -->
+                                <div class="form-group col-sm-6">
+                                    <label for="position" class="col-sm-4 control-label">
+                                        #{bundle['user.position']}
+                                    </label>
+                                    <div class="col-sm-8">
+                                        <p class="form-control-static" jsf:rendered="#{DataverseUserPage.currentUser.position == 'student'}">#{bundle['user.position.student']}</p>
+                                        <p class="form-control-static" jsf:rendered="#{DataverseUserPage.currentUser.position == 'faculty'}">#{bundle['user.position.faculty']}</p>
+                                        <p class="form-control-static" jsf:rendered="#{DataverseUserPage.currentUser.position == 'government_organization'}">#{bundle['user.position.governmentOrganization']}</p>
+                                        <p class="form-control-static" jsf:rendered="#{DataverseUserPage.currentUser.position == 'international_organization'}">#{bundle['user.position.internationalOrganization']}</p>
+                                        <p class="form-control-static" jsf:rendered="#{DataverseUserPage.currentUser.position == 'research_institutions'}">#{bundle['user.position.researchInstitutions']}</p>
+                                        <p class="form-control-static" jsf:rendered="#{DataverseUserPage.currentUser.position == 'corporation'}">#{bundle['user.position.corporation']}</p>
+                                        <p class="form-control-static" jsf:rendered="#{DataverseUserPage.currentUser.position == 'nongovernmental_organization'}">#{bundle['user.position.nongovernmentalOrganization']}</p>
+                                        <p class="form-control-static" jsf:rendered="#{DataverseUserPage.currentUser.position == 'other'}">#{bundle['user.position.other']}</p>
+                                    </div>
+                                </div>
+                                <!-- Speciality -->
+                                <div class="form-group col-sm-6">
+                                    <label for="speciality" class="col-sm-4 control-label">
+                                        #{bundle['user.speciality']}
+                                    </label>
+                                    <div class="col-sm-8">
+                                        <p class="form-control-static">#{DataverseUserPage.currentUser.speciality}</p>
+                                    </div>
+                                </div>
+                                <!-- Research Interest -->
+                                <div class="form-group col-sm-6">
+                                    <label for="researchInterest" class="col-sm-4 control-label">
+                                        #{bundle['user.researchinterest']}
+                                    </label>
+                                    <div class="col-sm-8">
+                                        <p class="form-control-static">#{DataverseUserPage.currentUser.researchInterest}</p>
+                                    </div>
+                                </div>
+                                <!-- Gender -->
+                                <div class="form-group col-sm-6" jsf:rendered="#{DataverseUserPage.currentUser.userType == 'ADVANCE'}">
+                                    <label for="gender" class="col-sm-4 control-label">
+                                        #{bundle['user.gender']}
+                                    </label>
+                                    <div class="col-sm-8">
+                                        <p class="form-control-static" jsf:rendered="#{DataverseUserPage.currentUser.gender == 'male'}">#{bundle['user.gender.male']}</p>
+                                        <p class="form-control-static" jsf:rendered="#{DataverseUserPage.currentUser.gender == 'female'}">#{bundle['user.gender.female']}</p>
+                                    </div>
+                                </div>
+                                <!-- Education -->
+                                <div class="form-group col-sm-6" jsf:rendered="#{DataverseUserPage.currentUser.userType == 'ADVANCE'}">
+                                    <label for="education" class="col-sm-4 control-label">
+                                        #{bundle['user.education']}
+                                    </label>
+                                    <div class="col-sm-8">
+                                        <p class="form-control-static" jsf:rendered="#{DataverseUserPage.currentUser.education == 'bachelor'}">#{bundle['user.education.bachelor']}</p>
+                                        <p class="form-control-static" jsf:rendered="#{DataverseUserPage.currentUser.education == 'master'}">#{bundle['user.education.master']}</p>
+                                        <p class="form-control-static" jsf:rendered="#{DataverseUserPage.currentUser.education == 'doctor'}">#{bundle['user.education.doctor']}</p>
+                                        <p class="form-control-static" jsf:rendered="#{DataverseUserPage.currentUser.education == 'other'}">#{bundle['user.education.other']}</p>
+                                    </div>
+                                </div>
+                                <!-- Professional Title -->
+                                <div class="form-group col-sm-6" jsf:rendered="#{DataverseUserPage.currentUser.userType == 'ADVANCE'}">
+                                    <label for="professionalTitle" class="col-sm-4 control-label">
+                                        #{bundle['user.professionalTitle']}
+                                    </label>
+                                    <div class="col-sm-8">
+                                        <p class="form-control-static">#{DataverseUserPage.currentUser.professionalTitle}</p>
+                                    </div>
+                                </div>
+                                <!-- Supervisor -->
+                                <div class="form-group col-sm-6" jsf:rendered="#{DataverseUserPage.currentUser.userType == 'ADVANCE'}">
+                                    <label for="supervisor" class="col-sm-4 control-label">
+                                        #{bundle['user.supervisor']}
+                                    </label>
+                                    <div class="col-sm-8">
+                                        <p class="form-control-static">#{DataverseUserPage.currentUser.supervisor}</p>
+                                    </div>
+                                </div>
+                                <!-- Certificate Type -->
+                                <div class="form-group col-sm-6" jsf:rendered="#{DataverseUserPage.currentUser.userType == 'ADVANCE'}">
+                                    <label for="certificateType" class="col-sm-4 control-label">
+                                        #{bundle['user.certificateType']}
+                                    </label>
+                                    <div class="col-sm-8">
+                                        <p class="form-control-static">#{DataverseUserPage.currentUser.certificateType}</p>
+                                    </div>
+                                </div>
+                                <!-- Certificate Number -->
+                                <div class="form-group col-sm-6" jsf:rendered="#{DataverseUserPage.currentUser.userType == 'ADVANCE'}">
+                                    <label for="certificateNumber" class="col-sm-4 control-label">
+                                        #{bundle['user.certificateNumber']}
+                                    </label>
+                                    <div class="col-sm-8">
+                                        <p class="form-control-static">#{DataverseUserPage.currentUser.certificateNumber}</p>
+                                    </div>
+                                </div>
+                                <!-- Office Phone -->
+                                <div class="form-group col-sm-6" jsf:rendered="#{DataverseUserPage.currentUser.userType == 'ADVANCE'}">
+                                    <label for="officePhone" class="col-sm-4 control-label">
+                                        #{bundle['user.officePhone']}
+                                    </label>
+                                    <div class="col-sm-8">
+                                        <p class="form-control-static">#{DataverseUserPage.currentUser.officePhone}</p>
+                                    </div>
+                                </div>
+                                <!-- Cellphone -->
+                                <div class="form-group col-sm-6" jsf:rendered="#{DataverseUserPage.currentUser.userType == 'ADVANCE'}">
+                                    <label for="cellphone" class="col-sm-4 control-label">
+                                        #{bundle['user.cellphone']}
+                                    </label>
+                                    <div class="col-sm-8">
+                                        <p class="form-control-static">#{DataverseUserPage.currentUser.cellphone}</p>
+                                    </div>
+                                </div>
+                                <!-- Other Email -->
+                                <div class="form-group col-sm-6" jsf:rendered="#{DataverseUserPage.currentUser.userType == 'ADVANCE'}">
+                                    <label for="otherEmail" class="col-sm-4 control-label">
+                                        #{bundle['user.otherEmail']}
+                                    </label>
+                                    <div class="col-sm-8">
+                                        <p class="form-control-static">#{DataverseUserPage.currentUser.otherEmail}</p>
+                                    </div>
+                                </div>
+
+                                <!-- Country -->
+                                <div class="form-group col-sm-6" jsf:rendered="#{DataverseUserPage.currentUser.userType == 'ADVANCE'}">
+                                    <label for="country" class="col-sm-4 control-label">
+                                        #{bundle['user.country']}
+                                    </label>
+                                    <div class="col-sm-8">
+                                        <p class="form-control-static">#{DataverseUserPage.currentUser.country}</p>
+                                    </div>
+                                </div>
+
+                                <!-- Province -->
+                                <div class="form-group col-sm-6" jsf:rendered="#{DataverseUserPage.currentUser.userType == 'ADVANCE'}">
+                                    <label for="province" class="col-sm-4 control-label">
+                                        #{bundle['user.province']}
+                                    </label>
+                                    <div class="col-sm-8">
+                                        <p class="form-control-static">#{DataverseUserPage.currentUser.province}</p>
+                                    </div>
+                                </div>
+
+                                <!-- City -->
+                                <div class="form-group col-sm-6" jsf:rendered="#{DataverseUserPage.currentUser.userType == 'ADVANCE'}">
+                                    <label for="city" class="col-sm-4 control-label">
+                                        #{bundle['user.city']}
+                                    </label>
+                                    <div class="col-sm-8">
+                                        <p class="form-control-static">#{DataverseUserPage.currentUser.city}</p>
+                                    </div>
+                                </div>
+
+                                <!-- Address -->
+                                <div class="form-group col-sm-6" jsf:rendered="#{DataverseUserPage.currentUser.userType == 'ADVANCE'}">
+                                    <label for="address" class="col-sm-4 control-label">
+                                        #{bundle['user.address']}
+                                    </label>
+                                    <div class="col-sm-8">
+                                        <p class="form-control-static">#{DataverseUserPage.currentUser.address}</p>
+                                    </div>
+                                </div>
+
+                                <!-- ZipCode -->
+                                <div class="form-group col-sm-6" jsf:rendered="#{DataverseUserPage.currentUser.userType == 'ADVANCE'}">
+                                    <label for="zipCode" class="col-sm-4 control-label">
+                                        #{bundle['user.zipCode']}
+                                    </label>
+                                    <div class="col-sm-8">
+                                        <p class="form-control-static">#{DataverseUserPage.currentUser.zipCode}</p>
+                                    </div>
+                                </div>
+                                <div class="form-group"></div>
                             </div>
                         </p:tab>
                         <p:tab id="apiTokenTab" title="#{bundle['apitoken.title']}">

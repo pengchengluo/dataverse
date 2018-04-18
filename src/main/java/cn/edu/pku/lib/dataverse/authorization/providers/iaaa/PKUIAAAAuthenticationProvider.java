@@ -38,6 +38,26 @@ public class PKUIAAAAuthenticationProvider implements CredentialsAuthenticationP
     }
 
     @Override
+    public boolean isPasswordUpdateAllowed() {
+        return false;
+    }
+    
+     @Override
+    public boolean isUserInfoUpdateAllowed() {
+        return true;
+    }
+
+    @Override
+    public boolean isUserDeletionAllowed() {
+        return true;
+    }
+    
+    @Override
+    public void deleteUser(String userIdInProvider) {
+        bean.removeUser(userIdInProvider);
+    }
+    
+    @Override
     public AuthenticationProviderDisplayInfo getInfo() {
         return new AuthenticationProviderDisplayInfo(getId(), "PKU IAAA Login Provider", "PKU University internal user repository");
     }
@@ -82,5 +102,15 @@ public class PKUIAAAAuthenticationProvider implements CredentialsAuthenticationP
     @Override
     public List<Credential> getRequiredCredentials() {
         return CREDENTIALS_LIST;
+    }
+    
+    @Override
+    public boolean isOAuthProvider() {
+        return false;
+    }
+    
+    @Override
+    public boolean isDisplayIdentifier() {
+        return false;
     }
 }
