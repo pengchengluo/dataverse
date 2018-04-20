@@ -171,7 +171,26 @@ public class AuthenticatedUser implements User, Serializable {
     
     @Override
     public AuthenticatedUserDisplayInfo getDisplayInfo() {
-        return new AuthenticatedUserDisplayInfo(firstName, lastName, email, affiliation, position);
+        AuthenticatedUserDisplayInfo audi = new AuthenticatedUserDisplayInfo(firstName, lastName, email, affiliation, position);
+        audi.setDepartment(department);
+        audi.setSpeciality(speciality);
+        audi.setResearchInterest(researchInterest);
+        audi.setGender(gender);
+        audi.setEducation(education);
+        audi.setProfessionalTitle(professionalTitle);
+        audi.setSupervisor(supervisor);
+        audi.setCertificateType(certificateType);
+        audi.setCertificateNumber(certificateNumber);
+        audi.setOfficePhone(officePhone);
+        audi.setCellphone(cellphone);
+        audi.setOtherEmail(otherEmail);
+        audi.setCountry(country);
+        audi.setProvince(province);
+        audi.setCity(city);
+        audi.setAddress(address);
+        audi.setZipCode(zipCode);
+        audi.setUserType(userType);
+        return audi;
     }
     
     /**

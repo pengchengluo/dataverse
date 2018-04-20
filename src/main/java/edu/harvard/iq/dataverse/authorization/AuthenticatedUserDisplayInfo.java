@@ -57,6 +57,7 @@ public class AuthenticatedUserDisplayInfo extends RoleAssigneeDisplayInfo {
         firstName="";
         lastName="";
         position="";
+        this.userType = AuthenticatedUser.UserType.ORDINARY;
     }
 
     
