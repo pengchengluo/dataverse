@@ -262,31 +262,6 @@
                                 </div>
                             </p:dialog>
                             <!-- END: Contact/Share Button Group -->
-                            
-                            <!-- View Dataset Versions Button -->
-                            <!-- 4.2.1: replaced permissionServiceBean.on(DatasetPage.dataset).has('ViewUnpublishedDataset') with DatasetPage.canViewUnpublishedDataset() -->
-                            <div class="btn-group pull-left" jsf:rendered="#{DatasetPage.releasedVersionTabList.size() > 1 or (DatasetPage.releasedVersionTabList.size() == 1 and DatasetPage.dataset.latestVersion.draft and DatasetPage.canViewUnpublishedDataset())}">
-                                <button type="button" id="editDataSet" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
-                                    View Dataset Versions <span class="caret"></span>
-                                </button>
-                                <ul class="dropdown-menu" role="menu">
-                                    <ui:repeat value="#{DatasetPage.versionTabList}" var="versionLinks">
-                                        <li class="#{DatasetPage.workingVersion == versionLinks ? 'disabled' : ''}">
-                                            <h:outputLink styleClass="ui-commandlink ui-widget" value="/dataset.xhtml?persistentId=#{versionLinks.dataset.globalId}&#38;version=#{versionLinks.versionState}"
-                                                          rendered="#{!(DatasetPage.workingVersion == versionLinks) and !(versionLinks.released or versionLinks.deaccessioned)}">
-                                                <h:outputText value="#{versionLinks.versionState}" styleClass="#{DatasetPage.workingVersion == versionLinks ? 'highlightBold' : ''}" /></h:outputLink>
-                                            <h:outputText styleClass="ui-commandlink ui-widget ui-state-disabled #{DatasetPage.workingVersion == versionLinks ? 'highlightBold' : ''}" value="#{versionLinks.versionState}"
-                                                          rendered="#{(DatasetPage.workingVersion == versionLinks) and !(versionLinks.released or versionLinks.deaccessioned)}"/>
-                                            <h:outputLink styleClass="ui-commandlink ui-widget" value="/dataset.xhtml?persistentId=#{versionLinks.dataset.globalId}&#38;version=#{versionLinks.versionNumber}.#{versionLinks.minorVersionNumber}"
-                                                          rendered="#{!(DatasetPage.workingVersion == versionLinks) and (versionLinks.released or versionLinks.deaccessioned)}">
-                                                <h:outputText value="#{versionLinks.versionNumber}.#{versionLinks.minorVersionNumber}" styleClass="#{DatasetPage.workingVersion == versionLinks ? 'highlightBold' : ''}" /></h:outputLink>
-                                            <h:outputText styleClass="ui-commandlink ui-widget ui-state-disabled #{DatasetPage.workingVersion == versionLinks ? 'highlightBold' : ''}" value="#{versionLinks.versionNumber}.#{versionLinks.minorVersionNumber}"
-                                                          rendered="#{(DatasetPage.workingVersion == versionLinks) and !(versionLinks.draft)}"/>
-                                        </li>
-                                    </ui:repeat>
-                                </ul>
-                            </div>
-                            <!-- END: Dataset Versions Button -->
 
                             <!-- Metrics -->
                             <div id="metrics-block" class="col-xs-3" jsf:rendered="#{!(settingsWrapper.rsyncDownload or DatasetPage.workingVersion.deaccessioned)}">
@@ -1185,23 +1160,28 @@
                     </p:dialog>
                     <!-- END: Request Access Sign Up/Log In Button -->
                     
+                    <p:dialog header="#{configureFragmentBean.configurePopupToolHandler.externalTool.displayName}" widgetVar="configureToolPopup" modal="true" 
+                            id="configureToolPopup" styleClass="smallPopUp">
+
+                            <ui:include src="file-configure-popup-fragment.xhtml">
+                                <ui:param name="canUpdateDataset" value="#{DatasetPage.canUpdateDataset()}"/>
+                            </ui:include>
+
+                    </p:dialog>
+                    
                     <p:dialog id="downloadPopup" styleClass="largePopUp" header="#{bundle['file.downloadDialog.header']}" widgetVar="downloadPopup" modal="true">
                         <o:importFunctions type="edu.harvard.iq.dataverse.util.MarkupChecker" />
 
                         <ui:include src="file-download-popup-fragment.xhtml">
                             <ui:param name="workingVersion" value="#{DatasetPage.workingVersion}"/>
                             <ui:param name="downloadPopupRequired" value="#{DatasetPage.downloadPopupRequired}"/>
-                            <ui:param name="guestbookResponse" value="#{DatasetPage.guestbookResponse}" rendered="#{!settingsWrapper.rsyncDownload}"/>
-                            <ui:param name="guestbookResponseService" value="#{DatasetPage.guestbookResponseService}" rendered="#{!settingsWrapper.rsyncDownload}"/>
+                            <ui:param name="guestbookResponse" value="#{DatasetPage.fileDownloadHelper.guestbookResponse}" rendered="#{!settingsWrapper.rsyncDownload}"/>
                             <ui:param name="fileDownloadHelper" value="#{DatasetPage.fileDownloadHelper}"/>
                             <ui:param name="fileDownloadService" value="#{DatasetPage.fileDownloadService}"/>
-                            <ui:param name="twoRavensHelper" value="#{DatasetPage.twoRavensHelper}"/>
                         </ui:include>
 
                     </p:dialog>
                     
-
-
                     
                     <p:dialog id="requestAccessPopup" styleClass="largePopUp" header="#{bundle['file.requestAccess']}" widgetVar="requestAccessPopup" modal="true">
                         <o:importFunctions type="edu.harvard.iq.dataverse.util.MarkupChecker" />
@@ -1221,18 +1201,7 @@
                             </ui:include>
                         </div>
                     </p:dialog>
-
-                    <p:dialog header="#{bundle['file.mapData.unpublished.header']}" widgetVar="mapData_popup" modal="true">
-                        <p class="help-block">
-                            <span class="text-danger"><span class="glyphicon glyphicon-warning-sign"/> #{bundle['file.mapData.unpublished.message']}</span>
-                        </p>
-                        <div class="button-block">
-                            <button type="button" class="btn btn-default" onclick="PF('mapData_popup').hide();PF('blockDatasetForm').hide();">
-                                #{bundle.close}
-                            </button>
-                        </div>
-                    </p:dialog>
-
+                   
                     <p:dialog id="linkDatasetForm" header="#{bundle['dataset.link']}" widgetVar="linkDatasetForm" modal="true">
                         <ui:fragment rendered="#{DatasetPage.dataversesForLinking.size() > 0}">
                             <ui:fragment rendered="#{DatasetPage.dataversesForLinking.size() == 1}">

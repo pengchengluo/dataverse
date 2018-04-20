@@ -11,7 +11,6 @@ import edu.harvard.iq.dataverse.dataaccess.SwiftAccessIO;
 import edu.harvard.iq.dataverse.authorization.AuthenticationServiceBean;
 import edu.harvard.iq.dataverse.authorization.Permission;
 import edu.harvard.iq.dataverse.dataaccess.StorageIO;
-import edu.harvard.iq.dataverse.datasetutility.TwoRavensHelper;
 import edu.harvard.iq.dataverse.datasetutility.WorldMapPermissionHelper;
 import edu.harvard.iq.dataverse.engine.command.Command;
 import edu.harvard.iq.dataverse.engine.command.exception.CommandException;
@@ -22,6 +21,8 @@ import edu.harvard.iq.dataverse.engine.command.impl.UpdateDatasetCommand;
 import edu.harvard.iq.dataverse.export.ExportException;
 import edu.harvard.iq.dataverse.export.ExportService;
 import edu.harvard.iq.dataverse.export.spi.Exporter;
+import edu.harvard.iq.dataverse.externaltools.ExternalTool;
+import edu.harvard.iq.dataverse.externaltools.ExternalToolServiceBean;
 import edu.harvard.iq.dataverse.settings.SettingsServiceBean;
 import edu.harvard.iq.dataverse.util.FileUtil;
 import edu.harvard.iq.dataverse.util.JsfHelper;
@@ -30,9 +31,7 @@ import edu.harvard.iq.dataverse.util.SystemConfig;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.ResourceBundle;
 import java.util.Set;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.ejb.EJB;
 import javax.ejb.EJBException;
@@ -68,6 +67,8 @@ public class FilePage implements java.io.Serializable {
     private List<FileMetadata> fileMetadatasForTab;
     private String language;
 
+    private List<ExternalTool> configureTools;
+    private List<ExternalTool> exploreTools;
 
     @EJB
     DataFileServiceBean datafileService;
@@ -94,6 +95,8 @@ public class FilePage implements java.io.Serializable {
     DataverseSession session;
     @EJB
     EjbDataverseEngine commandEngine;
+    @EJB
+    ExternalToolServiceBean externalToolService;
 
     @Inject
     DataverseRequestServiceBean dvRequestService;
@@ -101,8 +104,6 @@ public class FilePage implements java.io.Serializable {
     PermissionsWrapper permissionsWrapper;
     @Inject
     FileDownloadHelper fileDownloadHelper;
-    @Inject
-    TwoRavensHelper twoRavensHelper;
     @Inject WorldMapPermissionHelper worldMapPermissionHelper;
     @Inject
     DataverseLocale dataverseLocale;
@@ -169,6 +170,13 @@ public class FilePage implements java.io.Serializable {
            
            this.guestbookResponse = this.guestbookResponseService.initGuestbookResponseForFragment(fileMetadata, session);
            
+          //  this.getFileDownloadHelper().setGuestbookResponse(guestbookResponse);
+
+            if (file.isTabularData()) {
+                configureTools = externalToolService.findByType(ExternalTool.Type.CONFIGURE);
+                exploreTools = externalToolService.findByType(ExternalTool.Type.EXPLORE);
+            }
+
         } else {
 
             return permissionsWrapper.notFound();
@@ -663,16 +671,20 @@ public class FilePage implements java.io.Serializable {
         Since it must must work when you are on prior versions of the dataset 
         it must accrue all replacement files that may have been created
         */
-        Dataset datasetToTest = fileMetadata.getDataFile().getOwner();
-        DataFile dataFileToTest = fileMetadata.getDataFile();
+        if(null == dataset) {
+            dataset = fileMetadata.getDataFile().getOwner();
+        }
         
-        DatasetVersion currentVersion = datasetToTest.getLatestVersion();
+        //MAD: Can we use the file variable already existing?
+        DataFile dataFileToTest = fileMetadata.getDataFile(); 
+        
+        DatasetVersion currentVersion = dataset.getLatestVersion();
         
         if (!currentVersion.isDraft()){
             return false;
         }
         
-        if (datasetToTest.getReleasedVersion() == null){
+        if (dataset.getReleasedVersion() == null){
             return false;
         }
         
@@ -693,7 +705,7 @@ public class FilePage implements java.io.Serializable {
         
         DataFile current = dataFiles.get(numFiles - 1 );       
         
-        DatasetVersion publishedVersion = datasetToTest.getReleasedVersion();
+        DatasetVersion publishedVersion = dataset.getReleasedVersion();
         
         if( datafileService.findFileMetadataByDatasetVersionIdAndDataFileId(publishedVersion.getId(), current.getId()) == null){
             return true;
@@ -718,34 +730,47 @@ public class FilePage implements java.io.Serializable {
         return FileUtil.isPubliclyDownloadable(fileMetadata);
     }
     
+    private Boolean lockedFromEditsVar;
+    private Boolean lockedFromDownloadVar; 
+    
     /**
      * Authors are not allowed to edit but curators are allowed - when Dataset is inReview
      * For all other locks edit should be locked for all editors.
      */
     public boolean isLockedFromEdits() {
-        Dataset testDataset = fileMetadata.getDataFile().getOwner();
-        
-        try {
-            permissionService.checkEditDatasetLock(testDataset, dvRequestService.getDataverseRequest(), new UpdateDatasetCommand(testDataset, dvRequestService.getDataverseRequest()));
-        } catch (IllegalCommandException ex) {
-            return true;
+        if(null == dataset) {
+            dataset = fileMetadata.getDataFile().getOwner();
         }
-        return false;
+        
+        if(null == lockedFromEditsVar) {
+            try {
+                permissionService.checkEditDatasetLock(dataset, dvRequestService.getDataverseRequest(), new UpdateDatasetCommand(dataset, dvRequestService.getDataverseRequest()));
+                lockedFromEditsVar = false;
+            } catch (IllegalCommandException ex) {
+                lockedFromEditsVar = true;
+            }
+        }
+        return lockedFromEditsVar;
     }
     
     public boolean isLockedFromDownload(){
-        Dataset testDataset = fileMetadata.getDataFile().getOwner();
-        try {
-            permissionService.checkDownloadFileLock(testDataset, dvRequestService.getDataverseRequest(), new CreateDatasetCommand(testDataset, dvRequestService.getDataverseRequest()));
-        } catch (IllegalCommandException ex) {
-            return true;
+        if(null == dataset) {
+            dataset = fileMetadata.getDataFile().getOwner();
         }
-        return false;       
+        if (null == lockedFromDownloadVar) {
+            try {
+                permissionService.checkDownloadFileLock(dataset, dvRequestService.getDataverseRequest(), new CreateDatasetCommand(dataset, dvRequestService.getDataverseRequest()));
+                lockedFromDownloadVar = false;
+            } catch (IllegalCommandException ex) {
+                lockedFromDownloadVar = true;
+            }
+        }
+        return lockedFromDownloadVar;       
     }
 
     public String getPublicDownloadUrl() {
-            try {
-                StorageIO<DataFile> storageIO = getFile().getStorageIO();
+        try {
+            StorageIO<DataFile> storageIO = getFile().getStorageIO();
             if (storageIO instanceof SwiftAccessIO) {
                 String fileDownloadUrl = null;
                 try {
@@ -780,4 +805,12 @@ public class FilePage implements java.io.Serializable {
     public void setLanguage(String language) {
         this.language = language;
     }
+    public List<ExternalTool> getConfigureTools() {
+        return configureTools;
+    }
+
+    public List<ExternalTool> getExploreTools() {
+        return exploreTools;
+    }
+
 }
