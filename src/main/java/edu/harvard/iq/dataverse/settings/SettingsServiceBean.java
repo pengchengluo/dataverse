@@ -138,6 +138,7 @@ public class SettingsServiceBean {
         DebugOAuthAccountType,
         /** Application-wide Terms of Use per installation. */
         ApplicationTermsOfUse,
+        ApplicationTermsOfUseZh,
         /** Terms of Use specific to API per installation. */
         ApiTermsOfUse,
         /**
