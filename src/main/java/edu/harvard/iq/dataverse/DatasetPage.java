@@ -77,7 +77,6 @@ import java.util.Arrays;
 import java.util.HashSet;
 import javax.faces.model.SelectItem;
 import java.util.logging.Level;
-import edu.harvard.iq.dataverse.datasetutility.TwoRavensHelper;
 import edu.harvard.iq.dataverse.datasetutility.WorldMapPermissionHelper;
 import edu.harvard.iq.dataverse.engine.command.exception.IllegalCommandException;
 import edu.harvard.iq.dataverse.engine.command.impl.GetLatestPublishedDatasetVersionCommand;
@@ -86,6 +85,8 @@ import edu.harvard.iq.dataverse.engine.command.impl.PublishDatasetResult;
 import edu.harvard.iq.dataverse.engine.command.impl.RestrictFileCommand;
 import edu.harvard.iq.dataverse.engine.command.impl.ReturnDatasetToAuthorCommand;
 import edu.harvard.iq.dataverse.engine.command.impl.SubmitDatasetForReviewCommand;
+import edu.harvard.iq.dataverse.externaltools.ExternalTool;
+import edu.harvard.iq.dataverse.externaltools.ExternalToolServiceBean;
 import edu.harvard.iq.dataverse.export.SchemaDotOrgExporter;
 import java.util.Collections;
 
@@ -170,6 +171,9 @@ public class DatasetPage implements java.io.Serializable {
     DataverseRoleServiceBean dataverseRoleService;
     @EJB
     PrivateUrlServiceBean privateUrlService;
+    @EJB
+    ExternalToolServiceBean externalToolService;
+
     @Inject
     DataverseRequestServiceBean dvRequestService;
     @Inject
@@ -179,13 +183,12 @@ public class DatasetPage implements java.io.Serializable {
     @Inject
     FileDownloadHelper fileDownloadHelper;
     @Inject
-    TwoRavensHelper twoRavensHelper;
-    @Inject
     WorldMapPermissionHelper worldMapPermissionHelper;
     @Inject
     ThumbnailServiceWrapper thumbnailServiceWrapper;
     @Inject
     SettingsWrapper settingsWrapper; 
+    
 
 
     private Dataset dataset = new Dataset();
@@ -247,6 +250,11 @@ public class DatasetPage implements java.io.Serializable {
     private boolean removeUnusedTags;
     
     private Boolean hasRsyncScript = false;
+    
+    List<ExternalTool> configureTools = new ArrayList<>();
+    List<ExternalTool> exploreTools = new ArrayList<>();
+    Map<Long, List<ExternalTool>> configureToolsByFileId = new HashMap<>();
+    Map<Long, List<ExternalTool>> exploreToolsByFileId = new HashMap<>();
     
     public Boolean isHasRsyncScript() {
         return hasRsyncScript;
@@ -1422,6 +1430,7 @@ public class DatasetPage implements java.io.Serializable {
                 // populate MapLayerMetadata
                 this.loadMapLayerMetadataLookup();  // A DataFile may have a related MapLayerMetadata object
                 this.guestbookResponse = guestbookResponseService.initGuestbookResponseForFragment(dataset, null, session);
+                this.getFileDownloadHelper().setGuestbookResponse(guestbookResponse);
                 logger.fine("Checking if rsync support is enabled.");
                 if (DataCaptureModuleUtil.rsyncSupportEnabled(settingsWrapper.getValueForKey(SettingsServiceBean.Key.UploadMethods))) {
                     try {
@@ -1519,7 +1528,10 @@ public class DatasetPage implements java.io.Serializable {
                         BundleUtil.getStringFromBundle("file.rsyncUpload.inProgressMessage.details"));
             }
         }
-        
+
+        configureTools = externalToolService.findByType(ExternalTool.Type.CONFIGURE);
+        exploreTools = externalToolService.findByType(ExternalTool.Type.EXPLORE);
+
         return null;
     }
     
@@ -2068,8 +2080,16 @@ public class DatasetPage implements java.io.Serializable {
             requestContext.execute("PF('selectFilesForDownload').show()");
             return;
         }
+
+        List<FileMetadata> allFiles = new ArrayList<>();
         
-        
+        if (isSelectAllFiles()){
+            for (FileMetadata fm: workingVersion.getFileMetadatas()){
+                allFiles.add(fm);
+            }
+            this.selectedFiles = allFiles;
+        }
+ 
         for (FileMetadata fmd : this.selectedFiles){
             if(this.fileDownloadHelper.canDownloadFile(fmd)){
                 getSelectedDownloadableFiles().add(fmd);
@@ -2098,7 +2118,7 @@ public class DatasetPage implements java.io.Serializable {
         }       
 
     }
-    
+
     private boolean selectAllFiles;
 
     public boolean isSelectAllFiles() {
@@ -2108,32 +2128,13 @@ public class DatasetPage implements java.io.Serializable {
     public void setSelectAllFiles(boolean selectAllFiles) {
         this.selectAllFiles = selectAllFiles;
     }
-    
-    public void toggleSelectedFiles(){
-        //method for when user clicks (de-)select all files
-        this.selectedFiles = new ArrayList<>();
-        if(this.selectAllFiles){
-            for (FileMetadata fmd : workingVersion.getFileMetadatas()) {
-                this.selectedFiles.add(fmd);
-                fmd.setSelected(true);
-            }
-        } else {
-            for (FileMetadata fmd : workingVersion.getFileMetadatas()) {
-                fmd.setSelected(false);
-            }           
-        }
-        updateFileCounts();
+
+    public void toggleAllSelected(){
+        //This is here so that if the user selects all on the dataset page
+        // s/he will get all files on download
+        this.selectAllFiles = !this.selectAllFiles;
     }
-       
     
-    public void updateSelectedFiles(FileMetadata fmd){
-        if(fmd.isSelected()){
-            this.selectedFiles.add(fmd);
-        } else{
-            this.selectedFiles.remove(fmd);
-        }
-        updateFileCounts();
-    }
 
     // helper Method
     public String getSelectedFilesIdsString() {        
@@ -2714,29 +2715,35 @@ public class DatasetPage implements java.io.Serializable {
         return false;
     }
 
+    private Boolean lockedFromEditsVar;
+    private Boolean lockedFromDownloadVar;    
     /**
      * Authors are not allowed to edit but curators are allowed - when Dataset is inReview
      * For all other locks edit should be locked for all editors.
      */
     public boolean isLockedFromEdits() {
-        
-        try {
-            permissionService.checkEditDatasetLock(dataset, dvRequestService.getDataverseRequest(), new UpdateDatasetCommand(dataset, dvRequestService.getDataverseRequest()));
-        } catch (IllegalCommandException ex) {
-            return true;
+        if(null == lockedFromEditsVar) {
+            try {
+                permissionService.checkEditDatasetLock(dataset, dvRequestService.getDataverseRequest(), new UpdateDatasetCommand(dataset, dvRequestService.getDataverseRequest()));
+                lockedFromEditsVar = false;
+            } catch (IllegalCommandException ex) {
+                lockedFromEditsVar = true;
+            }
         }
-        return false;
+        return lockedFromEditsVar;
     }
     
     public boolean isLockedFromDownload(){
-        
-        try {
-            permissionService.checkDownloadFileLock(dataset, dvRequestService.getDataverseRequest(), new CreateDatasetCommand(dataset, dvRequestService.getDataverseRequest()));
-        } catch (IllegalCommandException ex) {
-            return true;
+        if(null == lockedFromDownloadVar) {
+            try {
+                permissionService.checkDownloadFileLock(dataset, dvRequestService.getDataverseRequest(), new CreateDatasetCommand(dataset, dvRequestService.getDataverseRequest()));
+                lockedFromDownloadVar = false;
+            } catch (IllegalCommandException ex) {
+                lockedFromDownloadVar = true;
+                return true;
+            }
         }
-        return false;
-        
+        return lockedFromDownloadVar;
     }
 
     public void setLocked(boolean locked) {
@@ -3920,14 +3927,6 @@ public class DatasetPage implements java.io.Serializable {
         this.worldMapPermissionHelper = worldMapPermissionHelper;
     }
 
-    public TwoRavensHelper getTwoRavensHelper() {
-        return twoRavensHelper;
-    }
-
-    public void setTwoRavensHelper(TwoRavensHelper twoRavensHelper) {
-        this.twoRavensHelper = twoRavensHelper;
-    }
-
     /**
      * dataset title
      * @return title of workingVersion
@@ -4040,7 +4039,40 @@ public class DatasetPage implements java.io.Serializable {
        
         return DatasetUtil.getDatasetSummaryFields(workingVersion, customFields);
     }
-    
+
+    public List<ExternalTool> getConfigureToolsForDataFile(Long fileId) {
+        return getCachedToolsForDataFile(fileId, ExternalTool.Type.CONFIGURE);
+    }
+
+    public List<ExternalTool> getExploreToolsForDataFile(Long fileId) {
+        return getCachedToolsForDataFile(fileId, ExternalTool.Type.EXPLORE);
+    }
+
+    public List<ExternalTool> getCachedToolsForDataFile(Long fileId, ExternalTool.Type type) {
+        Map<Long, List<ExternalTool>> cachedToolsByFileId = new HashMap<>();
+        List<ExternalTool> externalTools = new ArrayList<>();
+        switch (type) {
+            case EXPLORE:
+                cachedToolsByFileId = exploreToolsByFileId;
+                externalTools = exploreTools;
+                break;
+            case CONFIGURE:
+                cachedToolsByFileId = configureToolsByFileId;
+                externalTools = configureTools;
+                break;
+            default:
+                break;
+        }
+        List<ExternalTool> cachedTools = cachedToolsByFileId.get(fileId);
+        if (cachedTools != null) { //if already queried before and added to list
+            return cachedTools;
+        }
+        DataFile dataFile = datafileService.find(fileId);
+        cachedTools = ExternalToolServiceBean.findExternalToolsByFile(externalTools, dataFile);
+        cachedToolsByFileId.put(fileId, cachedTools); //add to map so we don't have to do the lifting again
+        return cachedTools;
+    }
+
     Boolean thisLatestReleasedVersion = null;
     
     public boolean isThisLatestReleasedVersion() {
