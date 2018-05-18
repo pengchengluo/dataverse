@@ -748,6 +748,7 @@ public class SearchServiceBean {
 
         solrQueryResponse.setDvObjectCounts(queryResponse.getFacetField("dvObjectType"));
         solrQueryResponse.setPublicationStatusCounts(queryResponse.getFacetField("publicationStatus"));
+        SearchServiceBeanAuxiliary.processPublicationStatusCounts(solrQueryResponse, queryResponse, locale);
 
         return solrQueryResponse;
     }

@@ -21,6 +21,7 @@ import edu.harvard.iq.dataverse.search.SearchFields;
 import edu.harvard.iq.dataverse.search.SolrField;
 import edu.harvard.iq.dataverse.util.StringUtil;
 import java.text.DateFormat;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -38,6 +39,9 @@ public class IndexServiceBeanAuxiliary {
     private static final String IN_REVIEW_STRING_ZH = "审核中";
     private static final String DEACCESSIONED_STRING_ZH = "已注销";
     public static final String HARVESTED_ZH = "收割";
+    
+    public static final List<String> defaultPublishedStatesZh = Arrays.asList(PUBLISHED_STRING_ZH,
+            UNPUBLISHED_STRING_ZH,DRAFT_STRING_ZH, IN_REVIEW_STRING_ZH, DEACCESSIONED_STRING_ZH);
     
     public static void processDataverseIndex(SolrInputDocument solrInputDocument, Dataverse dataverse, Dataverse rootDataverse){        
         solrInputDocument.addField(SearchFieldsZh.NAME_ZH, dataverse.getNameZh());

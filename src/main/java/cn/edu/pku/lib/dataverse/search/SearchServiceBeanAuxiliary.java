@@ -12,6 +12,7 @@ import edu.harvard.iq.dataverse.Dataverse;
 import edu.harvard.iq.dataverse.DataverseFacet;
 import edu.harvard.iq.dataverse.search.FacetCategory;
 import edu.harvard.iq.dataverse.search.SearchFields;
+import edu.harvard.iq.dataverse.search.SolrQueryResponse;
 import edu.harvard.iq.dataverse.search.SolrSearchResult;
 import java.util.List;
 import java.util.Locale;
@@ -22,6 +23,7 @@ import javax.ejb.TransactionRolledbackLocalException;
 import javax.persistence.NoResultException;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.response.FacetField;
+import org.apache.solr.client.solrj.response.QueryResponse;
 import org.apache.solr.common.SolrDocument;
 
 /**
@@ -90,6 +92,13 @@ public class SearchServiceBeanAuxiliary {
         }else if(facetField.getName().equals(SearchFieldsZh.DATAVERSE_CATEGORY_ZH) && isZh){
             facetCategory.setFriendlyName("数据空间类型");
             datasetfieldFriendlyNamesBySolrField.put(SearchFields.DATAVERSE_CATEGORY, "数据空间类型");
+        }
+    }
+    
+    public static void processPublicationStatusCounts(SolrQueryResponse solrQueryResponse,QueryResponse queryResponse, Locale locale){
+        boolean isZh = locale.getLanguage().equals("zh");
+        if(isZh){
+            solrQueryResponse.setPublicationStatusCounts(queryResponse.getFacetField(SearchFieldsZh.PUBLICATION_STATUS_ZH));
         }
     }
     

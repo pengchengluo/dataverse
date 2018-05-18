@@ -5,6 +5,8 @@
  */
 package edu.harvard.iq.dataverse.mydata;
 
+import cn.edu.pku.lib.dataverse.search.IndexServiceBeanAuxiliary;
+import cn.edu.pku.lib.dataverse.search.SearchFieldsZh;
 import edu.harvard.iq.dataverse.DvObject;
 import static edu.harvard.iq.dataverse.DvObject.DATASET_DTYPE_STRING;
 import static edu.harvard.iq.dataverse.DvObject.DATAVERSE_DTYPE_STRING;
@@ -18,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.logging.Logger;
 import javax.json.Json;
@@ -45,7 +48,7 @@ public class MyDataFilterParams {
                                                     IndexServiceBean.getUNPUBLISHED_STRING(),
                                                     IndexServiceBean.getDRAFT_STRING(),
                                                     IndexServiceBean.getIN_REVIEW_STRING(),
-                                                    IndexServiceBean.getDEACCESSIONED_STRING());
+                                                    IndexServiceBean.getDEACCESSIONED_STRING());    
     public static final List<String> allPublishedStates = defaultPublishedStates;
             /*Arrays.asList(IndexServiceBean.getPUBLISHED_STRING(),
                                                     IndexServiceBean.getUNPUBLISHED_STRING(),
@@ -82,6 +85,8 @@ public class MyDataFilterParams {
     private List<String> publicationStatuses;
     private List<Long> roleIds;
     
+    private Locale locale = Locale.ENGLISH;
+    
     //private ArrayList<DataverseRole> roles;
     public static final String defaultSearchTerm = "*:*";
     private String searchTerm = "*:*";
@@ -117,14 +122,14 @@ public class MyDataFilterParams {
         this.searchTerm = MyDataFilterParams.defaultSearchTerm;
         this.roleIds = roleHelper.getRoleIdList();
     }
-    
+       
     /**
      * @param userIdentifier
      * @param dvObjectTypes
      * @param publicationStatuses 
      * @param searchTerm 
      */    
-    public MyDataFilterParams(DataverseRequest dataverseRequest, List<String> dvObjectTypes, List<String> publicationStatuses, List<Long> roleIds, String searchTerm){
+    public MyDataFilterParams(DataverseRequest dataverseRequest, List<String> dvObjectTypes, List<String> publicationStatuses, List<Long> roleIds, String searchTerm, Locale locale){
         if (dataverseRequest==null){
             throw new NullPointerException("MyDataFilterParams constructor: dataverseRequest cannot be null ");
         }
@@ -138,8 +143,13 @@ public class MyDataFilterParams {
 
         this.dvObjectTypes = dvObjectTypes;
 
+        if (locale != null) this.locale = locale;
         if (publicationStatuses == null){
-            this.publicationStatuses = MyDataFilterParams.defaultPublishedStates;
+            if(locale.getLanguage().equals("zh")){
+                this.publicationStatuses = IndexServiceBeanAuxiliary.defaultPublishedStatesZh;
+            }else{
+                this.publicationStatuses = MyDataFilterParams.defaultPublishedStates;
+            }
         }else{
             this.publicationStatuses = publicationStatuses;
         }
@@ -293,7 +303,10 @@ public class MyDataFilterParams {
         if (this.publicationStatuses.size() > 1){
             valStr = "(" + valStr + ")";
         }
-
+        
+        if (this.locale.getLanguage().equals("zh")){
+            return  "(" + SearchFieldsZh.PUBLICATION_STATUS_ZH + ":" + valStr + ")";
+        }
         return  "(" + SearchFields.PUBLICATION_STATUS + ":" + valStr + ")";
     }
 
@@ -349,12 +362,18 @@ public class MyDataFilterParams {
    }
     
     public static List<String[]> getPublishedStatesForMyDataPage(){
+        return getPublishedStatesForMyDataPage(java.util.Locale.ENGLISH);
+    }
+    
+    public static List<String[]> getPublishedStatesForMyDataPage(java.util.Locale locale){
         if (defaultPublishedStates==null){
             throw new NullPointerException("defaultPublishedStates cannot be null");
         }
         List<String[]> publicationStateInfoList = new ArrayList<String[]>();
         String stateNameAsVariable;
-        for (String displayState : defaultPublishedStates){
+        List<String> publishedStates = defaultPublishedStates;
+        if(locale.getLanguage().equals("zh"))publishedStates = IndexServiceBeanAuxiliary.defaultPublishedStatesZh;
+        for (String displayState : publishedStates){
             stateNameAsVariable = displayState.toLowerCase().replace(" ", "_");
             String[] singleInfoRow = { displayState, stateNameAsVariable };
             publicationStateInfoList.add(singleInfoRow);
