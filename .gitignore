@@ -44,3 +44,4 @@ conf/docker-aio/testdata/
 
 /src/main/resources/environment/env-product.properties
 /src/main/resources/environment/env-dev.properties
+/src/main/resources/cn/edu/pku/lib/dataverse/usage/GeoLite2-City.mmdb
