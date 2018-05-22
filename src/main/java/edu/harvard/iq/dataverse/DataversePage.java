@@ -104,6 +104,10 @@ public class DataversePage implements java.io.Serializable {
     @EJB
     DataverseLinkingServiceBean linkingService;
     @Inject PermissionsWrapper permissionsWrapper;
+    @EJB
+    cn.edu.pku.lib.dataverse.usage.EventBuilder eventBuilder;
+    @EJB
+    cn.edu.pku.lib.dataverse.usage.UsageIndexServiceBean usageIndexService;
 
     private Dataverse dataverse = new Dataverse();
     private EditMode editMode;
@@ -289,6 +293,9 @@ public class DataversePage implements java.io.Serializable {
             }
 
             ownerId = dataverse.getOwner() != null ? dataverse.getOwner().getId() : null;
+            usageIndexService.index(eventBuilder.viewDataverse(
+                        (javax.servlet.http.HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest(),
+                        session.getUser(), dataverse.getId()));
         } else { // ownerId != null; create mode for a new child dataverse
             editMode = EditMode.INFO;
             dataverse.setOwner(dataverseService.find(ownerId));

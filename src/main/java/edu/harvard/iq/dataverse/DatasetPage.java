@@ -188,7 +188,11 @@ public class DatasetPage implements java.io.Serializable {
     ThumbnailServiceWrapper thumbnailServiceWrapper;
     @Inject
     SettingsWrapper settingsWrapper; 
-    
+    @EJB
+    cn.edu.pku.lib.dataverse.usage.EventBuilder eventBuilder;
+    @EJB
+    cn.edu.pku.lib.dataverse.usage.UsageIndexServiceBean usageIndexService;
+
 
 
     private Dataset dataset = new Dataset();
@@ -1450,7 +1454,9 @@ public class DatasetPage implements java.io.Serializable {
                         logger.warning("Problem getting rsync script (Command Exception): " + cex.getLocalizedMessage());
                     }  
                 }
-                
+                usageIndexService.index(eventBuilder.viewDataset(
+                        (javax.servlet.http.HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest(),
+                        session.getUser(), dataset.getId()));
             }
         } else if (ownerId != null) {
             // create mode for a new child dataset
