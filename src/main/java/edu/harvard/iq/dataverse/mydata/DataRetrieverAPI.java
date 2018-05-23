@@ -25,6 +25,7 @@ import edu.harvard.iq.dataverse.search.SearchFields;
 import edu.harvard.iq.dataverse.search.SortBy;
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Random;
 import java.util.logging.Logger;
@@ -284,9 +285,14 @@ public class DataRetrieverAPI extends AbstractApiBean {
             @QueryParam("mydata_search_term") String searchTerm,             
             @QueryParam("role_ids") List<Long> roleIds, 
             @QueryParam("userIdentifier") String userIdentifier,
-            @QueryParam("key") String apiToken) { //String myDataParams) {
+            @QueryParam("key") String apiToken,
+            @QueryParam("lang") String lang) { //String myDataParams) {
         //System.out.println("_YE_OLDE_QUERY_COUNTER_");
         //msgt("_YE_OLDE_QUERY_COUNTER_");  // for debug purposes
+        Locale locale = Locale.ENGLISH;
+        if(StringUtils.isNotBlank(lang) && lang.startsWith("zh")){
+            locale = Locale.CHINA;
+        }
         boolean DEBUG_MODE = false;
         boolean OTHER_USER = false;
 
@@ -360,7 +366,7 @@ public class DataRetrieverAPI extends AbstractApiBean {
         DataverseRequest dataverseRequest = createDataverseRequest(authUser);
 
         
-        MyDataFilterParams filterParams = new MyDataFilterParams(dataverseRequest, dtypes, pub_states, roleIds, searchTerm);
+        MyDataFilterParams filterParams = new MyDataFilterParams(dataverseRequest, dtypes, pub_states, roleIds, searchTerm, locale);
         if (filterParams.hasError()){
             return this.getJSONErrorString(filterParams.getErrorMessage(), filterParams.getErrorMessage());
         }
@@ -414,7 +420,9 @@ public class DataRetrieverAPI extends AbstractApiBean {
                         SearchFields.RELEASE_OR_CREATE_DATE, SortBy.DESCENDING,
                         solrCardStart, //paginationStart,
                         true, // dataRelatedToMe
-                        SearchConstants.NUM_SOLR_DOCS_TO_RETRIEVE //10 // SearchFields.NUM_SOLR_DOCS_TO_RETRIEVE
+                        SearchConstants.NUM_SOLR_DOCS_TO_RETRIEVE, //10 // SearchFields.NUM_SOLR_DOCS_TO_RETRIEVE
+                        true,
+                        locale
                 );
                 
                 //msgt("getResultsStart: " + this.solrQueryResponse.getResultsStart());
