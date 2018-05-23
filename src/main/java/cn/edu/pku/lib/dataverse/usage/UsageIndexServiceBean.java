@@ -47,17 +47,21 @@ public class UsageIndexServiceBean {
     @PreDestroy
     public void close(){
         if(client != null){
-            client.shutdownClient();
+            try{
+                client.close();
+            }catch(Exception ex){
+                logger.log(Level.SEVERE, null, ex);
+            }
             client = null;
         }
     }
     
     public void index(Event event){
-        usageLogger.info("[usage_msg]:"+event.toJson());
         Index index = new Index.Builder(event)
                 .index(UsageConstant.INDEX_NAME)
                 .type(UsageConstant.INDEX_TYPE).build();
         try {
+            usageLogger.info("[usage_msg]:"+event.toJson());
             client.execute(index);
         } catch (Exception ex) {
             logger.log(Level.SEVERE, null, ex);
