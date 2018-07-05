@@ -51,6 +51,7 @@ import java.util.ArrayList;
 import java.util.Properties;
 import java.util.logging.Level;
 import javax.inject.Inject;
+import javax.servlet.http.HttpServletRequest;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -120,6 +121,10 @@ public class Access extends AbstractApiBean {
     DataverseRequestServiceBean dvRequestService;
     @EJB
     GuestbookResponseServiceBean guestbookResponseService;
+    @EJB
+    cn.edu.pku.lib.dataverse.usage.EventBuilder eventBuilder;
+    @EJB
+    cn.edu.pku.lib.dataverse.usage.UsageIndexServiceBean usageIndexService;
     
     
     private static final String API_KEY_HEADER = "X-Dataverse-key";    
@@ -131,7 +136,7 @@ public class Access extends AbstractApiBean {
     @Path("datafile/bundle/{fileId}")
     @GET
     @Produces({"application/zip"})
-    public BundleDownloadInstance datafileBundle(@PathParam("fileId") Long fileId, @QueryParam("gbrecs") Boolean gbrecs, @QueryParam("key") String apiToken, @Context UriInfo uriInfo, @Context HttpHeaders headers, @Context HttpServletResponse response) /*throws NotFoundException, ServiceUnavailableException, PermissionDeniedException, AuthorizationRequiredException*/ {
+    public BundleDownloadInstance datafileBundle(@PathParam("fileId") Long fileId, @QueryParam("gbrecs") Boolean gbrecs, @QueryParam("key") String apiToken, @Context UriInfo uriInfo, @Context HttpHeaders headers, @Context HttpServletResponse response, @Context HttpServletRequest request) /*throws NotFoundException, ServiceUnavailableException, PermissionDeniedException, AuthorizationRequiredException*/ {
  
         DataFile df = dataFileService.find(fileId);
         GuestbookResponse gbr = null;
@@ -181,14 +186,14 @@ public class Access extends AbstractApiBean {
             // if we can't generate the DDI, it's ok; 
             // we'll just generate the bundle without it. 
         }
-        
+        usageIndexService.index(eventBuilder.downloadFile(request, session.getUser(), df.getId()));
         return downloadInstance; 
     }
     
     @Path("datafile/{fileId}")
     @GET
     //@Produces({ "application/xml" })
-    public DownloadInstance datafile(@PathParam("fileId") Long fileId, @QueryParam("gbrecs") Boolean gbrecs, @QueryParam("key") String apiToken, @Context UriInfo uriInfo, @Context HttpHeaders headers, @Context HttpServletResponse response) {                
+    public DownloadInstance datafile(@PathParam("fileId") Long fileId, @QueryParam("gbrecs") Boolean gbrecs, @QueryParam("key") String apiToken, @Context UriInfo uriInfo, @Context HttpHeaders headers, @Context HttpServletResponse response, @Context HttpServletRequest request) {                
         DataFile df = dataFileService.find(fileId);
         GuestbookResponse gbr = null;    
         
@@ -303,6 +308,7 @@ public class Access extends AbstractApiBean {
          * Provide some browser-friendly headers: (?)
          */
         //return retValue; 
+        usageIndexService.index(eventBuilder.downloadFile(request, session.getUser(), df.getId()));
         return downloadInstance;
     }
     
@@ -449,7 +455,7 @@ public class Access extends AbstractApiBean {
     @Path("datafiles/{fileIds}")
     @GET
     @Produces({"application/zip"})
-    public Response datafiles(@PathParam("fileIds") String fileIds,  @QueryParam("gbrecs") Boolean gbrecs, @QueryParam("key") String apiTokenParam, @Context UriInfo uriInfo, @Context HttpHeaders headers, @Context HttpServletResponse response) throws WebApplicationException /*throws NotFoundException, ServiceUnavailableException, PermissionDeniedException, AuthorizationRequiredException*/ {
+    public Response datafiles(@PathParam("fileIds") String fileIds,  @QueryParam("gbrecs") Boolean gbrecs, @QueryParam("key") String apiTokenParam, @Context UriInfo uriInfo, @Context HttpHeaders headers, @Context HttpServletResponse response, @Context HttpServletRequest request) throws WebApplicationException /*throws NotFoundException, ServiceUnavailableException, PermissionDeniedException, AuthorizationRequiredException*/ {
 
         long setLimit = systemConfig.getZipDownloadLimit();
         if (!(setLimit > 0L)) {
@@ -518,6 +524,7 @@ public class Access extends AbstractApiBean {
                                     }
                                     if (sizeTotal + file.getFilesize() < zipDownloadSizeLimit) {
                                         sizeTotal += zipper.addFileToZipStream(file);
+                                        usageIndexService.index(eventBuilder.downloadFile(request, session.getUser(), file.getId()));
                                     } else {
                                         String fileName = file.getFileMetadata().getLabel();
                                         String mimeType = file.getContentType();

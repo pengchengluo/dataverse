@@ -70,11 +70,6 @@ public class FileDownloadServiceBean implements java.io.Serializable {
     
     @Inject WorldMapPermissionHelper worldMapPermissionHelper;
     @Inject FileDownloadHelper fileDownloadHelper;
-    
-    @EJB
-    cn.edu.pku.lib.dataverse.usage.EventBuilder eventBuilder;
-    @EJB
-    cn.edu.pku.lib.dataverse.usage.UsageIndexServiceBean usageIndexService;
 
     private static final Logger logger = Logger.getLogger(FileDownloadServiceBean.class.getCanonicalName());   
     
@@ -122,11 +117,6 @@ public class FileDownloadServiceBean implements java.io.Serializable {
             fileDownloadUrl += "?gbrecs=true";
         }
         try {
-            for(String fileId : multiFileString.split(",")){
-                usageIndexService.index(eventBuilder.downloadFile(
-                        (javax.servlet.http.HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest(),
-                        session.getUser(), Long.parseLong(fileId)));
-            }
             FacesContext.getCurrentInstance().getExternalContext().redirect(fileDownloadUrl);
         } catch (IOException ex) {
             logger.info("Failed to issue a redirect to file download url.");
@@ -139,9 +129,6 @@ public class FileDownloadServiceBean implements java.io.Serializable {
         String fileDownloadUrl = FileUtil.getFileDownloadUrlPath(downloadType, fileId, gbRecordsWritten);
         logger.fine("Redirecting to file download url: " + fileDownloadUrl);
         try {
-            usageIndexService.index(eventBuilder.downloadFile(
-                    (javax.servlet.http.HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest(),
-                    session.getUser(), fileId));
             FacesContext.getCurrentInstance().getExternalContext().redirect(fileDownloadUrl);
         } catch (IOException ex) {
             logger.info("Failed to issue a redirect to file download url (" + fileDownloadUrl + "): " + ex);

@@ -10,6 +10,7 @@ import static cn.edu.pku.lib.dataverse.usage.UsageSearchQuery.DateHistogramInter
 import edu.harvard.iq.dataverse.Dataset;
 import edu.harvard.iq.dataverse.DatasetServiceBean;
 import edu.harvard.iq.dataverse.Dataverse;
+import edu.harvard.iq.dataverse.DataverseSession;
 import edu.harvard.iq.dataverse.DvObject;
 import edu.harvard.iq.dataverse.DvObjectServiceBean;
 import edu.harvard.iq.dataverse.FileMetadata;
@@ -67,6 +68,8 @@ public class UsagePage implements Serializable {
     BuiltinUserServiceBean builtinUserService;
     @Inject
     PermissionsWrapper permissionsWrapper;
+    @Inject
+    DataverseSession session;
     
     //Events for view dataverse or dataset
     private UsageSearchQuery vdQuery;
@@ -248,5 +251,9 @@ public class UsagePage implements Serializable {
                         .getString("usage.datafile.download");
         }
         return "";
+    }
+    
+    public boolean isSessionUserSuperuser() {
+        return session.getUser().isSuperuser();
     }
 }
