@@ -25,7 +25,7 @@ import javax.persistence.Transient;
 
 public class UserNotification implements Serializable {
     public enum Type {
-        ASSIGNROLE, REVOKEROLE, CREATEDV, CREATEDS, CREATEACC, MAPLAYERUPDATED, MAPLAYERDELETEFAILED, SUBMITTEDDS, RETURNEDDS, PUBLISHEDDS, REQUESTFILEACCESS, GRANTFILEACCESS, REJECTFILEACCESS, FILESYSTEMIMPORT, CHECKSUMIMPORT, CHECKSUMFAIL, CONFIRMEMAIL
+        CREATEDV, CREATEDS, CREATEACC, MAPLAYERUPDATED, SUBMITTEDDS, RETURNEDDS, PUBLISHEDDS, REQUESTFILEACCESS, GRANTFILEACCESS, REJECTFILEACCESS, REQUESTJOINGROUP, GRANTJOINGROUP, REJECTJOINGROUP, ASSIGNROLE, REVOKEROLE, MAPLAYERDELETEFAILED, FILESYSTEMIMPORT, CHECKSUMIMPORT, CHECKSUMFAIL, CONFIRMEMAIL
     };
     
     private static final long serialVersionUID = 1L;
@@ -52,6 +52,8 @@ public class UserNotification implements Serializable {
     String roleString;
 
     private boolean emailed;
+    
+    private String message;
 
     public Long getId() {
         return id;
@@ -135,5 +137,13 @@ public class UserNotification implements Serializable {
 
     public void setRoleString(String roleString) {
         this.roleString = roleString;
+    }
+    
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
     }
 }
