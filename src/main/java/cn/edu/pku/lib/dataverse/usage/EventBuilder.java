@@ -56,8 +56,8 @@ public class EventBuilder {
         return event;
     }
     
-    public Event grantRequestAccessFile(HttpServletRequest request, User user, Long datafileId){
-        Event event = build(EventType.GRANT_REQUEST_ACCESS_FILE, request, user);
+    public Event acceptRequestAccessFile(HttpServletRequest request, User user, Long datafileId){
+        Event event = build(EventType.ACCEPT_REQUEST_ACCESS_FILE, request, user);
         event.setDatafileId(datafileId);
         return event;
     }
@@ -85,7 +85,19 @@ public class EventBuilder {
         event.setGroupId(groupId);
         return event;
     }
-        
+    
+    public Event addGroupMemberDirectly(HttpServletRequest request, User user,Long groupId){
+        Event event = build(EventType.GROUP_ADD_MEMBER_DIRECTLY, request, user);
+        event.setGroupId(groupId);
+        return event;
+    }
+    
+    public Event deleteGroupMemberDirectly(HttpServletRequest request, User user,Long groupId){
+        Event event = build(EventType.GROUP_DELETE_MEMBER_DIRECTLY, request, user);
+        event.setGroupId(groupId);
+        return event;
+    }
+    
     private Event build(EventType eventType,HttpServletRequest request,
             User user){
         Event event = new Event().addTimeStamp(new Date())

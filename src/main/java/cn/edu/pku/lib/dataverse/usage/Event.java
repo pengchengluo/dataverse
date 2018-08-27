@@ -27,12 +27,15 @@ public class Event {
         LOGOUT,
         
         REQUEST_ACCESS_FILE,
-        GRANT_REQUEST_ACCESS_FILE,
+        ACCEPT_REQUEST_ACCESS_FILE,
         REJECT_REQUEST_ACCESS_FILE,
         
         REQUEST_JOIN_GROUP,
         ACCEPT_JOIN_GROUP,
-        REJECT_JOIN_GROUP
+        REJECT_JOIN_GROUP,
+        
+        GROUP_ADD_MEMBER_DIRECTLY,
+        GROUP_DELETE_MEMBER_DIRECTLY
     }
     
     //timestamp and event type
