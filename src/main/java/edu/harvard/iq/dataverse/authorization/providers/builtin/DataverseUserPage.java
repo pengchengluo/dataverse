@@ -31,6 +31,7 @@ import edu.harvard.iq.dataverse.authorization.AuthenticationServiceBean;
 import edu.harvard.iq.dataverse.authorization.UserRecordIdentifier;
 import edu.harvard.iq.dataverse.authorization.groups.Group;
 import edu.harvard.iq.dataverse.authorization.groups.GroupServiceBean;
+import edu.harvard.iq.dataverse.authorization.groups.impl.explicit.ExplicitGroupServiceBean;
 import edu.harvard.iq.dataverse.authorization.providers.shib.ShibAuthenticationProvider;
 import edu.harvard.iq.dataverse.authorization.users.AuthenticatedUser;
 import edu.harvard.iq.dataverse.authorization.users.AuthenticatedUser.UserType;
@@ -124,6 +125,9 @@ public class DataverseUserPage implements java.io.Serializable {
 
     @EJB
     AuthenticationServiceBean authSvc;
+    
+    @EJB
+    ExplicitGroupServiceBean explicitGroupService;
 
     private AuthenticatedUser currentUser;
     private BuiltinUser builtinUser;    
@@ -491,6 +495,16 @@ public class DataverseUserPage implements java.io.Serializable {
                     userNotification.setTheObject(datasetService.find(userNotification.getObjectId()));
                     break;
 
+                case REQUESTJOINGROUP:
+                    userNotification.setTheObject(explicitGroupService.findById(userNotification.getObjectId()));
+                    break;
+                case GRANTJOINGROUP:
+                    userNotification.setTheObject(explicitGroupService.findById(userNotification.getObjectId()));
+                    break;
+                case REJECTJOINGROUP:
+                    userNotification.setTheObject(explicitGroupService.findById(userNotification.getObjectId()));
+                    break;
+                    
                 case MAPLAYERUPDATED:
                 case CREATEDS:
                 case SUBMITTEDDS:

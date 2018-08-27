@@ -262,4 +262,13 @@ public class GroupServiceBean {
     private void addGroupProvider( GroupProvider gp ) {
         groupProviders.put( gp.getGroupProviderAlias(), gp );
     }
+    
+    public Group getNoneExplicitGroupByIdentifier(String groupIdentifier){
+        Group group = BuiltInGroupsProvider.get().getByIdentifier(groupIdentifier);
+        if(group != null){
+            return group;
+        }
+        group = iaaaGroupProvider.getByIdentifier(groupIdentifier);
+        return group;
+    }
 }
