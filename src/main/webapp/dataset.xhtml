@@ -562,6 +562,7 @@
                             <p:tab id="dataFilesTab" title="#{bundle.files}" rendered="#{(!DatasetPage.workingVersion.deaccessioned or 
                                                               (DatasetPage.workingVersion.deaccessioned and DatasetPage.canUpdateDataset()))  and
                                                               (empty DatasetPage.editMode)}">
+                                <ui:include src="requestJoinGroup.xhtml"/>
                                 <ui:include src="filesFragment.xhtml">
                                     <ui:param name="fileDownloadHelper" value="#{DatasetPage.fileDownloadHelper}"/>
                                 </ui:include>

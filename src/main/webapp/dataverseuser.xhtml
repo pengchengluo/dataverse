@@ -190,6 +190,33 @@
                                                         </o:param>
                                                     </h:outputFormat>
                                                 </ui:fragment>
+                                                <ui:fragment rendered="#{item.type == 'REQUESTJOINGROUP'}">
+                                                    <i class="icon-dataset text-icon-inline text-muted"></i>
+                                                    <h:outputFormat value="#{bundle['notification.requestJoinGroup']}" escape="false">
+                                                        <o:param>
+                                                            <a href="/user-group-manage.xhtml?groupId=#{item.theObject.id}" title="#{item.theObject.displayName}">#{item.theObject.displayName}</a>
+                                                        </o:param>
+                                                    </h:outputFormat>
+                                                </ui:fragment>
+                                                <ui:fragment rendered="#{item.type == 'GRANTJOINGROUP'}">
+                                                    <i class="icon-dataset text-icon-inline text-muted"></i>
+                                                    <h:outputFormat value="#{bundle['notification.grantJoinGroup']}" escape="false">
+                                                        <o:param>
+                                                            <i>#{item.theObject.displayName}</i>
+                                                        </o:param>
+                                                    </h:outputFormat>
+                                                </ui:fragment>
+                                                <ui:fragment rendered="#{item.type == 'REJECTJOINGROUP'}">
+                                                    <i class="icon-dataset text-icon-inline text-muted"></i>
+                                                    <h:outputFormat value="#{bundle['notification.rejectJoinGroup']}" escape="false">
+                                                        <o:param>
+                                                            <i>#{item.theObject.displayName}</i>
+                                                        </o:param>
+                                                        <o:param>
+                                                            <i>#{item.message}</i>
+                                                        </o:param>
+                                                    </h:outputFormat>
+                                                </ui:fragment>
                                                 <ui:fragment rendered="#{item.type == 'MAPLAYERUPDATED'}">
                                                     <i class="icon-dataset text-icon-inline text-muted"></i>
                                                     <h:outputFormat value="#{bundle['notification.worldMap.added']}" escape="false">

@@ -55,25 +55,29 @@
                         </div>
                         <p:dataTable id="allGroups" styleClass="manageTable" var="explicitGroup" value="#{manageGroupsPage.explicitGroups}"
                                      rendered="#{!empty manageGroupsPage.explicitGroups}">
-                            <p:column width="30%" sortBy="#{explicitGroup.displayName}" headerText="#{bundle['dataverse.manageGroups.tab.header.name']}">
+                            <p:column width="20%" sortBy="#{explicitGroup.displayName}" headerText="#{bundle['dataverse.manageGroups.tab.header.name']}">
                                 <h:outputText value="#{explicitGroup.displayName}" />
                             </p:column>
                             <p:column width="20%" sortBy="#{explicitGroup.getIdentifier()}" headerText="#{bundle['dataverse.manageGroups.tab.header.id']}">
                                 <h:outputText value="#{explicitGroup.getIdentifier()}" />
                             </p:column>
-                            <p:column width="20%" class="text-center" headerText="#{bundle['dataverse.manageGroups.tab.header.membership']}">
+                            <p:column width="15%" class="text-center" headerText="#{bundle['dataverse.manageGroups.tab.header.membership']}">
                                 <h:outputText value="#{manageGroupsPage.getMembershipString(explicitGroup)}" />
                             </p:column>
-                            <p:column width="30%" class="col-manage-action col-button-action text-center" headerText="#{bundle['dataverse.manageGroups.tab.header.action']}">
+                            <p:column width="10%" class="text-center" headerText="#{bundle['dataverse.manageGroups.tab.header.membership']}">
+                                <h:outputText value="#{explicitGroup.requestJoinUserType}" />
+                            </p:column>
+                            <p:column width="25%" class="text-center" headerText="#{bundle['dataverse.manageGroups.tab.header.membership']}">
+                                <h:outputText value="#{explicitGroup.description}" />
+                            </p:column>
+                            <p:column width="10%" class="col-manage-action col-button-action text-center" headerText="#{bundle['dataverse.manageGroups.tab.header.action']}">
                                 <div class="button-block">
                                     <div class="btn-group" role="group">
-                                        <p:commandLink type="button" styleClass="btn btn-default bootstrap-button-tooltip"
-                                                       action="#{manageGroupsPage.viewSelectedGroup(explicitGroup)}"
-                                                       oncomplete="PF('viewGroup').show();bind_bsui_components();"
-                                                       update=":manageGroupsForm"
-                                                       title="#{bundle['dataverse.manageGroups.tab.action.btn.edit']}">
-                                            <span class="glyphicon glyphicon-edit"></span>
-                                        </p:commandLink>
+                                        <p:link styleClass="btn btn-default bootstrap-button-tooltip" outcome="user-group-manage.xhtml"
+                                                title="#{bundle['dataverse.manageGroups.tab.action.btn.edit']}">
+                                                        <span class="glyphicon glyphicon-edit"/>
+                                           <f:param name="groupId" value="#{explicitGroup.id}"/>
+                                        </p:link>
                                         <p:commandLink type="button" styleClass="btn btn-default bootstrap-button-tooltip"
                                                        action="#{manageGroupsPage.setSelectedGroup(explicitGroup)}"
                                                        oncomplete="PF('deleteConfirmation').show()"

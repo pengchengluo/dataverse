@@ -74,6 +74,16 @@ public class ExplicitGroupServiceBean {
                  .getResultList());
     }
     
+    public ExplicitGroup findById(Long id) {
+        try  {
+            return provider.updateProvider( em.createNamedQuery("ExplicitGroup.findById", ExplicitGroup.class)
+                    .setParameter("id", id)
+                    .getSingleResult());
+        } catch ( NoResultException nre ) {
+            return null;
+        }
+    }
+    
     ExplicitGroup findByAlias(String groupAlias) {
         try  {
             return provider.updateProvider( em.createNamedQuery("ExplicitGroup.findByAlias", ExplicitGroup.class)
