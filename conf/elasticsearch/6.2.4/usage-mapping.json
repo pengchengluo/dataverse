@@ -1,0 +1,105 @@
+{
+    "mappings": {
+        "usage": {
+            "properties": {
+                "eventType": {
+                    "type": "keyword",
+                    "store": true,
+                    "index": true
+                },
+                "ip": {
+                    "type": "keyword",
+                    "store":true,
+                    "index":true
+                },
+                "date": {
+                    "type": "date",
+                    "store": true,
+                    "index":true,
+                    "format": "date_optional_time"
+                },
+                "userAgent": {
+                    "type": "keyword",
+                    "store": true,
+                    "index": true
+                },
+                "xforwardedfor": {
+                    "type": "keyword",
+                    "store": true,
+                    "index": true
+                },
+                "referrer": {
+                    "type": "keyword",
+                    "store": true,
+                    "index": true
+                },
+                "userId": {
+                    "type": "keyword",
+                    "store": true,
+                    "index": true
+                },
+                "userName": {
+                    "type": "keyword",
+                    "store": true,
+                    "index": true
+                },
+                "affiliation": {
+                    "type": "keyword",
+                    "store": true,
+                    "index": true
+                },
+                "position": {
+                    "type": "keyword",
+                    "store": true,
+                    "index": true
+                },
+                "continent": {
+                    "type": "keyword",
+                    "store": true,
+                    "index": true
+                },
+                "country": {
+                    "type": "keyword",
+                    "store": true,
+                    "index": true
+                },
+                "subdivision": {
+                    "type": "keyword",
+                    "store": true,
+                    "index": true
+                },
+                "city": {
+                    "type": "keyword",
+                    "store": true,
+                    "index": true
+                },
+                "latitude": {
+                    "type": "double",
+                    "store": true,
+                    "index": true
+                },
+                "longitude": {
+                    "type": "double",
+                    "store": true,
+                    "index": true
+                },
+                "dataverseId": {
+                    "type": "long",
+                    "store": true
+                },
+                "datasetId": {
+                    "type": "long",
+                    "store": true
+                },
+                "datafileId": {
+                    "type": "long",
+                    "store": true
+                },
+                "groupId": {
+                    "type": "long",
+                    "store": true
+                }
+            }
+        }
+    }
+}
