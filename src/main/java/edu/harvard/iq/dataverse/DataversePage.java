@@ -415,7 +415,7 @@ public class DataversePage implements java.io.Serializable {
         this.editMode = editMode;
         if (editMode == EditMode.INFO) {
             setupForGeneralInfoEdit();
-            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Edit Dataverse", " - Edit your dataverse and click Save. Asterisks indicate required fields."));
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, BundleUtil.getStringFromBundle("dataverse.edit.msg") , BundleUtil.getStringFromBundle("dataverse.edit.detailmsg")));
         } else if (editMode == EditMode.FEATURED) {
             initFeaturedDataverses();
         }
@@ -519,16 +519,16 @@ public class DataversePage implements java.io.Serializable {
         List<SelectItem> retList = new ArrayList<>();
         if ((typeIn.isHasParent() && typeIn.getParentDatasetFieldType().isInclude()) || (!typeIn.isHasParent() && typeIn.isInclude())) {
             SelectItem requiredItem = new SelectItem();
-            requiredItem.setLabel("Required");
+            requiredItem.setLabel(BundleUtil.getStringFromBundle("dataverse.item.required"));
             requiredItem.setValue(true);
             retList.add(requiredItem);
             SelectItem optional = new SelectItem();
-            optional.setLabel("Optional");
+            optional.setLabel(BundleUtil.getStringFromBundle("dataverse.item.optional"));
             optional.setValue(false);
             retList.add(optional);
         } else {
             SelectItem hidden = new SelectItem();
-            hidden.setLabel("Hidden");
+            hidden.setLabel(BundleUtil.getStringFromBundle("dataverse.item.hidden"));
             hidden.setValue(false);
             hidden.setDisabled(true);
             retList.add(hidden);
@@ -639,7 +639,7 @@ public class DataversePage implements java.io.Serializable {
         
             String message;
             if (editMode != null && editMode.equals(EditMode.FEATURED)) {
-                message = "The featured dataverses for this dataverse have been updated.";
+                message = BundleUtil.getStringFromBundle("dataverse.feature.update");
             } else {
                 message = (create) ? BundleUtil.getStringFromBundle("dataverse.create.success", Arrays.asList(settingsWrapper.getGuidesBaseUrl(), systemConfig.getGuidesVersion())) : BundleUtil.getStringFromBundle("dataverse.update.success");
             }
@@ -730,13 +730,13 @@ public class DataversePage implements java.io.Serializable {
     public String saveLinkedDataverse() {
 
         if (linkingDataverseId == null) {
-            JsfHelper.addSuccessMessage("You must select a linking dataverse.");
+            JsfHelper.addSuccessMessage(BundleUtil.getStringFromBundle("dataverse.link.select"));
             return "";
         }
 
         AuthenticatedUser savedSearchCreator = getAuthenticatedUser();
         if (savedSearchCreator == null) {
-            String msg = "Only authenticated users can link a dataverse.";
+            String msg = BundleUtil.getStringFromBundle("dataverse.link.user");
             logger.severe(msg);
             JsfHelper.addErrorMessage(msg);
             return returnRedirect();
@@ -749,7 +749,8 @@ public class DataversePage implements java.io.Serializable {
         try {
             commandEngine.submit(cmd);
         } catch (CommandException ex) {
-            String msg = "Unable to link " + dataverse.getDisplayName() + " to " + linkingDataverse.getDisplayName() + ". An internal error occurred.";
+            List<String> args = Arrays.asList(dataverse.getDisplayName(),linkingDataverse.getDisplayName());
+            String msg = BundleUtil.getStringFromBundle("dataverse.link.error", args);
             logger.log(Level.SEVERE, "{0} {1}", new Object[]{msg, ex});
             JsfHelper.addErrorMessage(msg);
             return returnRedirect();
@@ -816,14 +817,14 @@ public class DataversePage implements java.io.Serializable {
 
      public String saveSavedSearch() {
         if (linkingDataverseId == null) {
-            JsfHelper.addErrorMessage("You must select a linking dataverse.");
+            JsfHelper.addErrorMessage(BundleUtil.getStringFromBundle("dataverse.link.select"));
             return "";
         }
         linkingDataverse = dataverseService.find(linkingDataverseId);
 
         AuthenticatedUser savedSearchCreator = getAuthenticatedUser();
         if (savedSearchCreator == null) {
-            String msg = "Only authenticated users can save a search.";
+            String msg = BundleUtil.getStringFromBundle("dataverse.search.user");
             logger.severe(msg);
             JsfHelper.addErrorMessage(msg);
             return returnRedirect();
@@ -1018,7 +1019,7 @@ public class DataversePage implements java.io.Serializable {
             }
             if (aliasFound) {
                 ((UIInput) toValidate).setValid(false);
-                FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "alias", "This Alias is already taken.");
+                FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_ERROR, BundleUtil.getStringFromBundle("dataverse.alias"), BundleUtil.getStringFromBundle("dataverse.alias.taken"));
                 context.addMessage(toValidate.getClientId(context), message);
             }
         }

@@ -17,13 +17,12 @@ import edu.harvard.iq.dataverse.DvObject;
 import edu.harvard.iq.dataverse.DvObjectServiceBean;
 import edu.harvard.iq.dataverse.FileMetadata;
 import edu.harvard.iq.dataverse.PermissionServiceBean;
-import edu.harvard.iq.dataverse.util.StringUtil;
-import edu.harvard.iq.dataverse.authorization.providers.builtin.BuiltinUserServiceBean;
 import edu.harvard.iq.dataverse.authorization.AuthenticationServiceBean;
+import edu.harvard.iq.dataverse.authorization.providers.builtin.BuiltinUserServiceBean;
 import edu.harvard.iq.dataverse.datavariable.DataVariable;
 import edu.harvard.iq.dataverse.harvest.client.HarvestingClient;
-import edu.harvard.iq.dataverse.util.BundleUtil;
 import edu.harvard.iq.dataverse.util.FileUtil;
+import edu.harvard.iq.dataverse.util.StringUtil;
 import edu.harvard.iq.dataverse.util.SystemConfig;
 import java.io.IOException;
 import java.sql.Timestamp;
@@ -44,6 +43,7 @@ import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.ejb.AsyncResult;
+import javax.ejb.Asynchronous;
 import javax.ejb.EJB;
 import javax.ejb.EJBException;
 import javax.ejb.Stateless;
@@ -53,10 +53,10 @@ import javax.inject.Named;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import org.apache.commons.lang.StringUtils;
+import org.apache.solr.client.solrj.SolrClient;
 import org.apache.solr.client.solrj.SolrQuery;
-import org.apache.solr.client.solrj.SolrServer;
 import org.apache.solr.client.solrj.SolrServerException;
-import org.apache.solr.client.solrj.impl.HttpSolrServer;
+import org.apache.solr.client.solrj.impl.HttpSolrClient;
 import org.apache.solr.client.solrj.response.QueryResponse;
 import org.apache.solr.client.solrj.response.UpdateResponse;
 import org.apache.solr.common.SolrDocument;
@@ -113,18 +113,24 @@ public class IndexServiceBean {
     public static final String HARVESTED = "Harvested";
     private String rootDataverseName;
     private Dataverse rootDataverseCached; 
-    private SolrServer solrServer;
+    private SolrClient solrServer;
     
     @PostConstruct
     public void init(){
-        solrServer = new HttpSolrServer("http://" + systemConfig.getSolrHostColonPort() + "/solr");
+        String urlString = "http://" + systemConfig.getSolrHostColonPort() + "/solr/collection1";
+        solrServer = new HttpSolrClient.Builder(urlString).build();
+
         rootDataverseName = findRootDataverseCached().getName();
     }
     
     @PreDestroy
     public void close(){
-        if(solrServer != null){
-            solrServer.shutdown();
+        if (solrServer != null) {
+            try {
+                solrServer.close();
+            } catch (IOException e) {
+                logger.warning("Solr closing error: " + e);
+            }
             solrServer = null;
         }
     }
@@ -133,7 +139,7 @@ public class IndexServiceBean {
     public Future<String> indexDataverseInNewTransaction(Dataverse dataverse) {
         return indexDataverse(dataverse);
     }
-
+    
     public Future<String> indexDataverse(Dataverse dataverse) {
         logger.fine("indexDataverse called on dataverse id " + dataverse.getId() + "(" + dataverse.getAlias() + ")");
         if (dataverse.getId() == null) {
@@ -266,7 +272,12 @@ public class IndexServiceBean {
         dataset = null; 
         return ret;
     }
-
+    
+    @Asynchronous
+    public Future<String> asyncIndexDataset(Dataset dataset, boolean doNormalSolrDocCleanUp) {
+        return indexDataset(dataset, doNormalSolrDocCleanUp);
+    }
+    
     public Future<String> indexDataset(Dataset dataset, boolean doNormalSolrDocCleanUp) {
         logger.fine("indexing dataset " + dataset.getId());
         /**
@@ -639,8 +650,8 @@ public class IndexServiceBean {
         solrInputDocument.addField(SearchFields.ENTITY_ID, dataset.getId());
         String dataverseVersion = systemConfig.getVersion();
         solrInputDocument.addField(SearchFields.DATAVERSE_VERSION_INDEXED_BY, dataverseVersion);
-        solrInputDocument.addField(SearchFields.IDENTIFIER, dataset.getGlobalId());
-        solrInputDocument.addField(SearchFields.DATASET_PERSISTENT_ID, dataset.getGlobalId());
+        solrInputDocument.addField(SearchFields.IDENTIFIER, dataset.getGlobalIdString());
+        solrInputDocument.addField(SearchFields.DATASET_PERSISTENT_ID, dataset.getGlobalIdString());
         solrInputDocument.addField(SearchFields.PERSISTENT_URL, dataset.getPersistentURL());
         solrInputDocument.addField(SearchFields.TYPE, "datasets");
 
@@ -971,12 +982,13 @@ public class IndexServiceBean {
                     datafileSolrInputDocument.addField(SearchFields.FILE_CHECKSUM_VALUE, fileMetadata.getDataFile().getChecksumValue());
                     datafileSolrInputDocument.addField(SearchFields.DESCRIPTION, fileMetadata.getDescription());
                     datafileSolrInputDocument.addField(SearchFields.FILE_DESCRIPTION, fileMetadata.getDescription());
+                    datafileSolrInputDocument.addField(SearchFields.FILE_PERSISTENT_ID, fileMetadata.getDataFile().getGlobalIdString());
                     datafileSolrInputDocument.addField(SearchFields.UNF, fileMetadata.getDataFile().getUnf());
                     datafileSolrInputDocument.addField(SearchFields.SUBTREE, dataversePaths);
 //            datafileSolrInputDocument.addField(SearchFields.HOST_DATAVERSE, dataFile.getOwner().getOwner().getName());
                     // datafileSolrInputDocument.addField(SearchFields.PARENT_NAME, dataFile.getDataset().getTitle());
                     datafileSolrInputDocument.addField(SearchFields.PARENT_ID, fileMetadata.getDataFile().getOwner().getId());
-                    datafileSolrInputDocument.addField(SearchFields.PARENT_IDENTIFIER, fileMetadata.getDataFile().getOwner().getGlobalId());
+                    datafileSolrInputDocument.addField(SearchFields.PARENT_IDENTIFIER, fileMetadata.getDataFile().getOwner().getGlobalIdString());
                     datafileSolrInputDocument.addField(SearchFields.PARENT_CITATION, fileMetadata.getDataFile().getOwner().getCitation());
 
                     datafileSolrInputDocument.addField(SearchFields.PARENT_NAME, parentDatasetTitle);
@@ -1402,7 +1414,7 @@ public class IndexServiceBean {
         QueryResponse queryResponse = null;
         try {
             queryResponse = solrServer.query(solrQuery);
-        } catch (SolrServerException ex) {
+        } catch (SolrServerException | IOException ex) {
             throw new SearchException("Error searching Solr for " + type, ex);
         }
         SolrDocumentList results = queryResponse.getResults();
@@ -1436,7 +1448,7 @@ public class IndexServiceBean {
         QueryResponse queryResponse = null;
         try {
             queryResponse = solrServer.query(solrQuery);
-        } catch (SolrServerException ex) {
+        } catch (SolrServerException | IOException ex) {
             throw new SearchException("Error searching Solr for dataset parent id " + parentDatasetId, ex);
         }
         SolrDocumentList results = queryResponse.getResults();
