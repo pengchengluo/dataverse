@@ -1,3 +1,18 @@
+Peking University Open Research Data Platform (PKU-OpenData)
+===============
+
+Peking University Open Research Data Platform was launched on December 25, 2015, it is a cooperation between Peking University Library, Data Center for Management Science, NSFC-PKU, Office of scientific research, PKU, and Office of Social Science, PKU.
+
+Platform Slogans: 
+
+重用数据，再现科研；提升引用，跟踪影响。
+开放数据，为您的研究点赞！
+
+Publish and track your data, discover and reuse other’s data.
+Publish data, get recognition now!
+
+Welcome to visit PKU-OpenData http://opendata.pku.edu.cn/ .
+
 Dataverse&#174;
 ===============
 
@@ -16,6 +31,8 @@ We love contributors! Please see our [Contributing Guide][] for ways you can hel
 Dataverse is a trademark of President and Fellows of Harvard College and is registered in the United States.
 
 [![Dataverse Project logo](src/main/webapp/resources/images/dataverseproject_logo.jpg?raw=true "Dataverse Project")](http://dataverse.org)
+
+[![Waffle.io - Columns and their card count](https://badge.waffle.io/IQSS/dataverse.svg?columns=all)](https://waffle.io/IQSS/dataverse)
 
 [![Build Status](https://travis-ci.org/IQSS/dataverse.svg?branch=develop)](https://travis-ci.org/IQSS/dataverse) [![Coverage Status](https://coveralls.io/repos/IQSS/dataverse/badge.svg?branch=develop&service=github)](https://coveralls.io/github/IQSS/dataverse?branch=develop)
 

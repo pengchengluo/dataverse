@@ -2,7 +2,7 @@ Finding and Using Data
 +++++++++++++++++++++++
 
 .. contents:: |toctitle|
-	:local:
+    :local:
 
 Finding Data
 ============
@@ -10,7 +10,7 @@ Finding Data
 Without logging in to Dataverse, users can browse Dataverse, search for dataverses, datasets, and files, view dataset descriptions and files for
 published datasets, and subset, analyze, and visualize data for published (restricted & not restricted) data files. To view an unpublished dataverse, dataset, or file, a user will need to be given permission from that dataverse's administrator to access it.
 
-A user can search the dataverses, datasets, and files within a particular dataverse by using the search bar found on a dataverse page. For example, if you are on the Murray Research Archive Dataverse page, you can search that specific dataverse's contents by using the search bar and/or facets displayed on the page.
+A user can search within a specific dataverse for the dataverses, datasets, and files it contains by using the search bar and facets displayed on that dataverse's page.
 
 Basic Search
 ------------
@@ -30,7 +30,6 @@ Result cards: after entering a search term or query, result cards that match you
 Other basic search features: 
     - Sorting results: search results can be sorted by name (A-Z or Z-A), by date (newest or oldest), or by relevancy of results. The sort button can be found above the search results, in the top right.
     - Bookmarkable URLs: search URLs can be copied and sent to a fellow researcher, or can be bookmarked for future sessions.
-
 
 Advanced Search 
 ---------------
@@ -60,6 +59,11 @@ After performing a search and finding the dataverse or dataset you are looking f
 
 Once on a dataset page, you will see the title, citation, description, and several other fields, as well as a button to email the dataset contact and a button to share the dataset on social media. Below that information, the files, metadata, terms of use, and version information for the dataset are available. 
 
+View Files
+----------
+
+Files in Dataverse each have their own page that can be reached through the search results or through the Files table on their parent dataset's page. The dataset page and file page offer much the same functionality in terms of viewing and editing files, with a few small exceptions. The file page includes the file's persistent identifier (DOI or handle), which can be found under the Metadata tab. Also, the file page's Versions tab gives you a version history that is more focused on the individual file rather than the dataset as a whole. 
+
 Cite Data
 ---------
 
@@ -72,8 +76,25 @@ Download Files
 
 Within the Files tab on a dataset page, you can download the files in that dataset. To download more than one file at a time, select the files you would like to download and then click the Download button above the files. The selected files will download in zip format.
 
+You may also download a file from its file page by clicking the Download button in the upper right corner of the page, or by using the Download URL listed under the Metadata tab on the lower half of the page. The Download URL can be used to directly access the file via API (or in a web browser, if needed). Certain files do not provide Download URLs for technical reasons: those that are restricted, have terms of use associated with them, or are part of a dataverse with a guestbook enabled.
+
 Tabular data files offer additional options: You can explore using the TwoRavens data visualization tool (or other :doc:`/installation/external-tools` if they have been enabled) by clicking the Explore button, or choose from a number of tabular-data-specific download options available as a dropdown under the Download button.
 
+
+Tabular Data
+------------
+
+Ingested files can be downloaded in several different ways. 
+
+- The default option is to download a tab-separated-value file which is an easy and free standard to use.
+
+- The original file, which may be in a proprietary format which requires special software
+
+- Rdata format if the instalation has configured this
+
+- The variable metadata for the file in DDI format
+
+- A subset of the columns of the data
 
 .. _rsync_download:
 

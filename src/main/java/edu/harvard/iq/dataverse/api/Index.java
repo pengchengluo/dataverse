@@ -25,7 +25,7 @@ import edu.harvard.iq.dataverse.authorization.users.User;
 import edu.harvard.iq.dataverse.search.DvObjectSolrDoc;
 import edu.harvard.iq.dataverse.search.FacetCategory;
 import edu.harvard.iq.dataverse.search.FileView;
-import edu.harvard.iq.dataverse.search.IndexAllServiceBean;
+import edu.harvard.iq.dataverse.search.IndexBatchServiceBean;
 import edu.harvard.iq.dataverse.search.IndexResponse;
 import edu.harvard.iq.dataverse.search.IndexServiceBean;
 import edu.harvard.iq.dataverse.search.IndexUtil;
@@ -69,7 +69,7 @@ public class Index extends AbstractApiBean {
     @EJB
     IndexServiceBean indexService;
     @EJB
-    IndexAllServiceBean indexAllService;
+    IndexBatchServiceBean indexAllService;
     @EJB
     SolrIndexServiceBean solrIndexService;
     @EJB
@@ -304,7 +304,7 @@ public class Index extends AbstractApiBean {
             JsonObjectBuilder data = Json.createObjectBuilder();
             data.add("message", "Reindexed dataset " + persistentId);
             data.add("id", dataset.getId());
-            data.add("persistentId", dataset.getGlobalId());
+            data.add("persistentId", dataset.getGlobalIdString());
             JsonArrayBuilder versions = Json.createArrayBuilder();
             for (DatasetVersion version : dataset.getVersions()) {
                 JsonObjectBuilder versionObject = Json.createObjectBuilder();
