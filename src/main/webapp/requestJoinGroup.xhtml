@@ -1,0 +1,34 @@
+<ui:composition
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+    xmlns:jsf="http://xmlns.jcp.org/jsf"
+    xmlns:pt="http://java.sun.com/jsf/passthrough"
+    xmlns:cc="http://java.sun.com/jsf/composite"
+    xmlns:o="http://omnifaces.org/ui"
+    xmlns:iqbs="http://xmlns.jcp.org/jsf/composite/iqbs">
+    <p:dataTable id="downloadGroup" value="#{DatasetPage.dataFileFileDownloadGroup}" var="dataFileDownload" styleClass="panel panel-default table"
+             emptyMessage="#{bundle.notfound}" rendered="#{ not empty DatasetPage.dataFileFileDownloadGroup}">
+        <f:facet name="header">
+            <span class="text-info"><h4>#{bundle['dataverse.permissions.groups.applyfor.tip']}</h4></span>
+        </f:facet>
+        <p:column width="20%" headerText="#{bundle['dataverse.permissions.groups.tabHeader.apply']}" class="text-center">
+            <p:commandButton value="#{bundle['dataverse.permissions.usersOrGroups.applyBtn']}"
+                             rendered="#{dataverseSession.user.authenticated}"
+                             disabled="#{dataFileDownload.key.contains(DatasetPage.dataverseRequest) or dataFileDownload.key.joinGroupRequesters.contains(dataverseSession.user)}"
+                             actionListener="#{DatasetPage.requestJoinGroup(dataFileDownload.key)}" update=":#{p:component('downloadGroup')} :#{p:component('messagePanel')}" oncomplete="scrollIfError()"/>
+            <p:commandButton rendered="#{!dataverseSession.user.authenticated}"
+                             value="#{bundle['dataverse.permissions.usersOrGroups.applyBtn']}"
+                             onclick="#{dataFileDownload.key.requestJoinUserType == 'ADVANCE' ? 'accessSignUpLogIn_popup_advance.show()' : 'accessSignUpLogIn_popup.show()'}"/>
+        </p:column>
+        <p:column width="60%" headerText="#{bundle['dataverse.permissions.groups.tabHeader.infor']}" class="text-center">
+            #{dataFileDownload.key.displayName} : #{dataFileDownload.key.description}
+        </p:column>
+        <p:column width="20%" headerText="#{bundle['dataverse.permissions.groups.tabHeader.downloadableFile']}" class="text-center">
+            <p:commandButton value="#{bundle['dataset.group.downloadableFile.view']}" onclick="filelist_#{dataFileDownload.key.id}.show()"/>
+        </p:column>
+    </p:dataTable>
+</ui:composition>

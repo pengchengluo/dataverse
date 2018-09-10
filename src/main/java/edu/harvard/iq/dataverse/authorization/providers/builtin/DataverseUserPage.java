@@ -1,5 +1,8 @@
 package edu.harvard.iq.dataverse.authorization.providers.builtin;
 
+import cn.edu.pku.lib.dataverse.authorization.providers.iaaa.PKUIAAAUser;
+import cn.edu.pku.lib.dataverse.authorization.providers.iaaa.PKUIAAAUserServiceBean;
+import cn.edu.pku.lib.dataverse.util.UserUtils;
 import edu.harvard.iq.dataverse.DataFile;
 import edu.harvard.iq.dataverse.DataFileServiceBean;
 import edu.harvard.iq.dataverse.Dataset;
@@ -28,8 +31,10 @@ import edu.harvard.iq.dataverse.authorization.AuthenticationServiceBean;
 import edu.harvard.iq.dataverse.authorization.UserRecordIdentifier;
 import edu.harvard.iq.dataverse.authorization.groups.Group;
 import edu.harvard.iq.dataverse.authorization.groups.GroupServiceBean;
+import edu.harvard.iq.dataverse.authorization.groups.impl.explicit.ExplicitGroupServiceBean;
 import edu.harvard.iq.dataverse.authorization.providers.shib.ShibAuthenticationProvider;
 import edu.harvard.iq.dataverse.authorization.users.AuthenticatedUser;
+import edu.harvard.iq.dataverse.authorization.users.AuthenticatedUser.UserType;
 import edu.harvard.iq.dataverse.confirmemail.ConfirmEmailData;
 import edu.harvard.iq.dataverse.confirmemail.ConfirmEmailException;
 import edu.harvard.iq.dataverse.confirmemail.ConfirmEmailServiceBean;
@@ -50,6 +55,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
+import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -59,6 +65,7 @@ import javax.faces.component.UIComponent;
 import javax.faces.component.UIInput;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
+import javax.faces.event.ValueChangeEvent;
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -98,6 +105,8 @@ public class DataverseUserPage implements java.io.Serializable {
     @EJB
     BuiltinUserServiceBean builtinUserService;
     @EJB
+    PKUIAAAUserServiceBean pkuIAAAUserService;
+    @EJB
     AuthenticationServiceBean authenticationService;
     @EJB
     ConfirmEmailServiceBean confirmEmailService;
@@ -116,6 +125,9 @@ public class DataverseUserPage implements java.io.Serializable {
 
     @EJB
     AuthenticationServiceBean authSvc;
+    
+    @EJB
+    ExplicitGroupServiceBean explicitGroupService;
 
     private AuthenticatedUser currentUser;
     private BuiltinUser builtinUser;    
@@ -219,13 +231,13 @@ public class DataverseUserPage implements java.io.Serializable {
         
         if (editMode == EditMode.CREATE && userNameFound) {
             ((UIInput) toValidate).setValid(false);
-            FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_ERROR, BundleUtil.getStringFromBundle("user.username.taken"), null);
+            FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_ERROR, ResourceBundle.getBundle("Bundle",context.getViewRoot().getLocale()).getString("user.username.taken"), null);
             context.addMessage(toValidate.getClientId(context), message);
         }
         
         if (editMode == EditMode.CREATE && !userNameValid) {
             ((UIInput) toValidate).setValid(false);
-            FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_ERROR, BundleUtil.getStringFromBundle("user.username.invalid"), null);
+            FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_ERROR, ResourceBundle.getBundle("Bundle",context.getViewRoot().getLocale()).getString("user.username.invalid"), null);
             context.addMessage(toValidate.getClientId(context), message);
         }
     }
@@ -235,7 +247,7 @@ public class DataverseUserPage implements java.io.Serializable {
         boolean emailValid = EMailValidator.isEmailValid(userEmail, null);
         if (!emailValid) {
             ((UIInput) toValidate).setValid(false);
-            FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_ERROR, BundleUtil.getStringFromBundle("oauth2.newAccount.emailInvalid"), null);
+            FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_ERROR, ResourceBundle.getBundle("Bundle",context.getViewRoot().getLocale()).getString("oauth2.newAccount.emailInvalid"), null);
             context.addMessage(toValidate.getClientId(context), message);
             logger.info("Email is not valid: " + userEmail);
             return;
@@ -362,6 +374,15 @@ public class DataverseUserPage implements java.io.Serializable {
         }else {
             String emailBeforeUpdate = currentUser.getEmail();
             AuthenticatedUser savedUser = authenticationService.updateAuthenticatedUser(currentUser, userDisplayInfo);
+            if(UserUtils.isBuiltInUser(savedUser)){
+                BuiltinUser builtinUser = builtinUserService.findByUserName(currentUser.getUserIdentifier());
+                builtinUser.applyDisplayInfo(userDisplayInfo);
+                builtinUserService.save(builtinUser);
+            }else if(UserUtils.isPKUIAAAUser(savedUser)){
+                PKUIAAAUser pkuIAAAUser = pkuIAAAUserService.findByUserName(currentUser.getUserIdentifier());
+                pkuIAAAUser.applyDisplayInfo(userDisplayInfo);
+                pkuIAAAUserService.save(pkuIAAAUser);
+            }
             String emailAfterUpdate = savedUser.getEmail();
             editMode = null;
             StringBuilder msg = new StringBuilder( passwordChanged ? BundleUtil.getStringFromBundle("userPage.passwordChanged" )
@@ -389,7 +410,7 @@ public class DataverseUserPage implements java.io.Serializable {
         if (editMode == EditMode.CREATE) {
             return "/dataverse.xhtml?alias=" + dataverseService.findRootDataverse().getAlias() + "&faces-redirect=true";
         }
-
+        userDisplayInfo = currentUser.getDisplayInfo();
         editMode = null;
         return null;
     }
@@ -470,6 +491,16 @@ public class DataverseUserPage implements java.io.Serializable {
                     userNotification.setTheObject(datasetService.find(userNotification.getObjectId()));
                     break;
 
+                case REQUESTJOINGROUP:
+                    userNotification.setTheObject(explicitGroupService.findById(userNotification.getObjectId()));
+                    break;
+                case GRANTJOINGROUP:
+                    userNotification.setTheObject(explicitGroupService.findById(userNotification.getObjectId()));
+                    break;
+                case REJECTJOINGROUP:
+                    userNotification.setTheObject(explicitGroupService.findById(userNotification.getObjectId()));
+                    break;
+                    
                 case MAPLAYERUPDATED:
                 case CREATEDS:
                 case SUBMITTEDDS:
@@ -680,5 +711,14 @@ public class DataverseUserPage implements java.io.Serializable {
 
     public String getPasswordRequirements() {
         return passwordValidatorService.getGoodPasswordDescription(passwordErrors);
+    }
+    
+    public void userTypeChanged(ValueChangeEvent event) {
+        if ((UserType) event.getNewValue() == UserType.ORDINARY) {
+            this.userDisplayInfo.setUserType(UserType.ORDINARY);
+        } else {
+            this.userDisplayInfo.setUserType(UserType.ADVANCE);
+        }
+        FacesContext.getCurrentInstance().renderResponse();
     }
 }

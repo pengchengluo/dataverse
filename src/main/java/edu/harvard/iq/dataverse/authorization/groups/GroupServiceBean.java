@@ -48,6 +48,7 @@ public class GroupServiceBean {
     private IpGroupProvider ipGroupProvider;
     private ShibGroupProvider shibGroupProvider;
     private ExplicitGroupProvider explicitGroupProvider;
+    private cn.edu.pku.lib.dataverse.authorization.groups.impl.iaaa.IAAAGroupsProvider iaaaGroupProvider;
     
     @EJB
     RoleAssigneeServiceBean roleAssigneeSvc;
@@ -58,6 +59,7 @@ public class GroupServiceBean {
         addGroupProvider( ipGroupProvider = new IpGroupProvider(ipGroupsService) );
         addGroupProvider( shibGroupProvider = new ShibGroupProvider(shibGroupService) );
         addGroupProvider( explicitGroupProvider = explicitGroupService.getProvider() );
+        addGroupProvider( iaaaGroupProvider = cn.edu.pku.lib.dataverse.authorization.groups.impl.iaaa.IAAAGroupsProvider.get());
         Logger.getLogger(GroupServiceBean.class.getName()).log(Level.INFO, null, "PostConstruct group service call");
     }
 
@@ -259,5 +261,14 @@ public class GroupServiceBean {
     
     private void addGroupProvider( GroupProvider gp ) {
         groupProviders.put( gp.getGroupProviderAlias(), gp );
+    }
+    
+    public Group getNoneExplicitGroupByIdentifier(String groupIdentifier){
+        Group group = BuiltInGroupsProvider.get().getByIdentifier(groupIdentifier);
+        if(group != null){
+            return group;
+        }
+        group = iaaaGroupProvider.getByIdentifier(groupIdentifier);
+        return group;
     }
 }

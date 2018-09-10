@@ -5,6 +5,7 @@ import edu.harvard.iq.dataverse.provenance.ProvPopupFragmentBean;
 import edu.harvard.iq.dataverse.api.AbstractApiBean;
 import edu.harvard.iq.dataverse.authorization.AuthenticationServiceBean;
 import edu.harvard.iq.dataverse.authorization.Permission;
+import edu.harvard.iq.dataverse.authorization.groups.impl.explicit.ExplicitGroup;
 import edu.harvard.iq.dataverse.authorization.providers.builtin.BuiltinUserServiceBean;
 import edu.harvard.iq.dataverse.authorization.users.AuthenticatedUser;
 import edu.harvard.iq.dataverse.authorization.users.PrivateUrlUser;
@@ -92,8 +93,13 @@ import edu.harvard.iq.dataverse.engine.command.impl.ReturnDatasetToAuthorCommand
 import edu.harvard.iq.dataverse.engine.command.impl.SubmitDatasetForReviewCommand;
 import edu.harvard.iq.dataverse.externaltools.ExternalTool;
 import edu.harvard.iq.dataverse.externaltools.ExternalToolServiceBean;
+import edu.harvard.iq.dataverse.authorization.RoleAssignee;
+import edu.harvard.iq.dataverse.authorization.groups.impl.explicit.ExplicitGroupServiceBean;
+import edu.harvard.iq.dataverse.engine.command.DataverseRequest;
 import edu.harvard.iq.dataverse.export.SchemaDotOrgExporter;
 import java.util.Collections;
+import java.util.Locale;
+import java.util.ResourceBundle;
 
 import javax.faces.event.AjaxBehaviorEvent;
 import javax.servlet.ServletOutputStream;
@@ -4312,6 +4318,85 @@ public class DatasetPage implements java.io.Serializable {
         return "";
     }
     
+    @EJB
+    DataverseRoleServiceBean roleService;
+    @EJB
+    ExplicitGroupServiceBean explicitGroupService;
+    @EJB
+    RoleAssigneeServiceBean roleAssigneeService;
+    
+    public List<Map.Entry<ExplicitGroup, List<FileMetadata>>> getDataFileFileDownloadGroup() {
+        Map<ExplicitGroup, List<FileMetadata>> downloadGroup = new HashMap<>();
+        for (FileMetadata fileMetadata : this.workingVersion.getFileMetadatas()) {
+            DataFile file = fileMetadata.getDataFile();
+            // only include if the file is restricted (or it's draft version is restricted)
+            if (file.isRestricted() || fileMetadata.isRestricted()) {
+                // we get the direct role assignments assigned to the file
+                List<RoleAssignment> ras = roleService.directRoleAssignments(file);
+                for (RoleAssignment ra : ras) {
+                    // for files, only show role assignments which can download
+                    RoleAssignee roleAssignee = roleAssigneeService.getRoleAssignee(ra.getAssigneeIdentifier());
+                    if(roleAssignee instanceof ExplicitGroup){
+                        List<FileMetadata> fileMetadatas = downloadGroup.get((ExplicitGroup)roleAssignee);
+                        if (fileMetadatas == null) {
+                            fileMetadatas = new ArrayList<>();
+                            downloadGroup.put((ExplicitGroup)roleAssignee, fileMetadatas);
+                        }
+                        fileMetadatas.add(fileMetadata);
+                    }
+                }
+            }
+        }
+        for (ExplicitGroup group : getDatasetAndDataverseFileDownloadGroup()) {
+            downloadGroup.put(group, Collections.EMPTY_LIST);
+        }
+        List<Map.Entry<ExplicitGroup, List<FileMetadata>>> entries = new ArrayList<>();
+        for (Map.Entry<ExplicitGroup, List<FileMetadata>> entry : downloadGroup.entrySet()) {
+            entries.add(entry);
+        }
+        entries.sort((obj1, obje2) -> obj1.getKey().getDisplayName().compareTo(obje2.getKey().getDisplayName()));
+        return entries;
+    }
+    
+    private List<ExplicitGroup> getDatasetAndDataverseFileDownloadGroup() {
+        Set<ExplicitGroup> groups = explicitGroupService.findAvailableFor(dataset);
+        List<ExplicitGroup> downloadGroup = new ArrayList<>();
+        for (ExplicitGroup group : groups) {
+            if (permissionService.permissionsFor(group, dataset).contains(Permission.DownloadFile)) {
+                downloadGroup.add(group);
+            }
+        }
+        return downloadGroup;
+    }
+    
+    public void requestJoinGroup(ExplicitGroup group) {
+        Locale locale = FacesContext.getCurrentInstance().getViewRoot().getLocale();
+        if (group.getRequestJoinUserType() == AuthenticatedUser.UserType.ADVANCE
+                && ((AuthenticatedUser) session.getUser()).getUserType() == AuthenticatedUser.UserType.ORDINARY) {
+            JsfHelper.addErrorMessage(ResourceBundle.getBundle("Bundle", locale)
+                    .getString("dataverse.permissions.groups.applyfor.requireAdvanceUser"));
+            return;
+        }
+        group.getJoinGroupRequesters().add((AuthenticatedUser) session.getUser());
+        explicitGroupService.persist(group);
+        
+        usageIndexService.index(eventBuilder.requestJoinGroup(
+                        (javax.servlet.http.HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest(),
+                        session.getUser(), group.getId()));
+//        for (AuthenticatedUser au : permissionService.getUsersWithPermissionOn(Permission.ManageDataversePermissions, group.getOwner())) {
+//            userNotificationService.sendNotification(
+//                    au, new Timestamp(new Date().getTime()), UserNotification.Type.REQUESTJOINGROUP, group.getId(), locale);
+//        }
+        JsfHelper.addSuccessMessage(ResourceBundle.getBundle("Bundle", locale)
+                .getString("dataverse.permissions.groups.applyfor.accepted"));
+    }
+    
+    //{dataFileDownload.key.contains(dataverseSession.user) or dataFileDownload.key.joinGroupRequesters.contains(dataverseSession.user)}
+    public DataverseRequest getDataverseRequest(){
+        return new DataverseRequest(this.session.getUser(),
+                (javax.servlet.http.HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest());
+
+    }    
     public String getLanguage() {
         return language;
     }
