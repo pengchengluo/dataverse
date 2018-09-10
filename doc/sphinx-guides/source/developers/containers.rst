@@ -30,7 +30,7 @@ At this point, you might want to consider going through the Minishift quickstart
 Start Minishift
 ~~~~~~~~~~~~~~~
 
-``minishift start --vm-driver=virtualbox --memory=4GB``
+``minishift start --vm-driver=virtualbox --memory=8GB``
 
 Make the OpenShift Client Binary (oc) Executable
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -134,7 +134,23 @@ Making Changes
 Making Changes to Docker Images
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-If you're interested in using Minishift for development and want to change the Dataverse code, you will need to get set up to create Docker images based on your changes and push them to a Docker registry such as Docker Hub (or Minishift's internal registry, if you can get that working, mentioned below). See the section below on Docker for details.
+If you're interested in using Minishift for development and want to change the Dataverse code, you will need to get set up to create Docker images based on your changes and make them available within Minishift.
+
+It is recommended to add experimental images to Minishift's internal registry. Note that despite what https://docs.openshift.org/latest/minishift/openshift/openshift-docker-registry.html says you will not use ``docker push`` because we have seen "unauthorized: authentication required” when trying to push to it as reported at https://github.com/minishift/minishift/issues/817 . Rather you will run ``docker build`` and run ``docker images`` to see that your newly build images are listed in Minishift's internal registry.
+
+First, set the Docker environment variables so that ``docker build`` and ``docker images`` refer to the internal Minishift registry rather than your normal Docker setup:
+
+``eval $(minishift docker-env)``
+
+When you're ready to build, change to the right directory:
+
+``cd conf/docker``
+
+And then run the build script in "internal" mode:
+
+``./build.sh internal``
+
+Note that ``conf/openshift/openshift.json`` must not have ``imagePullPolicy`` set to ``Always`` or it will pull from "iqss" on Docker Hub. Changing it to ``IfNotPresent`` allow Minishift to use the images shown from ``docker images`` rather than the ones on Docker Hub.
 
 Using Minishift for day to day Dataverse development might be something we want to investigate in the future. These blog posts talk about developing Java applications using Minishift/OpenShift:
 
@@ -149,6 +165,34 @@ If you are interested in changing the OpenShift config file for Dataverse at ``c
 ``oc process -f conf/openshift/openshift.json | oc apply -f -``
 
 The slower way to iterate on the ``openshift.json`` file is to delete the project and re-create it.
+
+Making Changes to the PostgreSQL Database from the Glassfish Pod
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+You can access and modify the PostgreSQL database via an interactive terminal called psql.
+
+To log in to psql from the command line of the Glassfish pod, type the following command:
+
+``PGPASSWORD=$POSTGRES_PASSWORD; export PGPASSWORD; /usr/bin/psql -h $POSTGRES_SERVER.$POSTGRES_SERVICE_HOST -U $POSTGRES_USER -d $POSTGRES_DATABASE``
+
+To log in as an admin, type this command instead:
+
+``PGPASSWORD=$POSTGRESQL_ADMIN_PASSWORD; export PGPASSWORD; /usr/bin/psql -h $POSTGRES_SERVER.$POSTGRES_SERVICE_HOST -U postgres -d $POSTGRES_DATABASE``
+
+Scaling Dataverse by Increasing Replicas in a StatefulSet
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The Glassfish and PostgreSQL Pods are in a "StatefulSet" which is a concept from OpenShift and Kubernetes that you can read about at https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/
+
+As of this writing, the ``openshift.json`` file has a single "replica" for each of these two stateful sets. It's possible to increase the number of replicas from 1 to 3, for example, with this command:
+
+``oc scale statefulset/dataverse-glassfish --replicas=3``
+
+The command above should result in two additional Glassfish pods being spun up. The name of the pods is significant and there is special logic in the "zeroth" pod ("dataverse-glassfish-0" and "dataverse-postgresql-0"). For example, only "dataverse-glassfish-0" makes itself the dedicated timer server as explained in :doc:`/admin/timers` section of the Admin Guide. "dataverse-glassfish-1" and other higher number pods will not be configured as a timer server.
+
+Once you have multiple Glassfish servers you may notice bugs that will require additional configuration to fix. One such bug has to do with Dataverse logos which are stored at ``/usr/local/glassfish4/glassfish/domains/domain1/docroot/logos`` on each of the Glassfish servers. This means that the logo will look fine when you just uploaded it because you're on the server with the logo on the local file system but when you visit that dataverse in the future and you're on a differernt Glassfish server, you will see a broken image. (You can find some discussion of this logo bug at https://github.com/IQSS/dataverse-aws/issues/10 and http://irclog.iq.harvard.edu/dataverse/2016-10-21 .) This is all "advanced" installation territory (see the :doc:`/installation/advanced` section of the Installation Guide) and OpenShift might be a good environment in which to work on some of these bugs.
+
+Multiple PostgreSQL servers are possible within the OpenShift environment as well and have been set up with some amount of replication. "dataverse-postgresql-0" is the master and non-zero pods are the slaves. We have just scratched the surface of this configuration but replication from master to slave seems to we working. Future work could include failover and making Dataverse smarter about utilizing multiple PostgreSQL servers for reads. Right now we assume Dataverse is only being used with a single PostgreSQL server and that it's the master.
 
 Running Containers to Run as Root in Minishift
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -190,7 +234,7 @@ On Linux, you can probably get Docker from your package manager.
 
 On Mac, download the ``.dmg`` from https://www.docker.com and install it. As of this writing is it known as Docker Community Edition for Mac.
 
-On Windows, FIXME ("Docker Community Edition for Windows" maybe???).
+On Windows, we have heard reports of success using Docker on a Linux VM running in VirtualBox or similar. There's something called "Docker Community Edition for Windows" but we haven't tried it. See also the :doc:`windows` section.
 
 As explained above, we use Docker images in two different contexts:
 
@@ -205,6 +249,8 @@ The "all in one" Docker files are in ``conf/docker-aio`` and you should follow t
 Future production use on Minishift/OpenShift/Kubernetes
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+FIXME: rewrite this section to talk about only pushing stable images to Docker Hub.
+
 When working with Docker in the context of Minishift, follow the instructions above and make sure you get the Dataverse Docker images running in Minishift before you start messing with them.
 
 As of this writing, the Dataverse Docker images we publish under https://hub.docker.com/u/iqss/ are highly experimental. They were originally tagged with branch names like ``kick-the-tires`` and as of this writing the ``latest`` tag should be considered highly experimental and not for production use. See https://github.com/IQSS/dataverse/issues/4040 for the latest status and please reach out if you'd like to help!
@@ -217,7 +263,7 @@ Edit one of the files:
 
 ``vim dataverse-glassfish/Dockerfile``
 
-At this point you want to build the image and run it. We are assuming you want to run it in your Minishift environment. We will be building your image and pushing it to Docker Hub. Then you will be pulling the image down from Docker Hub to run in your Minishift installation. If this sounds inefficient, you're right, but we haven't been able to figure out how to make use of Minishift's built in registry (see below) so we're pushing to Docker Hub instead.
+At this point you want to build the image and run it. We are assuming you want to run it in your Minishift environment. We will be building your image and pushing it to Docker Hub.
 
 Log in to Docker Hub with an account that has access to push to the ``iqss`` organization:
 
@@ -250,15 +296,6 @@ Again, Dataverse Docker images on Docker Hub are highly experimental at this poi
 - Only a single Glassfish server can be used. See "Dedicated timer server in a Dataverse server cluster" in the :doc:`/admin/timers` section of the Installation Guide.
 - Only a single PostgreSQL server can be used.
 - Only a single Solr server can be used.
-
-Get Set Up to Push Docker Images to Minishift Registry
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-FIXME https://docs.openshift.org/latest/minishift/openshift/openshift-docker-registry.html indicates that it should be possible to make use of the builtin registry in Minishift while iterating on Docker images but you may get "unauthorized: authentication required" when trying to push to it as reported at https://github.com/minishift/minishift/issues/817 so until we figure this out, you must push to Docker Hub instead. Run ``docker login`` and use the ``conf/docker/build.sh`` script to push Docker images you create to https://hub.docker.com/u/iqss/
-
-If you want to troubleshoot this, take a close look at the ``docker login`` command you're using to make sure the OpenShift token is being sent.
-
-An alternative to using the the Minishift Registry is to do a local build. This isn't documented but should work within Minishift because it's an all-in-one OpenShift environment. The steps at a high level are to ssh into the Minishift VM and then do a ``docker build``. For a stateful set, the image pull policy should be never.
 
 ----
 
