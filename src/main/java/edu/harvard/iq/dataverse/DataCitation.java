@@ -67,11 +67,14 @@ public class DataCitation {
     public DataCitation(DatasetVersion dsv, Locale locale) {
         this(dsv);
         if(locale.getLanguage().equals("zh")){
-            authors = dsv.getAuthorsStrZh(false);
+            authors = new ArrayList<String>();
+            dsv.getDatasetAuthors().stream().forEach((author) -> {
+            if (!author.isEmpty()) {
+                String an = author.getName().getDisplayValue().trim();
+                authors.add(an);
+                }
+            });
             title = dsv.getTitleZh();
-            if (!dsv.getDataset().isHarvested()) {
-                distributors = dsv.getRootDataverseNameforCitation(locale);
-            }
         }
     }
 

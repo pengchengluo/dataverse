@@ -83,9 +83,9 @@ public class SearchServiceBeanAuxiliary {
     
     public static void processFacetField(FacetField facetField, FacetCategory facetCategory, Map<String, String> datasetfieldFriendlyNamesBySolrField, Locale locale){
         boolean isZh = locale.getLanguage().equals("zh");
-        if(facetField.getName().equals(SearchFields.PUBLICATION_DATE) && isZh){
+        if(facetField.getName().equals(SearchFields.DATASET_PUBLICATION_DATE) && isZh){
             facetCategory.setFriendlyName("发布时间");
-            datasetfieldFriendlyNamesBySolrField.put(SearchFields.PUBLICATION_DATE, "发布时间");
+            datasetfieldFriendlyNamesBySolrField.put(SearchFields.DATASET_PUBLICATION_DATE, "发布时间");
         }else if(facetField.getName().equals(SearchFieldsZh.PUBLICATION_STATUS_ZH) && isZh){
             facetCategory.setFriendlyName("发布状态");
             datasetfieldFriendlyNamesBySolrField.put(SearchFields.PUBLICATION_STATUS, "发布状态");
