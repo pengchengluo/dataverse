@@ -202,6 +202,11 @@ public class DatasetPage implements java.io.Serializable {
     SettingsWrapper settingsWrapper; 
     @Inject 
     ProvPopupFragmentBean provPopupFragmentBean;
+    
+    @EJB
+    cn.edu.pku.lib.dataverse.usage.EventBuilder eventBuilder;
+    @EJB
+    cn.edu.pku.lib.dataverse.usage.UsageIndexServiceBean usageIndexService;
 
 
     private Dataset dataset = new Dataset();
@@ -275,6 +280,8 @@ public class DatasetPage implements java.io.Serializable {
     List<ExternalTool> exploreTools = new ArrayList<>();
     Map<Long, List<ExternalTool>> configureToolsByFileId = new HashMap<>();
     Map<Long, List<ExternalTool>> exploreToolsByFileId = new HashMap<>();
+    
+    private String language;
     
     public Boolean isHasRsyncScript() {
         return hasRsyncScript;

@@ -53,7 +53,7 @@ public class PKUIAAALoginPage implements java.io.Serializable {
         authReq.putCredential("rand", rand);
         authReq.setIpAddress(dvRequest.getSourceAddress());
         try {
-            AuthenticatedUser r = authSvc.getCreateAuthenticatedUser(credentialsAuthProviderId, authReq);
+            AuthenticatedUser r = authSvc.getUpdateAuthenticatedUser(credentialsAuthProviderId, authReq);
             logger.log(Level.INFO, "User authenticated: {0}", r.getEmail());
             session.setUser(r);
             try {
