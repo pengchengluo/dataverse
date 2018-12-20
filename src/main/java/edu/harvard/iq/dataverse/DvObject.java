@@ -6,6 +6,7 @@ import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 import java.util.Set;
 import javax.persistence.*;
@@ -356,6 +357,8 @@ public abstract class DvObject extends DataverseEntity implements java.io.Serial
     }
     
     public abstract String getDisplayName();
+    
+    public abstract String getDisplayName(Locale locale);
     
     // helper method used to mimic instanceof on JSF pge
     public boolean isInstanceofDataverse() {

@@ -5,6 +5,7 @@
  */
 package edu.harvard.iq.dataverse;
 
+import cn.edu.pku.lib.dataverse.DataverseLocale;
 import edu.harvard.iq.dataverse.authorization.groups.GroupServiceBean;
 import edu.harvard.iq.dataverse.settings.SettingsServiceBean;
 import static edu.harvard.iq.dataverse.util.JsfHelper.JH;
@@ -64,6 +65,9 @@ public class DataverseHeaderFragment implements java.io.Serializable {
     @EJB
     UserNotificationServiceBean userNotificationService;
     
+    @Inject
+    DataverseLocale dataverseLocale;
+    
     List<Breadcrumb> breadcrumbs = new ArrayList<>();
 
     private Long unreadNotificationCount = null;
@@ -116,17 +120,17 @@ public class DataverseHeaderFragment implements java.io.Serializable {
         String optionalUrlExtension = "&version=" + fmd.getDatasetVersion().getSemanticVersion();
         //First Add regular breadcrumb for the data file
         DvObject dvObject = fmd.getDataFile();
-        breadcrumbs.add(0, new Breadcrumb(dvObject, dvObject.getDisplayName(), optionalUrlExtension));
+        breadcrumbs.add(0, new Breadcrumb(dvObject, dvObject.getDisplayName(dataverseLocale.getLocale()), optionalUrlExtension));
 
         //Get the Dataset Owning the Datafile and add version to the breadcrumb       
         dvObject = dvObject.getOwner();
 
-        breadcrumbs.add(0, new Breadcrumb(dvObject, dvObject.getDisplayName(), optionalUrlExtension));
+        breadcrumbs.add(0, new Breadcrumb(dvObject, dvObject.getDisplayName(dataverseLocale.getLocale()), optionalUrlExtension));
 
         // now get Dataverse Owner of the dataset and proceed as usual
         dvObject = dvObject.getOwner();
         while (dvObject != null) {
-            breadcrumbs.add(0, new Breadcrumb(dvObject, dvObject.getDisplayName()));
+            breadcrumbs.add(0, new Breadcrumb(dvObject, dvObject.getDisplayName(dataverseLocale.getLocale())));
             dvObject = dvObject.getOwner();
         }
         
@@ -158,7 +162,7 @@ public class DataverseHeaderFragment implements java.io.Serializable {
     public void initBreadcrumbs(DvObject dvObject, String subPage) {
         breadcrumbs.clear();
         while (dvObject != null) {
-            breadcrumbs.add(0, new Breadcrumb(dvObject, dvObject.getDisplayName()));
+            breadcrumbs.add(0, new Breadcrumb(dvObject, dvObject.getDisplayName(dataverseLocale.getLocale())));
             dvObject = dvObject.getOwner();
         }        
         

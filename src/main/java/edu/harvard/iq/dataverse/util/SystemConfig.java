@@ -17,6 +17,7 @@ import java.net.UnknownHostException;
 import java.time.Year;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 import java.util.MissingResourceException;
 import java.util.Properties;
 import java.util.ResourceBundle;
@@ -528,6 +529,15 @@ public class SystemConfig {
         String saneDefaultForAppTermsOfUse = BundleUtil.getStringFromBundle("system.app.terms");
         String appTermsOfUse = settingsService.getValueForKey(SettingsServiceBean.Key.ApplicationTermsOfUse, saneDefaultForAppTermsOfUse);
         return appTermsOfUse;
+    }
+    
+    public String getApplicationTermsOfUse(Locale locale) {
+        String saneDefaultForAppTermsOfUse = "There are no Terms of Use for this Dataverse installation.";
+        if(locale.getLanguage().equals("zh")){
+            return settingsService.getValueForKey(SettingsServiceBean.Key.ApplicationTermsOfUseZh, saneDefaultForAppTermsOfUse);
+        }else{
+            return settingsService.getValueForKey(SettingsServiceBean.Key.ApplicationTermsOfUse, saneDefaultForAppTermsOfUse);
+        }
     }
 
     public String getApiTermsOfUse() {

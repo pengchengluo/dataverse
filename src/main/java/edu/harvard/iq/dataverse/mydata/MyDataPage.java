@@ -1,5 +1,6 @@
 package edu.harvard.iq.dataverse.mydata;
 
+import cn.edu.pku.lib.dataverse.DataverseLocale;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import edu.harvard.iq.dataverse.DatasetPage;
@@ -58,6 +59,8 @@ public class MyDataPage implements java.io.Serializable {
 //    MyDataQueryHelperServiceBean myDataQueryHelperServiceBean;
     @Inject
     PermissionsWrapper permissionsWrapper;
+    @Inject
+    DataverseLocale dataverseLocale;
     
     private DataverseRolePermissionHelper rolePermissionHelper;// = new DataverseRolePermissionHelper();
     private MyDataFilterParams filterParams;
@@ -167,7 +170,7 @@ public class MyDataPage implements java.io.Serializable {
         HttpServletRequest httpServletRequest = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
 
         DataverseRequest dataverseRequest = new DataverseRequest(authUser, httpServletRequest);
-        this.filterParams = new MyDataFilterParams(dataverseRequest,  MyDataFilterParams.defaultDvObjectTypes, null, null, null);
+        this.filterParams = new MyDataFilterParams(dataverseRequest,  MyDataFilterParams.defaultDvObjectTypes, null, null, null, dataverseLocale.getLocale());
         
         
         // Temp DataverseRolePermissionHelper -- not in its normal role but for creating initial checkboxes
@@ -218,7 +221,7 @@ public class MyDataPage implements java.io.Serializable {
     
     
     public List<String[]> getPublishedStatesForMyDataPage(){
-        return MyDataFilterParams.getPublishedStatesForMyDataPage();
+        return MyDataFilterParams.getPublishedStatesForMyDataPage(dataverseLocale.getLocale());
     }
     
 }

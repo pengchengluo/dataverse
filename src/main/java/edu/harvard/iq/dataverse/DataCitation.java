@@ -22,6 +22,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.Locale;
 import java.util.stream.Collectors;
 
 import javax.ejb.EJBException;
@@ -62,6 +63,20 @@ public class DataCitation {
 
     private List<DatasetField> optionalValues = new ArrayList<>();
     private int optionalURLcount = 0; 
+    
+    public DataCitation(DatasetVersion dsv, Locale locale) {
+        this(dsv);
+        if(locale.getLanguage().equals("zh")){
+            authors = new ArrayList<String>();
+            dsv.getDatasetAuthors().stream().forEach((author) -> {
+            if (!author.isEmpty()) {
+                String an = author.getName().getDisplayValue().trim();
+                authors.add(an);
+                }
+            });
+            title = dsv.getTitleZh();
+        }
+    }
 
     public DataCitation(DatasetVersion dsv) {
         this(dsv, false);

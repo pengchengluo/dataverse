@@ -1,5 +1,6 @@
 package edu.harvard.iq.dataverse.search;
 
+import cn.edu.pku.lib.dataverse.search.SearchServiceBeanAuxiliary;
 import edu.harvard.iq.dataverse.DataFile;
 import edu.harvard.iq.dataverse.DatasetFieldConstant;
 import edu.harvard.iq.dataverse.DatasetFieldServiceBean;
@@ -28,6 +29,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
@@ -121,6 +123,9 @@ public class SearchServiceBean {
         return search(dataverseRequest, dataverse, query, filterQueries, sortField, sortOrder, paginationStart, onlyDatatRelatedToMe, numResultsPerPage, true);
     }
     
+    public SolrQueryResponse search(DataverseRequest dataverseRequest, Dataverse dataverse, String query, List<String> filterQueries, String sortField, String sortOrder, int paginationStart, boolean onlyDatatRelatedToMe, int numResultsPerPage, boolean retrieveEntities) throws SearchException {
+        return search(dataverseRequest, dataverse, query, filterQueries, sortField, sortOrder, paginationStart, onlyDatatRelatedToMe, numResultsPerPage, retrieveEntities, Locale.ENGLISH);
+    }
     /**
      * Import note: "onlyDatatRelatedToMe" relies on filterQueries for providing
      * access to Private Data for the correct user
@@ -142,7 +147,7 @@ public class SearchServiceBean {
      * @return
      * @throws SearchException
      */
-    public SolrQueryResponse search(DataverseRequest dataverseRequest, Dataverse dataverse, String query, List<String> filterQueries, String sortField, String sortOrder, int paginationStart, boolean onlyDatatRelatedToMe, int numResultsPerPage, boolean retrieveEntities) throws SearchException {
+    public SolrQueryResponse search(DataverseRequest dataverseRequest, Dataverse dataverse, String query, List<String> filterQueries, String sortField, String sortOrder, int paginationStart, boolean onlyDatatRelatedToMe, int numResultsPerPage, boolean retrieveEntities, Locale locale) throws SearchException {
 
         if (paginationStart < 0) {
             throw new IllegalArgumentException("paginationStart must be 0 or greater");
@@ -201,6 +206,7 @@ public class SearchServiceBean {
             String displayName = datasetFieldType.getDisplayName();
             solrFieldsToHightlightOnMap.put(solrField, displayName);
         }
+        SearchServiceBeanAuxiliary.processHightlightMap(solrFieldsToHightlightOnMap, datasetFields, locale);
         for (Map.Entry<String, String> entry : solrFieldsToHightlightOnMap.entrySet()) {
             String solrField = entry.getKey();
             // String displayName = entry.getValue();
@@ -220,7 +226,7 @@ public class SearchServiceBean {
         // -----------------------------------
         // PERMISSION FILTER QUERY
         // -----------------------------------
-        String permissionFilterQuery = this.getPermissionFilterQuery(dataverseRequest, solrQuery, dataverse, onlyDatatRelatedToMe);
+        String permissionFilterQuery = this.getPermissionFilterQuery(dataverseRequest, solrQuery, dataverse, onlyDatatRelatedToMe, locale);
         if (permissionFilterQuery != null) {
             solrQuery.addFilterQuery(permissionFilterQuery);
         }
@@ -231,6 +237,7 @@ public class SearchServiceBean {
 //        solrQuery.addFacetField(SearchFields.HOST_DATAVERSE);
 //        solrQuery.addFacetField(SearchFields.AUTHOR_STRING);
         solrQuery.addFacetField(SearchFields.DATAVERSE_CATEGORY);
+        SearchServiceBeanAuxiliary.processDataverseCategoryFacet(solrQuery, locale);
         solrQuery.addFacetField(SearchFields.METADATA_SOURCE);
 //        solrQuery.addFacetField(SearchFields.AFFILIATION);
         solrQuery.addFacetField(SearchFields.PUBLICATION_YEAR);
@@ -255,6 +262,7 @@ public class SearchServiceBean {
                 solrQuery.addFacetField(datasetField.getSolrField().getNameFacetable());
             }
         }
+        SearchServiceBeanAuxiliary.processFacet(solrQuery, dataverse, locale);
         solrQuery.addFacetField(SearchFields.FILE_TYPE);
         /**
          * @todo: hide the extra line this shows in the GUI... at least it's
@@ -563,6 +571,7 @@ public class SearchServiceBean {
             parent.put("name", (String) solrDocument.getFieldValue(SearchFields.PARENT_NAME));
             parent.put("citation", (String) solrDocument.getFieldValue(SearchFields.PARENT_CITATION));
             solrSearchResult.setParent(parent);
+            SearchServiceBeanAuxiliary.processSolrSearchResult(solrSearchResult, solrDocument, type, parent, datasetFieldService, logger, locale);
             solrSearchResults.add(solrSearchResult);
         }
         Map<String, List<String>> spellingSuggestionsByToken = new HashMap<>();
@@ -686,6 +695,7 @@ public class SearchServiceBean {
                     facetCategoryList.add(facetCategory);
                 }
             }
+            SearchServiceBeanAuxiliary.processFacetField(facetField, facetCategory, datasetfieldFriendlyNamesBySolrField, locale);
         }
 
         // for now the only range facet is citation year
@@ -742,6 +752,7 @@ public class SearchServiceBean {
 
         solrQueryResponse.setDvObjectCounts(queryResponse.getFacetField("dvObjectType"));
         solrQueryResponse.setPublicationStatusCounts(queryResponse.getFacetField("publicationStatus"));
+        SearchServiceBeanAuxiliary.processPublicationStatusCounts(solrQueryResponse, queryResponse, locale);
 
         return solrQueryResponse;
     }
@@ -755,7 +766,7 @@ public class SearchServiceBean {
      *
      * @return
      */
-    private String getPermissionFilterQuery(DataverseRequest dataverseRequest, SolrQuery solrQuery, Dataverse dataverse, boolean onlyDatatRelatedToMe) {
+    private String getPermissionFilterQuery(DataverseRequest dataverseRequest, SolrQuery solrQuery, Dataverse dataverse, boolean onlyDatatRelatedToMe, Locale locale) {
 
         User user = dataverseRequest.getUser();
         if (user == null) {
@@ -817,6 +828,7 @@ public class SearchServiceBean {
         // Logged in user, has publication status facet
         //
         solrQuery.addFacetField(SearchFields.PUBLICATION_STATUS);
+        SearchServiceBeanAuxiliary.processPermissionFilterQuery(solrQuery, locale);
 
         // ----------------------------------------------------
         // (3) Is this a Super User?  

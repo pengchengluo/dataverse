@@ -5,6 +5,8 @@
  */
 package edu.harvard.iq.dataverse;
 
+import cn.edu.pku.lib.dataverse.DatasetFieldZhConstant;
+import cn.edu.pku.lib.dataverse.DataverseLocale;
 import edu.harvard.iq.dataverse.util.MarkupChecker;
 import edu.harvard.iq.dataverse.util.StringUtil;
 import java.io.Serializable;
@@ -20,6 +22,7 @@ import java.util.List;
 import java.util.Map;
 import javax.ejb.EJB;
 import javax.faces.view.ViewScoped;
+import javax.inject.Inject;
 import javax.inject.Named;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -35,6 +38,8 @@ public class DatasetVersionUI implements Serializable {
     DataverseServiceBean dataverseService;
     @PersistenceContext(unitName = "VDCNet-ejbPU")
     private EntityManager em;   
+    @Inject
+    DataverseLocale dataverseLocale;
     
     public DatasetVersionUI() {
     }
@@ -71,9 +76,9 @@ public class DatasetVersionUI implements Serializable {
         // loop through vaues to get fields for view mode
         for (DatasetField dsf : datasetVersion.getDatasetFields()) {
             //Special Handling for various fields displayed above tabs in dataset page view.
-            if (dsf.getDatasetFieldType().getName().equals(DatasetFieldConstant.title)) {
+            if (dsf.getDatasetFieldType().getName().equals(DatasetFieldConstant.title) && !this.dataverseLocale.isLocaleZh() || dsf.getDatasetFieldType().getName().equals(DatasetFieldZhConstant.titleZh) && this.dataverseLocale.isLocaleZh()) {
                 setTitle(dsf);
-            } else if (dsf.getDatasetFieldType().getName().equals(DatasetFieldConstant.description)) {
+            } else if (dsf.getDatasetFieldType().getName().equals(DatasetFieldConstant.description) && !this.dataverseLocale.isLocaleZh() || dsf.getDatasetFieldType().getName().equals(DatasetFieldZhConstant.descriptionZh) && this.dataverseLocale.isLocaleZh()) {
                 setDescription(dsf);
                 String descriptionString = "";
                 if(dsf.getDatasetFieldCompoundValues() != null && dsf.getDatasetFieldCompoundValues().get(0) != null){
@@ -85,12 +90,12 @@ public class DatasetVersionUI implements Serializable {
                     }
                 }                 
                 setDescriptionDisplay(MarkupChecker.sanitizeBasicHTML(descriptionString) );
-            } else if (dsf.getDatasetFieldType().getName().equals(DatasetFieldConstant.keyword)) {
+            } else if (dsf.getDatasetFieldType().getName().equals(DatasetFieldConstant.keyword) && !this.dataverseLocale.isLocaleZh() || dsf.getDatasetFieldType().getName().equals(DatasetFieldZhConstant.keywordZh) && this.dataverseLocale.isLocaleZh()) {
                 setKeyword(dsf);
                 String keywordString = "";
                 for (DatasetFieldCompoundValue keywordValue : dsf.getDatasetFieldCompoundValues()) {
                     for (DatasetField subField : keywordValue.getChildDatasetFields()) {
-                        if (subField.getDatasetFieldType().getName().equals(DatasetFieldConstant.keywordValue) && !subField.isEmptyForDisplay()) {
+                        if (subField.getDatasetFieldType().getName().equals(DatasetFieldConstant.keywordValue) && !subField.isEmptyForDisplay() || subField.getDatasetFieldType().getName().equals(DatasetFieldZhConstant.keywordValueZh) && !subField.isEmptyForDisplay()) {
                             if (keywordString.isEmpty()){
                                 keywordString = subField.getValue();
                             } else {
@@ -100,11 +105,11 @@ public class DatasetVersionUI implements Serializable {
                     }
                 } 
                 setKeywordDisplay(keywordString);
-            } else if (dsf.getDatasetFieldType().getName().equals(DatasetFieldConstant.subject) && !dsf.isEmptyForDisplay()) {
+            } else if (dsf.getDatasetFieldType().getName().equals(DatasetFieldConstant.subject) && !dsf.isEmptyForDisplay() && !this.dataverseLocale.isLocaleZh() || dsf.getDatasetFieldType().getName().equals(DatasetFieldZhConstant.subjectZh) && !dsf.isEmptyForDisplay() && this.dataverseLocale.isLocaleZh()) {
                 setSubject(dsf);
-            } else if (dsf.getDatasetFieldType().getName().equals(DatasetFieldConstant.notesText) && !dsf.isEmptyForDisplay()) {
+            } else if (dsf.getDatasetFieldType().getName().equals(DatasetFieldConstant.notesText) && !dsf.isEmptyForDisplay() && !this.dataverseLocale.isLocaleZh() || dsf.getDatasetFieldType().getName().equals(DatasetFieldZhConstant.notesTextZh) && !dsf.isEmptyForDisplay() && this.dataverseLocale.isLocaleZh()) {
                 this.setNotes(dsf);                
-            }  else if (dsf.getDatasetFieldType().getName().equals(DatasetFieldConstant.publication)) {
+            }  else if (dsf.getDatasetFieldType().getName().equals(DatasetFieldConstant.publication) && !this.dataverseLocale.isLocaleZh() || dsf.getDatasetFieldType().getName().equals(DatasetFieldZhConstant.publicationZh) && this.dataverseLocale.isLocaleZh()) {
                 //Special handling for Related Publications
                 // Treated as below the tabs for editing, but must get first value for display above tabs    
                 if (this.datasetRelPublications.isEmpty()) {

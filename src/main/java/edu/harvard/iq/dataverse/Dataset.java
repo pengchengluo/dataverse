@@ -11,6 +11,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 import java.util.Set;
 import javax.persistence.CascadeType;
@@ -601,6 +602,10 @@ public class Dataset extends DvObjectContainer {
     public String getCitation(boolean isOnlineVersion, DatasetVersion version) {
         return version.getCitation(isOnlineVersion);
     }
+    
+    public String getCitation(boolean isOnlineVersion, DatasetVersion version, Locale locale) {
+        return version.getCitation(isOnlineVersion, locale);
+    }
 
     public String getPublicationDateFormattedYYYYMMDD() {
         if (getPublicationDate() != null){
@@ -747,6 +752,14 @@ public class Dataset extends DvObjectContainer {
         DatasetVersion dsv = getReleasedVersion();
         return dsv != null ? dsv.getTitle() : getLatestVersion().getTitle();
     }
+    
+    @Override
+    public String getDisplayName(Locale locale) {
+        boolean isZh = locale != null && locale.getLanguage().equals("zh");
+        DatasetVersion dsv = getReleasedVersion();
+        return dsv != null ? (isZh ? dsv.getTitleZh() : dsv.getTitle() ):
+                (isZh ? getLatestVersion().getTitleZh() :getLatestVersion().getTitle());
+    }
 
     @Override
     protected boolean isPermissionRoot() {
@@ -773,5 +786,5 @@ public class Dataset extends DvObjectContainer {
     public DatasetThumbnail getDatasetThumbnail(DatasetVersion datasetVersion) {
         return DatasetUtil.getThumbnail(this, datasetVersion);
     }
-
+    
 }

@@ -1,5 +1,6 @@
 package edu.harvard.iq.dataverse;
 
+import cn.edu.pku.lib.dataverse.DatasetFieldZhConstant;
 import edu.harvard.iq.dataverse.util.MarkupChecker;
 import edu.harvard.iq.dataverse.DatasetFieldType.FieldType;
 import edu.harvard.iq.dataverse.util.StringUtil;
@@ -17,6 +18,7 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.Locale;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -580,6 +582,16 @@ public class DatasetVersion implements Serializable {
         }
         return retVal;
     }
+    
+    public String getTitleZh() {
+        String retVal = "";
+        for (DatasetField dsfv : this.getDatasetFields()) {
+            if (dsfv.getDatasetFieldType().getName().equals(DatasetFieldZhConstant.titleZh)) {
+                retVal = dsfv.getDisplayValue();
+            }
+        }
+        return retVal;
+    }
 
     public String getProductionDate() {
         //todo get "Production Date" from datasetfieldvalue table
@@ -709,6 +721,40 @@ public class DatasetVersion implements Serializable {
                              datasetAuthor.setIdType(subField.getDisplayValue());
                         }
                         if (subField.getDatasetFieldType().getName().equals(DatasetFieldConstant.authorIdValue)){
+                            datasetAuthor.setIdValue(subField.getDisplayValue());
+                        }
+                    }
+                    if (addAuthor) {                       
+                        retList.add(datasetAuthor);
+                    }
+                }
+            }
+        }
+        return retList;
+    }
+    
+    public List<DatasetAuthor> getDatasetAuthorsZh() {
+        //TODO get "List of Authors" from datasetfieldvalue table
+        List <DatasetAuthor> retList = new ArrayList<>();
+        for (DatasetField dsf : this.getDatasetFields()) {
+            Boolean addAuthor = true;
+            if (dsf.getDatasetFieldType().getName().equals(DatasetFieldZhConstant.authorZh)) {
+                for (DatasetFieldCompoundValue authorValue : dsf.getDatasetFieldCompoundValues()) {                   
+                    DatasetAuthor datasetAuthor = new DatasetAuthor();
+                    for (DatasetField subField : authorValue.getChildDatasetFields()) {
+                        if (subField.getDatasetFieldType().getName().equals(DatasetFieldZhConstant.authorNameZh)) {
+                            if (subField.isEmptyForDisplay()) {
+                                addAuthor = false;
+                            }
+                            datasetAuthor.setName(subField);
+                        }
+                        if (subField.getDatasetFieldType().getName().equals(DatasetFieldZhConstant.authorAffiliationZh)) {
+                            datasetAuthor.setAffiliation(subField);
+                        }
+                        if (subField.getDatasetFieldType().getName().equals(DatasetFieldZhConstant.authorIdTypeZh)){
+                             datasetAuthor.setIdType(subField.getDisplayValue());
+                        }
+                        if (subField.getDatasetFieldType().getName().equals(DatasetFieldZhConstant.authorIdValueZh)){
                             datasetAuthor.setIdValue(subField.getDisplayValue());
                         }
                     }
@@ -992,6 +1038,10 @@ public class DatasetVersion implements Serializable {
         return new DataCitation(this).toString(html);
     }
     
+    public String getCitation(boolean html, Locale locale) {
+        return new DataCitation(this, locale).toString(html);
+    }
+    
     public Date getCitationDate() {
         DatasetField citationDate = getDatasetField(this.getDataset().getCitationDateDatasetFieldType());        
         if (citationDate != null && citationDate.getDatasetFieldType().getFieldType().equals(FieldType.DATE)){          
@@ -1054,6 +1104,25 @@ public class DatasetVersion implements Serializable {
             return "";
         }
     }
+    
+    public String getRootDataverseNameforCitation(Locale locale){
+                    //Get root dataverse name for Citation
+        Dataverse root = this.getDataset().getOwner();
+        while (root.getOwner() != null) {
+            root = root.getOwner();
+        }
+        String rootDataverseName = null;
+        if(locale.getLanguage().equals("zh")){
+            rootDataverseName = root.getNameZh();
+        }else{
+            rootDataverseName = root.getName();
+        }
+        if (!StringUtil.isEmpty(rootDataverseName)) {
+            return rootDataverseName;
+        } else {
+            return "";
+        }
+    }
 
     public List<DatasetDistributor> getDatasetDistributors() {
         //todo get distributors from DatasetfieldValues
@@ -1082,6 +1151,27 @@ public class DatasetVersion implements Serializable {
     public String getAuthorsStr(boolean affiliation) {
         String str = "";
         for (DatasetAuthor sa : getDatasetAuthors()) {
+            if (sa.getName() == null) {
+                break;
+            }
+            if (str.trim().length() > 1) {
+                str += "; ";
+            }
+            str += sa.getName().getValue();
+            if (affiliation) {
+                if (sa.getAffiliation() != null) {
+                    if (!StringUtil.isEmpty(sa.getAffiliation().getValue())) {
+                        str += " (" + sa.getAffiliation().getValue() + ")";
+                    }
+                }
+            }
+        }
+        return str;
+    }
+    
+    public String getAuthorsStrZh(boolean affiliation) {
+        String str = "";
+        for (DatasetAuthor sa : getDatasetAuthorsZh()) {
             if (sa.getName() == null) {
                 break;
             }

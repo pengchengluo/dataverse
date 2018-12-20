@@ -1,5 +1,6 @@
 package edu.harvard.iq.dataverse;
 
+import cn.edu.pku.lib.dataverse.DataverseLocale;
 import edu.harvard.iq.dataverse.provenance.ProvPopupFragmentBean;
 import edu.harvard.iq.dataverse.api.AbstractApiBean;
 import edu.harvard.iq.dataverse.authorization.AuthenticationServiceBean;
@@ -107,6 +108,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.StringUtils;
 
 import org.primefaces.component.tabview.TabView;
 import org.primefaces.event.CloseEvent;
@@ -200,6 +202,8 @@ public class DatasetPage implements java.io.Serializable {
     ThumbnailServiceWrapper thumbnailServiceWrapper;
     @Inject
     SettingsWrapper settingsWrapper; 
+    @Inject
+    DataverseLocale dataverseLocale;
     @Inject 
     ProvPopupFragmentBean provPopupFragmentBean;
     
@@ -273,7 +277,7 @@ public class DatasetPage implements java.io.Serializable {
     private boolean removeUnusedTags;
     
     private Boolean hasRsyncScript = false;
-    
+
     private Boolean hasTabular = false;
         
     List<ExternalTool> configureTools = new ArrayList<>();
@@ -1351,6 +1355,14 @@ public class DatasetPage implements java.io.Serializable {
     
     private String init(boolean initFull) {
         //System.out.println("_YE_OLDE_QUERY_COUNTER_");  // for debug purposes
+        if (StringUtils.isNotBlank(language)){
+            if(language.toLowerCase().startsWith("zh")){
+                this.dataverseLocale.setLocaleZh();
+            }else if(language.toLowerCase().startsWith("en")){
+                this.dataverseLocale.setLocaleEn();
+            }
+        }
+               
         this.maxFileUploadSizeInBytes = systemConfig.getMaxFileUploadSize();
         setDataverseSiteUrl(systemConfig.getDataverseSiteUrl());
 
@@ -1448,7 +1460,7 @@ public class DatasetPage implements java.io.Serializable {
             }
             
             // init the citation
-            displayCitation = dataset.getCitation(true, workingVersion);
+            displayCitation = dataset.getCitation(true, workingVersion, dataverseLocale.getLocale());
             
 
             if (initFull) {
@@ -2036,7 +2048,7 @@ public class DatasetPage implements java.io.Serializable {
         } 
         fileMetadatasSearch = workingVersion.getFileMetadatasSorted();
 
-        displayCitation = dataset.getCitation(true, workingVersion);
+        displayCitation = dataset.getCitation(true, workingVersion, dataverseLocale.getLocale());
         stateChanged = false;
     }
     
@@ -4273,7 +4285,7 @@ public class DatasetPage implements java.io.Serializable {
     public List<DatasetField> getDatasetSummaryFields() {
        customFields  = settingsWrapper.getValueForKey(SettingsServiceBean.Key.CustomDatasetSummaryFields);
        
-        return DatasetUtil.getDatasetSummaryFields(workingVersion, customFields);
+        return DatasetUtil.getDatasetSummaryFields(workingVersion, customFields, dataverseLocale.getLocale());
     }
 
     public List<ExternalTool> getConfigureToolsForDataFile(Long fileId) {

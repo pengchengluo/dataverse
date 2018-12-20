@@ -21,6 +21,7 @@
                     <f:viewParam name="alias" value="#{DataversePage.dataverse.alias}"/>
                     <f:viewParam name="ownerId" value="#{DataversePage.ownerId}"/>
                     <f:viewParam name="editMode" value="#{DataversePage.editMode}"/>
+                    <f:viewParam name="language" value="#{DataversePage.language}"/>
                     <f:viewAction action="#{DataversePage.init}"/>
                     <f:viewAction action="#{dataverseHeaderFragment.initBreadcrumbs(DataversePage.dataverse)}"/>
                     <f:viewParam name="alias" value="#{SearchIncludeFragment.dataverseAlias}"/>
@@ -52,13 +53,36 @@
                         <!-- Edit Info Panel -->
                         <div class="row">
                             <div class="col-xs-6 form-group form-col-container">
+                                <label class="col-sm-3 control-label" for="nameZh">
+                                    <span data-toggle="tooltip" data-placement="auto right" class="tooltiplabel text-info" data-original-title="#{bundle['dataverse.title']}">
+                                        #{bundle.dataverse} <span class="glyphicon glyphicon-asterisk text-danger" title="#{bundle.requiredField}"/>
+                                    </span>
+                                </label>
+                                <div class="col-sm-9 form-col-container">
+                                    <p:inputText id="nameZh" tabindex="1" styleClass="form-control" value="#{DataversePage.dataverse.nameZh}"/>
+                                </div>
+                            </div>
+                            <div class="col-xs-6 form-group form-col-container">
                                 <label class="col-sm-3 control-label" for="name">
                                     <span data-toggle="tooltip" data-placement="auto right" class="tooltiplabel text-info" data-original-title="#{bundle['dataverse.title']}">
                                         #{bundle.dataverse} <span class="glyphicon glyphicon-asterisk text-danger" title="#{bundle.requiredField}"/>
                                     </span>
                                 </label>
                                 <div class="col-sm-9 form-col-container">
-                                    <p:inputText id="name" tabindex="1" styleClass="form-control" value="#{DataversePage.dataverse.name}"/>
+                                    <p:inputText id="name" tabindex="2" styleClass="form-control" value="#{DataversePage.dataverse.name}"/>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-xs-6 form-group form-col-container">
+                                <label class="col-sm-3 control-label" for="affiliationZh">
+                                    <span data-toggle="tooltip" data-placement="auto right" class="tooltiplabel text-info" data-original-title="#{bundle['dataverse.affiliation.title']}">
+                                        #{bundle.affiliation}
+                                    </span>
+                                </label>
+                                <div class="col-sm-9 form-col-container">
+                                    <p:inputText id="affiliationZh" tabindex="3" styleClass="form-control" value="#{DataversePage.dataverse.affiliationZh}"/>
+                                    <p:message for="affiliation" display="text"/>
                                 </div>
                             </div>
                             <div class="col-xs-6 form-group form-col-container">
@@ -68,8 +92,50 @@
                                     </span>
                                 </label>
                                 <div class="col-sm-9 form-col-container">
-                                    <p:inputText id="affiliation" tabindex="2" styleClass="form-control" value="#{DataversePage.dataverse.affiliation}"/>
+                                    <p:inputText id="affiliation" tabindex="4" styleClass="form-control" value="#{DataversePage.dataverse.affiliation}"/>
                                     <p:message for="affiliation" display="text"/>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-xs-6 form-group form-col-container">
+                                <label class="col-sm-3 control-label" for="descriptionZh">
+                                    <span data-toggle="tooltip" data-placement="auto right" class="tooltiplabel text-info" data-original-title="#{bundle['dataverse.description.title']}">
+                                        #{bundle.description}
+                                    </span>
+                                </label>
+                                <div class="col-sm-9 form-col-container">
+                                    <p class="help-block">
+                                        <span class="glyphicon glyphicon-info-sign"/>
+                                        <h:outputFormat value=" #{bundle.htmlAllowedMsg}" escape="false">
+                                            <f:param value="#{bundle.htmlAllowedTags}"/>
+                                        </h:outputFormat>
+                                    </p>
+                                    <p:inputTextarea id="descriptionZh" tabindex="5" styleClass="form-control" value="#{DataversePage.dataverse.descriptionZh}"
+                                                    rows="6" cols="50"
+                                                    autoResize="false">
+                                    </p:inputTextarea>
+                                    <p:message for="description" display="text"/>
+                                </div>
+                            </div>
+                            <div class="col-xs-6 form-group form-col-container">
+                                <label class="col-sm-3 control-label" for="description">
+                                    <span data-toggle="tooltip" data-placement="auto right" class="tooltiplabel text-info" data-original-title="#{bundle['dataverse.description.title']}">
+                                        #{bundle.description}
+                                    </span>
+                                </label>
+                                <div class="col-sm-9 form-col-container">
+                                    <p class="help-block">
+                                        <span class="glyphicon glyphicon-info-sign"/>
+                                        <h:outputFormat value=" #{bundle.htmlAllowedMsg}" escape="false">
+                                            <f:param value="#{bundle.htmlAllowedTags}"/>
+                                        </h:outputFormat>
+                                    </p>
+                                    <p:inputTextarea id="description" tabindex="6" styleClass="form-control" value="#{DataversePage.dataverse.description}"
+                                                    rows="6" cols="50"
+                                                    autoResize="false">
+                                    </p:inputTextarea>
+                                    <p:message for="description" display="text"/>
                                 </div>
                             </div>
                         </div>
@@ -83,11 +149,13 @@
                                 <div class="col-sm-9 form-col-container">
                                     <div class="input-group">
                                         <div class="input-group-addon"><span class="small">#{systemConfig.dataverseSiteUrl}/dataverse/</span></div>
-                                        <p:inputText id="identifier" tabindex="3" styleClass="form-control" validator="#{DataversePage.validateAlias}" value="#{DataversePage.dataverse.alias}"/>
+                                        <p:inputText id="identifier" tabindex="7" styleClass="form-control" validator="#{DataversePage.validateAlias}" value="#{DataversePage.dataverse.alias}"/>
                                     </div>
                                     <p:message for="identifier" display="text"/>
                                 </div>
                             </div>
+                        </div>
+                        <div class="row">
                             <div class="col-xs-6 form-group" jsf:rendered="#{DataversePage.ownerId != null}">
                                 <label class="col-sm-3 control-label" for="hostDataverse">
                                     <span data-toggle="tooltip" data-placement="auto right" class="tooltiplabel text-info" data-original-title="#{bundle['dataverse.host.title']}">
@@ -98,7 +166,7 @@
                                     <p class="form-control-static">#{DataversePage.dataverse.getOwner().name}</p>
                                     <h:inputHidden value="#{DataversePage.ownerId}" id="hostDataverse" />
                                     <ui:remove><!-- removed for beta -->
-                                        <p:selectOneMenu id="hostDataverse" tabindex="2" value="#{DataversePage.ownerId}" filter="true" filterMatchMode="startsWith" effect="none">
+                                        <p:selectOneMenu id="hostDataverse" tabindex="8" value="#{DataversePage.ownerId}" filter="true" filterMatchMode="startsWith" effect="none">
                                             <f:selectItems value="#{dataverseServiceBean.findAll()}" var="dv" itemLabel="#{dv.name}" itemValue="#{dv.id}"
                                                            itemDisabled="#{dv eq DataversePage.dataverse or dv.owners.contains(DataversePage.dataverse)}" />
                                         </p:selectOneMenu>
@@ -115,7 +183,7 @@
                                         </span>
                                     </label>
                                     <div class="col-sm-9 form-col-container">
-                                        <h:selectOneMenu id="dataverseCategory" tabindex="5" styleClass="form-control" value="#{DataversePage.dataverse.dataverseType}">
+                                        <h:selectOneMenu id="dataverseCategory" tabindex="9" styleClass="form-control" value="#{DataversePage.dataverse.dataverseType}">
                                             <f:selectItem id="dvSelect" itemLabel="#{bundle['dataverse.type.selectTab.top']}" itemValue="" />
                                             <f:selectItem id="dvDepartment" itemLabel="#{bundle['dataverse.type.selectTab.department']}" itemValue="DEPARTMENT" />
                                             <f:selectItem id="dvJournals" itemLabel="#{bundle['dataverse.type.selectTab.journals']}" itemValue="JOURNALS" />
@@ -130,6 +198,26 @@
                                         <p:message for="dataverseCategory" display="text"/>
                                     </div>
                                 </div>
+                            </div>
+                            <div class="col-xs-6 form-group form-col-container">
+                                <div class="form-group clearfix">
+                                        <label class="col-sm-4 control-label" for="permissionRoot">
+                                            <span data-toggle="tooltip" data-placement="auto right" class="tooltiplabel text-info" data-original-title="#{bundle['dataverse.permissionroot.title']}">
+                                                #{bundle['dataverse.permissionroot']} <span class="glyphicon glyphicon-asterisk text-danger" title="#{bundle.requiredField}"/>
+                                            </span>
+                                        </label>
+                                        <div class="col-sm-8 form-col-container edit-compound-field">
+                                            <p:selectOneRadio id="permissionRoot" tabindex="10" value="#{DataversePage.dataverse.permissionRoot}">
+                                                <f:selectItem itemLabel="#{bundle['yes']}" itemValue="true"/>
+                                                <f:selectItem itemLabel="#{bundle['no']}" itemValue="false"/>
+                                            </p:selectOneRadio>
+                                        </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-xs-6 form-group form-col-container">
                                 <div class="form-group clearfix">
                                     <p:fragment autoUpdate="true">
                                         <label class="col-sm-3 control-label" for="contactEmail">
@@ -141,7 +229,7 @@
                                             <ui:repeat value="#{DataversePage.dataverse.dataverseContacts}" var="contacts" varStatus="valCount">
                                                 <div class="form-group">
                                                     <div class="col-sm-8 form-col-container">
-                                                        <p:inputText id="contactEmail" tabindex="7" styleClass="form-control" value="#{contacts.contactEmail}">
+                                                        <p:inputText id="contactEmail" tabindex="11" styleClass="form-control" value="#{contacts.contactEmail}">
                                                             <f:validateBean disabled="#{param['SKIP_VALIDATION']}"/>
                                                         </p:inputText>
                                                         <p:message for="contactEmail" display="text"/>
@@ -169,23 +257,18 @@
                                 </div>
                             </div>
                             <div class="col-xs-6 form-group form-col-container">
-                                <label class="col-sm-3 control-label" for="description">
-                                    <span data-toggle="tooltip" data-placement="auto right" class="tooltiplabel text-info" data-original-title="#{bundle['dataverse.description.title']}">
-                                        #{bundle.description}
-                                    </span>
-                                </label>
-                                <div class="col-sm-9 form-col-container">
-                                    <p class="help-block">
-                                        <span class="glyphicon glyphicon-info-sign"/>
-                                        <h:outputFormat value=" #{bundle.htmlAllowedMsg}" escape="false">
-                                            <f:param value="#{bundle.htmlAllowedTags}"/>
-                                        </h:outputFormat>
-                                    </p>
-                                    <p:inputTextarea id="description" tabindex="6" styleClass="form-control" value="#{DataversePage.dataverse.description}"
-                                                    rows="6" cols="50"
-                                                    autoResize="false">
-                                    </p:inputTextarea>
-                                    <p:message for="description" display="text"/>
+                                <div class="form-group clearfix">
+                                        <label class="col-sm-4 control-label" for="defaultRegisterUserType">
+                                            <span data-toggle="tooltip" data-placement="auto right" class="tooltiplabel text-info" data-original-title="#{bundle['dataverse.defaultRegisterUserType.title']}">
+                                                #{bundle['dataverse.defaultRegisterUserType']} <span class="glyphicon glyphicon-asterisk text-danger" title="#{bundle.requiredField}"/>
+                                            </span>
+                                        </label>
+                                        <div class="col-sm-8 form-col-container edit-compound-field">
+                                            <p:selectOneMenu id="defaultRegisterUserType" tabindex="12" value="#{DataversePage.dataverse.defaultRegisterUserType}">
+                                                <f:selectItem itemLabel="#{bundle['user.userType.ordinary']}" itemValue="ORDINARY" />
+                                                <f:selectItem itemLabel="#{bundle['user.userType.advance']}" itemValue="ADVANCE" />
+                                            </p:selectOneMenu>
+                                        </div>
                                 </div>
                             </div>
                         </div>
@@ -515,7 +598,7 @@
                             <o:importFunctions type="edu.harvard.iq.dataverse.util.MarkupChecker" />
                             <ui:fragment rendered="#{!empty DataversePage.dataverse.description and !widgetWrapper.widgetView}">
                                 <div id="dataverseDesc" style="margin-bottom:1em;">
-                                    <h:outputText value="#{MarkupChecker:sanitizeBasicHTML(DataversePage.dataverse.description)}" escape="false"/>
+                                    <h:outputText value="#{MarkupChecker:sanitizeBasicHTML(dataverseLocale.localeZh ? DataversePage.dataverse.descriptionZh : DataversePage.dataverse.description)}" escape="false"/>
                                 </div>
                                 <div class="clearfix"/>
                             </ui:fragment>
@@ -532,22 +615,22 @@
                                                 <div style="vertical-align:middle;">
                                                     <c:set var="dvFeatUrl" value="/dataverse/#{dv.alias}"/>
                                                     <ui:fragment rendered="#{empty dv.dataverseTheme.logo}">
-                                                        <a href="#{widgetWrapper.wrapURL(dvFeatUrl)}" title="#{dv.name}">
+                                                        <a href="#{widgetWrapper.wrapURL(dvFeatUrl)}" title="#{dataverseLocale.localeZh ? dv.nameZh : dv.name}">
                                                             <i class="icon-dataverse"></i>
                                                         </a>
                                                     </ui:fragment>
                                                     <ui:fragment rendered="#{!empty dv.dataverseTheme.logo and dv.dataverseTheme.logoFormat == 'SQUARE'}">
-                                                        <a href="#{widgetWrapper.wrapURL(dvFeatUrl)}" title="#{dv.name}">
-                                                            <img src="/logos/#{dv.logoOwnerId}/#{dv.dataverseTheme.logo}" alt="#{dv.name}"/>
+                                                        <a href="#{widgetWrapper.wrapURL(dvFeatUrl)}" title="#{dataverseLocale.localeZh ? dv.nameZh : dv.name}">
+                                                            <img src="/logos/#{dv.logoOwnerId}/#{dv.dataverseTheme.logo}" alt="#{dataverseLocale.localeZh ? dv.nameZh : dv.name}"/>
                                                         </a>
                                                     </ui:fragment>
                                                     <ui:fragment rendered="#{!empty dv.dataverseTheme.logo and dv.dataverseTheme.logoFormat == 'RECTANGLE'}">
-                                                        <a href="#{widgetWrapper.wrapURL(dvFeatUrl)}" title="#{dv.name}">
-                                                            <img src="/logos/#{dv.logoOwnerId}/#{dv.dataverseTheme.logo}" alt="#{dv.name}"/>
+                                                        <a href="#{widgetWrapper.wrapURL(dvFeatUrl)}" title="#{dataverseLocale.localeZh ? dv.nameZh : dv.name}">
+                                                            <img src="/logos/#{dv.logoOwnerId}/#{dv.dataverseTheme.logo}" alt="#{dataverseLocale.localeZh ? dv.nameZh : dv.name}"/>
                                                         </a>
                                                     </ui:fragment>
-                                                    <a href="#{widgetWrapper.wrapURL(dvFeatUrl)}" title="#{dv.name}">
-                                                        <h:outputText value="#{dv.name}"/>
+                                                    <a href="#{widgetWrapper.wrapURL(dvFeatUrl)}" title="#{dataverseLocale.localeZh ? dv.nameZh : dv.name}">
+                                                        <h:outputText value="#{dataverseLocale.localeZh ? dv.nameZh : dv.name}"/>
                                                     </a>
                                                 </div>
                                             </div>

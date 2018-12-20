@@ -447,8 +447,135 @@
     <field name="weighting" type="text_en" multiValued="false" stored="true" indexed="true"/>
     <field name="westLongitude" type="text_en" multiValued="true" stored="true" indexed="true"/>
 
-
-
+    <field name="name_zh" type="text_en" indexed="true" stored="true"/>
+   
+    <field name="dvName_zh" type="text_en" stored="true" indexed="true" multiValued="false"/>
+    <field name="dvCategory_zh" type="string" stored="true" indexed="true" multiValued="false"/>
+    <field name="dvAffiliation_zh" type="text_en" stored="true" indexed="true" multiValued="false"/>
+    <field name="dvDescription_zh" type="text_en" stored="true" indexed="true" multiValued="false"/>
+    <field name="publicationStatus_zh" type="string" stored="true" indexed="true" multiValued="true"/>
+   
+    <field name="dateFriendly_zh" type="text_en" stored="true" indexed="true" multiValued="false"/>
+   
+    <field name="parentName_zh" type="string" stored="true" indexed="false" multiValued="false"/>
+   
+    <field name="citation_zh" type="string" stored="true" indexed="false" multiValued="false"/>
+   
+    <field name="nameSort_zh" type="alphaOnlySort" indexed="true" stored="true"/>
+   
+    <field name="description_zh" type="text_en" multiValued="false" stored="true" indexed="true"/>
+   
+    <field name="unitOfAnalysis_zh" type="text_en" multiValued="true" stored="true" indexed="true"/>
+    <field name="universe_zh" type="text_en" multiValued="true" stored="true" indexed="true"/>
+    <field name="timeMethod_zh" type="text_en" multiValued="false" stored="true" indexed="true"/>
+    <field name="dataCollector_zh" type="text_en" multiValued="false" stored="true" indexed="true"/>
+    <field name="collectorTraining_zh" type="text_en" multiValued="false" stored="true" indexed="true"/>
+    <field name="frequencyOfDataCollection_zh" type="text_en" multiValued="false" stored="true" indexed="true"/>
+    <field name="samplingProcedure_zh" type="text_en" multiValued="false" stored="true" indexed="true"/>
+    <field name="targetSampleSize_zh" type="text_en" multiValued="false" stored="true" indexed="true"/>
+    <field name="targetSampleActualSize_zh" type="text_en" multiValued="false" stored="true" indexed="true"/>
+    <field name="targetSampleSizeFormula_zh" type="text_en" multiValued="false" stored="true" indexed="true"/>
+    <field name="deviationsFromSampleDesign_zh" type="text_en" multiValued="false" stored="true" indexed="true"/>
+    <field name="collectionMode_zh" type="text_en" multiValued="false" stored="true" indexed="true"/>
+    <field name="researchInstrument_zh" type="text_en" multiValued="false" stored="true" indexed="true"/>
+    <field name="dataCollectionSituation_zh" type="text_en" multiValued="false" stored="true" indexed="true"/>
+    <field name="actionsToMinimizeLoss_zh" type="text_en" multiValued="false" stored="true" indexed="true"/>
+    <field name="controlOperations_zh" type="text_en" multiValued="false" stored="true" indexed="true"/>
+    <field name="weighting_zh" type="text_en" multiValued="false" stored="true" indexed="true"/>
+    <field name="cleaningOperations_zh" type="text_en" multiValued="false" stored="true" indexed="true"/>
+    <field name="datasetLevelErrorNotes_zh" type="text_en" multiValued="false" stored="true" indexed="true"/>
+    <field name="responseRate_zh" type="text_en" multiValued="false" stored="true" indexed="true"/>
+    <field name="samplingErrorEstimates_zh" type="text_en" multiValued="false" stored="true" indexed="true"/>
+    <field name="otherDataAppraisal_zh" type="text_en" multiValued="false" stored="true" indexed="true"/>
+    <field name="socialScienceNotes_zh" type="text_en" multiValued="false" stored="true" indexed="true"/>
+    <field name="socialScienceNotesType_zh" type="text_en" multiValued="false" stored="true" indexed="true"/>
+    <field name="socialScienceNotesSubject_zh" type="text_en" multiValued="false" stored="true" indexed="true"/>
+    <field name="socialScienceNotesText_zh" type="text_en" multiValued="false" stored="true" indexed="true"/>
+   
+    <field name="title_zh" type="text_en" multiValued="false" stored="true" indexed="true"/>
+    <field name="subtitle_zh" type="text_en" multiValued="false" stored="true" indexed="true"/>
+    <field name="alternativeTitle_zh" type="text_en" multiValued="false" stored="true" indexed="true"/>
+    <field name="otherId_zh" type="text_en" multiValued="true" stored="true" indexed="true"/>
+    <field name="otherIdAgency_zh" type="text_en" multiValued="true" stored="true" indexed="true"/>
+    <field name="otherIdValue_zh" type="text_en" multiValued="true" stored="true" indexed="true"/>
+    <field name="author_zh" type="text_en" multiValued="true" stored="true" indexed="true"/>
+    <field name="authorName_zh" type="text_en" multiValued="true" stored="true" indexed="true"/>
+    <field name="authorAffiliation_zh" type="text_en" multiValued="true" stored="true" indexed="true"/>
+    <field name="authorIdentifierScheme_zh" type="text_en" multiValued="true" stored="true" indexed="true"/>
+    <field name="authorIdentifier_zh" type="text_en" multiValued="true" stored="true" indexed="true"/>
+    <field name="datasetContact_zh" type="text_en" multiValued="true" stored="true" indexed="true"/>
+    <field name="datasetContactName_zh" type="text_en" multiValued="true" stored="true" indexed="true"/>
+    <field name="datasetContactAffiliation_zh" type="text_en" multiValued="true" stored="true" indexed="true"/>
+    <field name="datasetContactEmail_zh" type="text_en" multiValued="true" stored="true" indexed="true"/>
+    <field name="dsDescription_zh" type="text_en" multiValued="true" stored="true" indexed="true"/>
+    <field name="dsDescriptionDate_zh" type="text_en" multiValued="true" stored="true" indexed="true"/>
+    <field name="dsDescriptionValue_zh" type="text_en" multiValued="true" stored="true" indexed="true"/>
+    <field name="subject_zh" type="text_en" multiValued="true" stored="true" indexed="true"/>
+    <field name="keyword_zh" type="text_en" multiValued="true" stored="true" indexed="true"/>
+    <field name="keywordValue_zh" type="text_en" multiValued="true" stored="true" indexed="true"/>
+    <field name="keywordVocabulary_zh" type="text_en" multiValued="true" stored="true" indexed="true"/>
+    <field name="keywordVocabularyURI_zh" type="text_en" multiValued="true" stored="true" indexed="true"/>
+    <field name="topicClassValue_zh" type="text_en" multiValued="true" stored="true" indexed="true"/>
+    <field name="topicClassVocab_zh" type="text_en" multiValued="true" stored="true" indexed="true"/>
+    <field name="topicClassVocabURI_zh" type="text_en" multiValued="true" stored="true" indexed="true"/>
+    <field name="topicClassification_zh" type="text_en" multiValued="true" stored="true" indexed="true"/>
+    <field name="publication_zh" type="text_en" multiValued="true" stored="true" indexed="true"/>
+    <field name="publicationCitation_zh" type="text_en" multiValued="true" stored="true" indexed="true"/>
+    <field name="publicationIDNumber_zh" type="text_en" multiValued="true" stored="true" indexed="true"/>
+    <field name="publicationIDType_zh" type="text_en" multiValued="true" stored="true" indexed="true"/>
+    <field name="publicationRelationType_zh" type="text_en" multiValued="true" stored="true" indexed="true"/>
+    <field name="publicationURL_zh" type="text_en" multiValued="true" stored="true" indexed="true"/>
+    <field name="notesText_zh" type="text_en" multiValued="false" stored="true" indexed="true"/>
+    <field name="language_zh" type="text_en" multiValued="true" stored="true" indexed="true"/>
+    <field name="producer_zh" type="text_en" multiValued="true" stored="true" indexed="true"/>
+    <field name="producerAbbreviation_zh" type="text_en" multiValued="true" stored="true" indexed="true"/>
+    <field name="producerAffiliation_zh" type="text_en" multiValued="true" stored="true" indexed="true"/>
+    <field name="producerLogoURL_zh" type="text_en" multiValued="true" stored="true" indexed="true"/>
+    <field name="producerName_zh" type="text_en" multiValued="true" stored="true" indexed="true"/>
+    <field name="producerURL_zh" type="text_en" multiValued="true" stored="true" indexed="true"/>
+    <field name="productionDate_zh" type="text_en" multiValued="false" stored="true" indexed="true"/>
+    <field name="productionPlace_zh" type="text_en" multiValued="false" stored="true" indexed="true"/>
+    <field name="contributor_zh" type="text_en" multiValued="true" stored="true" indexed="true"/>
+    <field name="contributorName_zh" type="text_en" multiValued="true" stored="true" indexed="true"/>
+    <field name="contributorType_zh" type="text_en" multiValued="true" stored="true" indexed="true"/>
+    <field name="grantNumber_zh" type="text_en" multiValued="true" stored="true" indexed="true"/>
+    <field name="grantNumberAgency_zh" type="text_en" multiValued="true" stored="true" indexed="true"/>
+    <field name="grantNumberValue_zh" type="text_en" multiValued="true" stored="true" indexed="true"/>
+    <field name="distributor_zh" type="text_en" multiValued="true" stored="true" indexed="true"/>
+    <field name="distributorAbbreviation_zh" type="text_en" multiValued="true" stored="true" indexed="true"/>
+    <field name="distributorAffiliation_zh" type="text_en" multiValued="true" stored="true" indexed="true"/>
+    <field name="distributorLogoURL_zh" type="text_en" multiValued="true" stored="true" indexed="true"/>
+    <field name="distributorName_zh" type="text_en" multiValued="true" stored="true" indexed="true"/>
+    <field name="distributorURL_zh" type="text_en" multiValued="true" stored="true" indexed="true"/>
+    <field name="distributionDate_zh" type="text_en" multiValued="false" stored="true" indexed="true"/>
+    <field name="depositor_zh" type="text_en" multiValued="false" stored="true" indexed="true"/>
+    <field name="dateOfDeposit_zh" type="text_en" multiValued="false" stored="true" indexed="true"/>
+    <field name="timePeriodCovered_zh" type="text_en" multiValued="true" stored="true" indexed="true"/>
+    <field name="timePeriodCoveredEnd_zh" type="text_en" multiValued="true" stored="true" indexed="true"/>
+    <field name="timePeriodCoveredStart_zh" type="text_en" multiValued="true" stored="true" indexed="true"/>
+    <field name="dateOfCollection_zh" type="text_en" multiValued="true" stored="true" indexed="true"/>
+    <field name="dateOfCollectionEnd_zh" type="text_en" multiValued="true" stored="true" indexed="true"/>
+    <field name="dateOfCollectionStart_zh" type="text_en" multiValued="true" stored="true" indexed="true"/>
+    <field name="kindOfData_zh" type="text_en" multiValued="true" stored="true" indexed="true"/>
+    <field name="series_zh" type="text_en" multiValued="false" stored="true" indexed="true"/>
+    <field name="seriesInformation_zh" type="text_en" multiValued="false" stored="true" indexed="true"/>
+    <field name="seriesName_zh" type="text_en" multiValued="false" stored="true" indexed="true"/>
+    <field name="software_zh" type="text_en" multiValued="true" stored="true" indexed="true"/>
+    <field name="softwareName_zh" type="text_en" multiValued="true" stored="true" indexed="true"/>
+    <field name="softwareVersion_zh" type="text_en" multiValued="true" stored="true" indexed="true"/>
+    <field name="relatedDatasets_zh" type="text_en" multiValued="true" stored="true" indexed="true"/>
+    <field name="relatedDatasetsCitation_zh" type="text_en" multiValued="true" stored="true" indexed="true"/>
+    <field name="relatedDatasetsIDNumber_zh" type="text_en" multiValued="true" stored="true" indexed="true"/>
+    <field name="relatedDatasetsIDType_zh" type="text_en" multiValued="true" stored="true" indexed="true"/>
+    <field name="relatedDatasetsRelationType_zh" type="text_en" multiValued="true" stored="true" indexed="true"/>
+    <field name="relatedDatasetsURL_zh" type="text_en" multiValued="true" stored="true" indexed="true"/>
+    <field name="relatedMaterial_zh" type="text_en" multiValued="true" stored="true" indexed="true"/>
+    <field name="otherReferences_zh" type="text_en" multiValued="true" stored="true" indexed="true"/>
+    <field name="dataSources_zh" type="text_en" multiValued="true" stored="true" indexed="true"/>
+    <field name="originOfSources_zh" type="text_en" multiValued="false" stored="true" indexed="true"/>
+    <field name="characteristicOfSources_zh" type="text_en" multiValued="false" stored="true" indexed="true"/>
+    <field name="accessToSources_zh" type="text_en" multiValued="false" stored="true" indexed="true"/>
+    
     <copyField source="description" dest="_text_" maxChars="3000"/>
 
     <!-- Added for Dataverse 4.0 Beta: make variable names and labels searchable in basic search https://redmine.hmdc.harvard.edu/issues/3945 -->
@@ -730,6 +857,115 @@
     <copyField source="variablesCHIA" dest="_text_" maxChars="3000"/>
     <copyField source="weighting" dest="_text_" maxChars="3000"/>
     <copyField source="westLongitude" dest="_text_" maxChars="3000"/>
+    
+    <!--for Chinese-->
+    <copyField source="description_zh" dest="_text_" maxChars="3000"/>
+    <copyField source="dvAffiliation_zh" dest="_text_" maxChars="3000"/>
+    <copyField source="name_zh" dest="_text_"/>
+    <copyField source="unitOfAnalysis_zh" dest="_text_" maxChars="3000"/>
+    <copyField source="universe_zh" dest="_text_" maxChars="3000"/>
+    <copyField source="timeMethod_zh" dest="_text_" maxChars="3000"/>
+    <copyField source="dataCollector_zh" dest="_text_" maxChars="3000"/>
+    <copyField source="collectorTraining_zh" dest="_text_" maxChars="3000"/>
+    <copyField source="frequencyOfDataCollection_zh" dest="_text_" maxChars="3000"/>
+    <copyField source="samplingProcedure_zh" dest="_text_" maxChars="3000"/>
+    <copyField source="targetSampleSize_zh" dest="_text_" maxChars="3000"/>
+    <copyField source="targetSampleActualSize_zh" dest="_text_" maxChars="3000"/>
+    <copyField source="targetSampleSizeFormula_zh" dest="_text_" maxChars="3000"/>
+    <copyField source="deviationsFromSampleDesign_zh" dest="_text_" maxChars="3000"/>
+    <copyField source="collectionMode_zh" dest="_text_" maxChars="3000"/>
+    <copyField source="researchInstrument_zh" dest="_text_" maxChars="3000"/>
+    <copyField source="dataCollectionSituation_zh" dest="_text_" maxChars="3000"/>
+    <copyField source="actionsToMinimizeLoss_zh" dest="_text_" maxChars="3000"/>
+    <copyField source="controlOperations_zh" dest="_text_" maxChars="3000"/>
+    <copyField source="weighting_zh" dest="_text_" maxChars="3000"/>
+    <copyField source="cleaningOperations_zh" dest="_text_" maxChars="3000"/>
+    <copyField source="datasetLevelErrorNotes_zh" dest="_text_" maxChars="3000"/>
+    <copyField source="responseRate_zh" dest="_text_" maxChars="3000"/>
+    <copyField source="samplingErrorEstimates_zh" dest="_text_" maxChars="3000"/>
+    <copyField source="otherDataAppraisal_zh" dest="_text_" maxChars="3000"/>
+    <copyField source="socialScienceNotes_zh" dest="_text_" maxChars="3000"/>
+    <copyField source="socialScienceNotesType_zh" dest="_text_" maxChars="3000"/>
+    <copyField source="socialScienceNotesSubject_zh" dest="_text_" maxChars="3000"/>
+    <copyField source="socialScienceNotesText_zh" dest="_text_" maxChars="3000"/>
+   
+    <copyField source="title_zh" dest="_text_" maxChars="3000"/>
+    <copyField source="subtitle_zh" dest="_text_" maxChars="3000"/>
+    <copyField source="alternativeTitle_zh" dest="_text_" maxChars="3000"/>
+    <copyField source="otherId_zh" dest="_text_" maxChars="3000"/>
+    <copyField source="otherIdAgency_zh" dest="_text_" maxChars="3000"/>
+    <copyField source="otherIdValue_zh" dest="_text_" maxChars="3000"/>
+    <copyField source="author_zh" dest="_text_" maxChars="3000"/>
+    <copyField source="authorName_zh" dest="_text_" maxChars="3000"/>
+    <copyField source="authorAffiliation_zh" dest="_text_" maxChars="3000"/>
+    <copyField source="authorIdentifierScheme_zh" dest="_text_" maxChars="3000"/>
+    <copyField source="authorIdentifier_zh" dest="_text_" maxChars="3000"/>
+    <copyField source="datasetContact_zh" dest="_text_" maxChars="3000"/>
+    <copyField source="datasetContactName_zh" dest="_text_" maxChars="3000"/>
+    <copyField source="datasetContactAffiliation_zh" dest="_text_" maxChars="3000"/>
+    <copyField source="datasetContactEmail_zh" dest="_text_" maxChars="3000"/>
+    <copyField source="dsDescription_zh" dest="_text_" maxChars="3000"/>
+    <copyField source="dsDescriptionValue_zh" dest="_text_" maxChars="3000"/>
+    <copyField source="dsDescriptionDate_zh" dest="_text_" maxChars="3000"/>
+    <copyField source="subject_zh" dest="_text_" maxChars="3000"/>
+    <copyField source="keyword_zh" dest="_text_" maxChars="3000"/>
+    <copyField source="keywordValue_zh" dest="_text_" maxChars="3000"/>
+    <copyField source="keywordVocabulary_zh" dest="_text_" maxChars="3000"/>
+    <copyField source="keywordVocabularyURI_zh" dest="_text_" maxChars="3000"/>
+    <copyField source="topicClassification_zh" dest="_text_" maxChars="3000"/>
+    <copyField source="topicClassValue_zh" dest="_text_" maxChars="3000"/>
+    <copyField source="topicClassVocab_zh" dest="_text_" maxChars="3000"/>
+    <copyField source="topicClassVocabURI_zh" dest="_text_" maxChars="3000"/>
+    <copyField source="publication_zh" dest="_text_" maxChars="3000"/>
+    <copyField source="publicationCitation_zh" dest="_text_" maxChars="3000"/>
+    <copyField source="publicationIDType_zh" dest="_text_" maxChars="3000"/>
+    <copyField source="publicationIDNumber_zh" dest="_text_" maxChars="3000"/>
+    <copyField source="publicationURL_zh" dest="_text_" maxChars="3000"/>
+    <copyField source="notesText_zh" dest="_text_" maxChars="3000"/>
+    <copyField source="language_zh" dest="_text_" maxChars="3000"/>
+    <copyField source="producer_zh" dest="_text_" maxChars="3000"/>
+    <copyField source="producerName_zh" dest="_text_" maxChars="3000"/>
+    <copyField source="producerAffiliation_zh" dest="_text_" maxChars="3000"/>
+    <copyField source="producerAbbreviation_zh" dest="_text_" maxChars="3000"/>
+    <copyField source="producerURL_zh" dest="_text_" maxChars="3000"/>
+    <copyField source="producerLogoURL_zh" dest="_text_" maxChars="3000"/>
+    <copyField source="productionDate_zh" dest="_text_" maxChars="3000"/>
+    <copyField source="productionPlace_zh" dest="_text_" maxChars="3000"/>
+    <copyField source="contributor_zh" dest="_text_" maxChars="3000"/>
+    <copyField source="contributorType_zh" dest="_text_" maxChars="3000"/>
+    <copyField source="contributorName_zh" dest="_text_" maxChars="3000"/>
+    <copyField source="grantNumber_zh" dest="_text_" maxChars="3000"/>
+    <copyField source="grantNumberAgency_zh" dest="_text_" maxChars="3000"/>
+    <copyField source="grantNumberValue_zh" dest="_text_" maxChars="3000"/>
+    <copyField source="distributor_zh" dest="_text_" maxChars="3000"/>
+    <copyField source="distributorName_zh" dest="_text_" maxChars="3000"/>
+    <copyField source="distributorAffiliation_zh" dest="_text_" maxChars="3000"/>
+    <copyField source="distributorAbbreviation_zh" dest="_text_" maxChars="3000"/>
+    <copyField source="distributorURL_zh" dest="_text_" maxChars="3000"/>
+    <copyField source="distributorLogoURL_zh" dest="_text_" maxChars="3000"/>
+    <copyField source="distributionDate_zh" dest="_text_" maxChars="3000"/>
+    <copyField source="depositor_zh" dest="_text_" maxChars="3000"/>
+    <copyField source="dateOfDeposit_zh" dest="_text_" maxChars="3000"/>
+    <copyField source="timePeriodCovered_zh" dest="_text_" maxChars="3000"/>
+    <copyField source="timePeriodCoveredStart_zh" dest="_text_" maxChars="3000"/>
+    <copyField source="timePeriodCoveredEnd_zh" dest="_text_" maxChars="3000"/>
+    <copyField source="dateOfCollection_zh" dest="_text_" maxChars="3000"/>
+    <copyField source="dateOfCollectionStart_zh" dest="_text_" maxChars="3000"/>
+    <copyField source="dateOfCollectionEnd_zh" dest="_text_" maxChars="3000"/>
+    <copyField source="kindOfData_zh" dest="_text_" maxChars="3000"/>
+    <copyField source="series_zh" dest="_text_" maxChars="3000"/>
+    <copyField source="seriesName_zh" dest="_text_" maxChars="3000"/>
+    <copyField source="seriesInformation_zh" dest="_text_" maxChars="3000"/>
+    <copyField source="software_zh" dest="_text_" maxChars="3000"/>
+    <copyField source="softwareName_zh" dest="_text_" maxChars="3000"/>
+    <copyField source="softwareVersion_zh" dest="_text_" maxChars="3000"/>
+    <copyField source="relatedMaterial_zh" dest="_text_" maxChars="3000"/>
+    <copyField source="relatedDatasets_zh" dest="_text_" maxChars="3000"/>
+    <copyField source="otherReferences_zh" dest="_text_" maxChars="3000"/>
+    <copyField source="dataSources_zh" dest="_text_" maxChars="3000"/>
+    <copyField source="originOfSources_zh" dest="_text_" maxChars="3000"/>
+    <copyField source="characteristicOfSources_zh" dest="_text_" maxChars="3000"/>
+    <copyField source="accessToSources_zh" dest="_text_" maxChars="3000"/>
 <!-- End: Dataverse Specific -->
     
     <!-- This can be enabled, in case the client does not know what fields may be searched. It isn't enabled by default
