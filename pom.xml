@@ -28,24 +28,6 @@
         <junit.vintage.version>5.3.1</junit.vintage.version>
         <junit.platform.version>1.3.1</junit.platform.version>
     </properties>
-    
-    <profiles>
-        <profile>
-            <id>dev</id>
-            <properties>
-                <profiles.active>dev</profiles.active>
-            </properties>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
-        </profile>
-        <profile>
-            <id>product</id>
-            <properties>
-                <profiles.active>product</profiles.active>
-            </properties>
-        </profile>
-    </profiles>
 
     <repositories>
         <repository>
@@ -742,12 +724,19 @@
           <activeByDefault>true</activeByDefault>
         </activation>
         <properties>
+            <profiles.active>dev</profiles.active>
             <testsToExclude>edu.harvard.iq.dataverse.NonEssentialTests</testsToExclude>
         </properties>
       </profile>
       <profile>
         <id>all-unit-tests</id>
       </profile>
+        <profile>
+            <id>product</id>
+            <properties>
+                <profiles.active>product</profiles.active>
+            </properties>
+        </profile>
       <!-- TODO: Add a profile to run API tests (integration tests that end in IT.java. See conf/docker-aio/run-test-suite.sh -->
     </profiles>
 </project>
