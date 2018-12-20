@@ -15,6 +15,7 @@ import javax.persistence.Index;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.validation.constraints.Size;
 import org.hibernate.validator.constraints.NotBlank;
 
@@ -25,16 +26,14 @@ import org.hibernate.validator.constraints.NotBlank;
  */
 @NamedQueries({
 		@NamedQuery( name="BuiltinUser.findAll",
-				query = "SELECT u FROM BuiltinUser u ORDER BY u.lastName"),
+				query = "SELECT u FROM BuiltinUser u ORDER BY u.userName"),
 		@NamedQuery( name="BuiltinUser.findByUserName",
 				query = "SELECT u FROM BuiltinUser u WHERE u.userName=:userName"),
-		@NamedQuery( name="BuiltinUser.findByEmail",
-				query = "SELECT o FROM BuiltinUser o WHERE LOWER(o.email) = LOWER(:email)"),
 		@NamedQuery( name="BuiltinUser.listByUserNameLike",
 				query = "SELECT u FROM BuiltinUser u WHERE u.userName LIKE :userNameLike")
 })
 @Entity
-@Table(indexes = {@Index(columnList="lastName")})  // for sorting the NamedQuery BuiltinUser.findAll
+@Table(indexes = {@Index(columnList="userName")})  // for sorting the NamedQuery BuiltinUser.findAll
 public class BuiltinUser implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -47,22 +46,26 @@ public class BuiltinUser implements Serializable {
     @ValidateUserName(message = "{user.illegalCharacters}")
     @Column(nullable = false, unique=true)  
     private String userName;
-
-    @NotBlank(message = "{user.invalidEmail}")
-    @ValidateEmail(message = "{user.invalidEmail}")
-    @Column(nullable = false, unique=true)    
-    private String email;
-
-    @NotBlank(message =  "{user.firstName}")
-    private String firstName;
-
-    @NotBlank(message = "{user.lastName}")
-    private String lastName;
     
     private int passwordEncryptionVersion; 
     private String encryptedPassword;
 
+    /**
+     * These attributes are kept as transients for legacy purposes, namely to ease
+     * the creation of users via API with serialization
+     * 
+     * We do not provide getters because the only time these need to be gotten
+     * is not individually
+     */
+    @Transient
+    private String email;
+    @Transient
+    private String firstName;
+    @Transient
+    private String lastName;
+    @Transient
     private String affiliation;
+    @Transient
     private String position;
     
     private String department;
@@ -85,6 +88,47 @@ public class BuiltinUser implements Serializable {
     private String zipCode;
     private UserType userType;
     
+    @Deprecated()
+    public String getEmail() {
+        return email;
+    }
+    @Deprecated()
+    public void setEmail(String email) {
+       this.email = email;
+    }
+    @Deprecated()
+    public String getFirstName() {
+       return firstName;
+    }
+    @Deprecated()
+    public void setFirstName(String firstName) {
+       this.firstName = firstName;
+    }
+    @Deprecated()
+    public String getLastName() {
+       return lastName;
+    }
+    @Deprecated()
+    public void setLastName(String lastName) {
+       this.lastName = lastName;
+    }
+    @Deprecated()
+    public String getAffiliation() {
+       return affiliation;
+    }
+    @Deprecated()
+    public void setAffiliation(String affiliation) {
+       this.affiliation = affiliation;
+    }
+    @Deprecated()
+    public String getPosition() {
+       return position;
+    }
+    @Deprecated()
+    public void setPosition(String position) {
+       this.position = position;
+    }
+    
     public void updateEncryptedPassword( String encryptedPassword, int algorithmVersion ) {
         setEncryptedPassword(encryptedPassword);
         setPasswordEncryptionVersion(algorithmVersion);
@@ -105,30 +149,6 @@ public class BuiltinUser implements Serializable {
     public void setUserName(String userName) {
         this.userName = userName;
     }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getFirstName() {
-        return firstName;
-    }
-
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-    }
     
     public String getEncryptedPassword() {
         return encryptedPassword;
@@ -145,23 +165,7 @@ public class BuiltinUser implements Serializable {
     public void setEncryptedPassword(String encryptedPassword) {
         this.encryptedPassword = encryptedPassword;
     }
-    
-    public String getAffiliation() {
-        return affiliation;
-    }
-
-    public void setAffiliation(String affiliation) {
-        this.affiliation = affiliation;
-    }
-
-    public String getPosition() {
-        return position;
-    }
-
-    public void setPosition(String position) {
-        this.position = position;
-    }
-    
+        
     public String getDisplayName(){
         return this.getFirstName() + " " + this.getLastName(); 
     }
@@ -271,10 +275,10 @@ public class BuiltinUser implements Serializable {
         return !((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id)));
     }
 
-	@Override
-	public String toString() {
-		return "BuiltinUser{" + "id=" + id + ", userName=" + userName + ", email=" + email + '}';
-	}
+    @Override
+    public String toString() {
+            return "BuiltinUser{" + "id=" + id + ", userName=" + userName + '}';
+    }
 
     public int getPasswordEncryptionVersion() {
         return passwordEncryptionVersion;
@@ -426,5 +430,18 @@ public class BuiltinUser implements Serializable {
 
     public void setUserType(UserType userType) {
         this.userType = userType;
+    }
+    /**
+     * This only exists at this point to ease creation of users via API.
+     * Previously we stored more information in the BuiltInUser, but this was
+     * removed and only stored with AuthenticatedUser.
+     * We use this along with the transient BuiltinUser attributes to gather
+     * needed data for user creation.
+     * 
+     * @deprecated
+     */
+    @Deprecated()
+    public AuthenticatedUserDisplayInfo getDisplayInfoForApiCreation() {
+        return new AuthenticatedUserDisplayInfo(firstName, lastName, email, affiliation, position );
     }
 }
