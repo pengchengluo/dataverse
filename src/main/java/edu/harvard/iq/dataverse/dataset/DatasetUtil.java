@@ -65,9 +65,7 @@ public class DatasetUtil {
 
             InputStream in = null;
             try {
-                if (dataAccess.getAuxFileAsInputStream(datasetLogoThumbnail + thumb48addedByImageThumbConverter) != null) {
                     in = dataAccess.getAuxFileAsInputStream(datasetLogoThumbnail + thumb48addedByImageThumbConverter);
-                }
             } catch (Exception ioex) {
             }
 
@@ -84,6 +82,7 @@ public class DatasetUtil {
             } else {
                 logger.fine("There is no thumbnail created from a dataset logo");
             }
+	    IOUtils.closeQuietly(in);
         }
         for (FileMetadata fileMetadata : dataset.getLatestVersion().getFileMetadatas()) {
             DataFile dataFile = fileMetadata.getDataFile();
@@ -147,7 +146,10 @@ public class DatasetUtil {
             } catch (IOException ex) {
                 logger.fine("Unable to read thumbnail image from file: " + ex);
                 return null;
-            }
+            } finally
+	    {
+		    IOUtils.closeQuietly(in);
+	    }
         } else {
             DataFile thumbnailFile = dataset.getThumbnailFile();
 

@@ -26,6 +26,7 @@ import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.inject.Named;
 import org.passay.CharacterRule;
+import org.apache.commons.io.IOUtils;
 
 /**
  * System-wide configuration
@@ -182,6 +183,8 @@ public class SystemConfig {
                             appVersionString = mavenProperties.getProperty("version");                        
                         } catch (IOException ioex) {
                             logger.warning("caught IOException trying to read and parse the pom properties file.");
+                        } finally {
+                            IOUtils.closeQuietly(mavenPropertiesInputStream);
                         }
                     }
                     
@@ -221,7 +224,12 @@ public class SystemConfig {
     }
 
     public String getSolrHostColonPort() {
-        String solrHostColonPort = settingsService.getValueForKey(SettingsServiceBean.Key.SolrHostColonPort, saneDefaultForSolrHostColonPort);
+        String SolrHost;
+        if ( System.getenv("SOLR_SERVICE_HOST") != null && System.getenv("SOLR_SERVICE_HOST") != ""){
+            SolrHost = System.getenv("SOLR_SERVICE_HOST");
+        }
+        else SolrHost = saneDefaultForSolrHostColonPort;
+        String solrHostColonPort = settingsService.getValueForKey(SettingsServiceBean.Key.SolrHostColonPort, SolrHost);
         return solrHostColonPort;
     }
 
@@ -999,6 +1007,11 @@ public class SystemConfig {
             //if no number in the setting we'll return 10
         }
         return retVal;
+    }
+    
+    public boolean isFilePIDsEnabled() {
+        boolean safeDefaultIfKeyNotFound = true;
+        return settingsService.isTrueForKey(SettingsServiceBean.Key.FilePIDsEnabled, safeDefaultIfKeyNotFound);
     }
     
 }
