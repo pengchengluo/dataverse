@@ -25,7 +25,7 @@ psql -d dvndb_v4_0_to_v4_94 -f ../upgrade_v4.6.2_to_v4.7.sql
 psql -d dvndb_v4_0_to_v4_94 -f ../upgrade_v4.7_to_v4.7.1.sql
 psql -d dvndb_v4_0_to_v4_94 -f ../upgrade_v4.7.1_to_v4.8.sql
 psql -d dvndb_v4_0_to_v4_94 -f ../upgrade_v4.8.3_to_v4.8.4.sql
-psql -d dvndb_v4_0_to_v4_94 -f ./upgrade_pku_to_v4.8.4.sql
+psql -d dvndb_v4_0_to_v4_94 -f ./upgrade_pku_to_v4.9.0.sql
 psql -d dvndb_v4_0_to_v4_94 -f ../upgrade_v4.8.6_to_v4.9.0.sql
 psql -d dvndb_v4_0_to_v4_94 -f ../upgrade_v4.9.1_to_v4.9.2.sql
 psql -d dvndb_v4_0_to_v4_94 -f ../upgrade_v4.9.2_to_v4.9.3.sql
