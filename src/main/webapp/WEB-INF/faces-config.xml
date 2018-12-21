@@ -5,7 +5,7 @@
               version="2.2">
     <application>
         <resource-bundle>
-            <base-name>edu.harvard.iq.dataverse.util.LocalBundle</base-name>
+            <base-name>Bundle</base-name>
             <var>bundle</var>
         </resource-bundle>     
         <resource-bundle>
