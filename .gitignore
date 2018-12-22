@@ -45,6 +45,11 @@ conf/docker-aio/testdata/
 scripts/installer/default.config
 *.pem
 
+# do not track IntelliJ IDEA files
+.idea
+**/*.iml
+
 /src/main/resources/environment/env-product.properties
 /src/main/resources/environment/env-dev.properties
 /src/main/resources/cn/edu/pku/lib/dataverse/usage/GeoLite2-City.mmdb
+
