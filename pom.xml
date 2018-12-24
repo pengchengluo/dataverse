@@ -545,7 +545,6 @@
             <version>2.5.1</version>
         </dependency>
         <!--  Full text indexing -->
-        </dependency>
         <dependency>
             <groupId>org.apache.tika</groupId>
             <artifactId>tika-parsers</artifactId>
@@ -767,7 +766,9 @@
                             <encoding>UTF-8</encoding>
                             <src>src/main/resources/cn/edu/pku/lib/dataverse/authorization/providers/iaaa</src> 
                             <dest>target/native2ascii_tmp</dest> 
-                            <includes>**/*.properties</includes> 
+                            <includes>
+                                <include>**/*.properties</include>
+                            </includes> 
                         </configuration>
                     </execution>
                 </executions>

@@ -288,8 +288,6 @@ public class DatasetPage implements java.io.Serializable {
     Map<Long, List<ExternalTool>> configureToolsByFileId = new HashMap<>();
     Map<Long, List<ExternalTool>> exploreToolsByFileId = new HashMap<>();
     
-    private String language;
-    
     public Boolean isHasRsyncScript() {
         return hasRsyncScript;
     }
