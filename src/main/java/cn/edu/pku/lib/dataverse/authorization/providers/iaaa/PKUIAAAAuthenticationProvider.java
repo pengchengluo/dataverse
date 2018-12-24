@@ -3,12 +3,13 @@ package cn.edu.pku.lib.dataverse.authorization.providers.iaaa;
 import edu.harvard.iq.dataverse.authorization.AuthenticationProviderDisplayInfo;
 import edu.harvard.iq.dataverse.authorization.AuthenticationRequest;
 import edu.harvard.iq.dataverse.authorization.AuthenticationResponse;
+import edu.harvard.iq.dataverse.authorization.AuthenticationServiceBean;
 import edu.harvard.iq.dataverse.authorization.CredentialsAuthenticationProvider;
 import java.util.Arrays;
 import java.util.List;
 import static edu.harvard.iq.dataverse.authorization.CredentialsAuthenticationProvider.Credential;
-import edu.harvard.iq.dataverse.authorization.users.AuthenticatedUser;
 import java.util.logging.Logger;
+import javax.ejb.EJB;
 
 /**
  * 
@@ -27,6 +28,8 @@ public class PKUIAAAAuthenticationProvider implements CredentialsAuthenticationP
                     new Credential(KEY_RAND));
       
     final PKUIAAAUserServiceBean bean;
+    @EJB
+    AuthenticationServiceBean authenticationService;
 
     public PKUIAAAAuthenticationProvider( PKUIAAAUserServiceBean bean ) {
         this.bean = bean;
@@ -86,13 +89,6 @@ public class PKUIAAAAuthenticationProvider implements CredentialsAuthenticationP
                 user.setPosition("student");
             else 
                 user.setPosition("other");
-            PKUIAAAUser foundUser = bean.findByUserName(user.getUserName());
-            if(foundUser == null){
-                user.setUserType(AuthenticatedUser.UserType.ORDINARY);
-                bean.save(user);
-            }else{
-                user = foundUser;
-            }
         }catch(PKUIAAAException ex){
             return AuthenticationResponse.makeFail("PKU IAAA authentication error");
         }
