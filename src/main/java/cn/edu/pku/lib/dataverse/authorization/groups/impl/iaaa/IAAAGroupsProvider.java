@@ -69,12 +69,17 @@ public class IAAAGroupsProvider implements GroupProvider<Group> {
 
     @Override
     public Set<Group> groupsFor(RoleAssignee ra) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        if(ra instanceof AuthenticatedUser){
+            if(cn.edu.pku.lib.dataverse.util.UserUtils.isPKUIAAAUser((AuthenticatedUser)ra)){
+                return Collections.singleton((Group)IAAAUsers.get());
+            }
+        }
+        return Collections.EMPTY_SET;
     }
 
     @Override
     public Set<Group> groupsFor(DataverseRequest req) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return groupsFor(req.getUser());
     }
     
 }

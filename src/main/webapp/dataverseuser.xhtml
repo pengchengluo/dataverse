@@ -775,30 +775,6 @@
                                     </div>
                                 </div>
                                 <div class="form-group" jsf:rendered="#{DataverseUserPage.editMode == 'CREATE' or DataverseUserPage.editMode == 'EDIT'}">
-                                <!-- First Name -->
-                                    <label for="firstName" class="col-sm-3 control-label">
-                                        <span data-toggle="tooltip" data-placement="auto right" class="tooltiplabel text-info" data-original-title="#{bundle['user.firstName.tip']}">
-                                            #{bundle['user.firstName']} <span class="glyphicon glyphicon-asterisk text-danger"/>
-                                        </span>
-                                    </label>
-                                    <div class="col-sm-4">
-                                        <p:inputText id="firstName" styleClass="form-control" value="#{DataverseUserPage.userDisplayInfo.firstName}" />
-                                        <p:message for="firstName" display="text" />
-                                    </div>
-                                </div>
-                                <div class="form-group" jsf:rendered="#{DataverseUserPage.editMode == 'CREATE' or DataverseUserPage.editMode == 'EDIT'}">
-                                    <!-- Last Name -->
-                                    <label for="lastName" class="col-sm-3 control-label">
-                                        <span data-toggle="tooltip" data-placement="auto right" class="tooltiplabel text-info" data-original-title="#{bundle['user.lastName.tip']}">
-                                            #{bundle['user.lastName']} <span class="glyphicon glyphicon-asterisk text-danger"/>
-                                        </span>
-                                    </label>
-                                    <div class="col-sm-4">
-                                        <p:inputText id="lastName" styleClass="form-control" value="#{DataverseUserPage.userDisplayInfo.lastName}" />
-                                        <p:message for="lastName" display="text" />
-                                    </div>
-                                </div>
-                                <div class="form-group" jsf:rendered="#{DataverseUserPage.editMode == 'CREATE' or DataverseUserPage.editMode == 'EDIT'}">
                                     <!-- Email -->
                                     <label for="email" class="col-sm-2 control-label">
                                         <span data-toggle="tooltip" data-placement="auto right" class="tooltiplabel text-info" data-original-title="#{user.email.tip}">
