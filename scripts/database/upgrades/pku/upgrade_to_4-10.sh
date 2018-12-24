@@ -30,3 +30,4 @@ psql -d dvndb_v4_0_to_v4_94 -f ../upgrade_v4.8.6_to_v4.9.0.sql
 psql -d dvndb_v4_0_to_v4_94 -f ../upgrade_v4.9.1_to_v4.9.2.sql
 psql -d dvndb_v4_0_to_v4_94 -f ../upgrade_v4.9.2_to_v4.9.3.sql
 psql -d dvndb_v4_0_to_v4_94 -f ./upgrade_pku_to_v4.9.4.sql
+psql -d dvndb_v4_0_to_v4_94 -f ../upgrade_v4.9.4_to_v4.10.sql
