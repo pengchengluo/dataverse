@@ -29,6 +29,11 @@ public class BundleUtil {
         return getStringFromBundle(key, arguments, bundle);
     }
     
+    public static String getStringFromBundle(String key, List<String> arguments, Locale locale) {
+        ResourceBundle bundle = ResourceBundle.getBundle(defaultBundleFile, locale);
+        return getStringFromBundle(key, arguments, bundle);
+    }
+
     public static String getStringFromBundle(String key, List<String> arguments, ResourceBundle bundle) {
         try {
           return getStringFromBundleNoMissingCheck(key, arguments, bundle);
