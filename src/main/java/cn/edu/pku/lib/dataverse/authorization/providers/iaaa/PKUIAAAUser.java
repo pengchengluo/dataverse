@@ -24,31 +24,15 @@ import org.hibernate.validator.constraints.NotBlank;
  * @author luopc
  * @version 1.0
  */
-@NamedQueries({
-		@NamedQuery( name="PKUIAAAUser.findByUserName",
-				query = "SELECT u FROM PKUIAAAUser u WHERE u.userName=:userName"),
-                @NamedQuery( name="PKUIAAAUser.findByEmail",
-				query = "SELECT u FROM PKUIAAAUser u WHERE u.email=:email")
-})
-@Entity
 public class PKUIAAAUser implements Serializable {
 
     private static final long serialVersionUID = 3510473779783539190L;
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     
-    @Column(nullable = false, unique = true)
-    @NotBlank
     private String userName;
-     @NotBlank(message = "Please enter your first name.")
     private String firstName;
-    @NotBlank(message = "Please enter your last name.")
     private String lastName;
-    @ValidateEmail(message = "Please enter a valid email address.")
-    @NotBlank(message = "Please enter a valid email address.")
-    @Column(nullable = false, unique = true)
     private String email;
     
     private String affiliation;

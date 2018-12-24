@@ -114,40 +114,24 @@ public class AuthenticatedUser implements User, Serializable {
     
     private boolean superuser;
 
-    @Transient
+
     private String department;
-    @Transient
     private String speciality;
-    @Transient
     private String researchInterest;
     
-    @Transient
     private String gender;
-    @Transient
     private String education;
-    @Transient
     private String professionalTitle;
-    @Transient
     private String supervisor;
-    @Transient
     private String certificateType;
-    @Transient
     private String certificateNumber;
-    @Transient
     private String officePhone;
-    @Transient
     private String cellphone;
-    @Transient
     private String otherEmail;
-    @Transient
     private String country;
-    @Transient
     private String province;
-    @Transient
     private String city;
-    @Transient
     private String address;
-    @Transient
     private String zipCode;
     private UserType userType;
     /**

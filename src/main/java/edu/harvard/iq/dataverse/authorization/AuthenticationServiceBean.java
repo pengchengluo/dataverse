@@ -352,6 +352,7 @@ public class AuthenticationServiceBean {
         if ( resp.getStatus() == AuthenticationResponse.Status.SUCCESS ) {
             // yay! see if we already have this user.
             AuthenticatedUser user = lookupUser(authenticationProviderId, resp.getUserId());
+            user = cn.edu.pku.lib.dataverse.util.UserUtils.createAuthUserForPKUIAAAUser(resp.getUserId(), resp.getUserDisplayInfo(), this, prv, user);
             user.applyDisplayInfo(resp.getUserDisplayInfo());
 
             if (user != null){

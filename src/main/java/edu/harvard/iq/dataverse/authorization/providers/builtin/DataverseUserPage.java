@@ -399,15 +399,6 @@ public class DataverseUserPage implements java.io.Serializable {
         }else {
             String emailBeforeUpdate = currentUser.getEmail();
             AuthenticatedUser savedUser = authenticationService.updateAuthenticatedUser(currentUser, userDisplayInfo);
-            if(UserUtils.isBuiltInUser(savedUser)){
-                BuiltinUser builtinUser = builtinUserService.findByUserName(currentUser.getUserIdentifier());
-                builtinUser.applyDisplayInfo(userDisplayInfo);
-                builtinUserService.save(builtinUser);
-            }else if(UserUtils.isPKUIAAAUser(savedUser)){
-                PKUIAAAUser pkuIAAAUser = pkuIAAAUserService.findByUserName(currentUser.getUserIdentifier());
-                pkuIAAAUser.applyDisplayInfo(userDisplayInfo);
-                pkuIAAAUserService.save(pkuIAAAUser);
-            }
             String emailAfterUpdate = savedUser.getEmail();
             editMode = null;
             StringBuilder msg = new StringBuilder( passwordChanged ? BundleUtil.getStringFromBundle("userPage.passwordChanged" )
