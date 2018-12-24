@@ -1,6 +1,8 @@
 package edu.harvard.iq.dataverse;
 
 import edu.harvard.iq.dataverse.authorization.users.AuthenticatedUser;
+import edu.harvard.iq.dataverse.util.DateUtil;
+
 import java.io.Serializable;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
@@ -37,6 +39,9 @@ public class UserNotification implements Serializable {
     @ManyToOne
     @JoinColumn( nullable = false )
     private AuthenticatedUser user;
+    @ManyToOne
+    @JoinColumn( nullable = true )
+    private AuthenticatedUser requestor;
     private Timestamp sendDate;
     private boolean readNotification;
     
@@ -69,6 +74,14 @@ public class UserNotification implements Serializable {
 
     public void setUser(AuthenticatedUser user) {
         this.user = user;
+    }
+        
+    public AuthenticatedUser getRequestor() {
+        return requestor;
+    }
+
+    public void setRequestor(AuthenticatedUser requestor) {
+        this.requestor = requestor;
     }
 
     public String getSendDate() {
@@ -145,5 +158,9 @@ public class UserNotification implements Serializable {
 
     public void setMessage(String message) {
         this.message = message;
+    }
+
+    public String getLocaleSendDate() {
+        return DateUtil.formatDate(sendDate);
     }
 }

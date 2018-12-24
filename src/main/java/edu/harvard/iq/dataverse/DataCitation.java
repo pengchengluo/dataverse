@@ -17,7 +17,9 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
@@ -30,6 +32,7 @@ import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 
+import edu.harvard.iq.dataverse.util.BundleUtil;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
 
@@ -154,7 +157,7 @@ public class DataCitation {
     }
 
     public String getAuthorsString() {
-        return String.join(";", authors);
+        return String.join("; ", authors);
     }
 
     public String getTitle() {
@@ -216,7 +219,6 @@ public class DataCitation {
         citationList.add(version);
 
         StringBuilder citation = new StringBuilder(citationList.stream().filter(value -> !StringUtils.isEmpty(value))
-                // QDRCustom: Use period to join values, not comma
                 .collect(Collectors.joining(separator)));
 
         if ((fileTitle != null) && !isDirect()) {
@@ -271,20 +273,27 @@ public class DataCitation {
         out.write(publisher);
         out.write("},\r\n");
         if(getFileTitle() !=null && isDirect()) {
-        out.write("title = {");
-        out.write(fileTitle);
-        out.write("},\r\n");
-        out.write("booktitle = {");
-        out.write(title);
-        out.write("},\r\n");
+            out.write("title = {");
+            out.write(fileTitle);
+            out.write("},\r\n");
+            out.write("booktitle = {");
+            out.write(title);
+            out.write("},\r\n");
         } else {
             out.write("title = {");
             out.write(title);
             out.write("},\r\n");
-            
+        }
+        if(UNF != null){
+            out.write("UNF = {");
+            out.write(UNF);
+            out.write("},\r\n");
         }
         out.write("year = {");
         out.write(year);
+        out.write("},\r\n");
+        out.write("version = {");
+        out.write(version);
         out.write("},\r\n");
         out.write("doi = {");
         out.write(persistentId.getAuthority());
@@ -293,6 +302,7 @@ public class DataCitation {
         out.write("},\r\n");
         out.write("url = {");
         out.write(persistentId.toURL().toString());
+        out.write("}\r\n");
         out.write("}\r\n");
         out.flush();
     }
@@ -326,9 +336,10 @@ public class DataCitation {
         if (seriesTitle != null) {
             out.write("T3  - " + seriesTitle + "\r\n");
         }
+        /* Removing abstract/description per Request from G. King in #3759
         if(description!=null) {
             out.write("AB  - " + flattenHtml(description) + "\r\n");
-        }
+        } */
         for (String author : authors) {
             out.write("AU  - " + author + "\r\n");
         }
@@ -511,12 +522,13 @@ public class DataCitation {
 
         xmlw.writeCharacters(sectionString);
         xmlw.writeEndElement(); // section
-
+/* Removing abstract/description per Request from G. King in #3759
         xmlw.writeStartElement("abstract");
         if(description!=null) {
             xmlw.writeCharacters(flattenHtml(description));
         }
         xmlw.writeEndElement(); // abstract
+         */
 
         xmlw.writeStartElement("dates");
         xmlw.writeStartElement("year");
@@ -607,9 +619,30 @@ public class DataCitation {
 
         xmlw.writeEndElement(); // records
         xmlw.writeEndElement(); // xml
+
     }
 
+	public Map<String, String> getDataCiteMetadata() {
+        Map<String, String> metadata = new HashMap<>();
+        String authorString = getAuthorsString();
 
+        if (authorString.isEmpty()) {
+            authorString = ":unav";
+    }
+        String producerString = getPublisher();
+
+        if (producerString.isEmpty()) {
+            producerString = ":unav";
+        }
+
+        metadata.put("datacite.creator", authorString);
+        metadata.put("datacite.title", getTitle());
+        metadata.put("datacite.publisher", producerString);
+        metadata.put("datacite.publicationyear", getYear());
+        return metadata;
+	}
+
+	
     // helper methods   
     private String formatString(String value, boolean escapeHtml) {
         return formatString(value, escapeHtml, "");
@@ -735,11 +768,11 @@ public class DataCitation {
         String version = "";
         if (!dsv.getDataset().isHarvested()) {
             if (dsv.isDraft()) {
-                version = "DRAFT VERSION";
+                version = BundleUtil.getStringFromBundle("draftversion");
             } else if (dsv.getVersionNumber() != null) {
                 version = "V" + dsv.getVersionNumber();
                 if (dsv.isDeaccessioned()) {
-                    version += ", DEACCESSIONED VERSION";
+                    version += ", "+ BundleUtil.getStringFromBundle("deaccessionedversion");
                 }
             }
         }

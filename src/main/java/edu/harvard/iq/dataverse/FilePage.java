@@ -332,7 +332,7 @@ public class FilePage implements java.io.Serializable {
         editDataset.getEditVersion().getTermsOfUseAndAccess().setFileAccessRequest(allowRequest);
         
         if (fileNames != null) {
-            String successMessage = JH.localize("file.restricted.success");
+            String successMessage = BundleUtil.getStringFromBundle("file.restricted.success");
             successMessage = successMessage.replace("{0}", fileNames);
             JsfHelper.addFlashMessage(successMessage);
         }
@@ -537,7 +537,7 @@ public class FilePage implements java.io.Serializable {
         if (!constraintViolations.isEmpty()) {
              //JsfHelper.addFlashMessage(JH.localize("dataset.message.validationError"));
              fileDeleteInProgress = false;
-             JH.addMessage(FacesMessage.SEVERITY_ERROR, JH.localize("dataset.message.validationError"));
+             JH.addMessage(FacesMessage.SEVERITY_ERROR, BundleUtil.getStringFromBundle("dataset.message.validationError"));
             //FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Validation Error", "See below for details."));
             return "";
         }
@@ -570,10 +570,10 @@ public class FilePage implements java.io.Serializable {
 
 
         if (fileDeleteInProgress) {
-            JsfHelper.addSuccessMessage(JH.localize("file.message.deleteSuccess"));
+            JsfHelper.addSuccessMessage(BundleUtil.getStringFromBundle("file.message.deleteSuccess"));
             fileDeleteInProgress = false;
         } else {
-            JsfHelper.addSuccessMessage(JH.localize("file.message.editSuccess"));
+            JsfHelper.addSuccessMessage(BundleUtil.getStringFromBundle("file.message.editSuccess"));
         }
         
         setVersion("DRAFT");
@@ -871,7 +871,7 @@ public class FilePage implements java.io.Serializable {
     //Provenance fragment bean calls this to show error dialogs after popup failure
     //This can probably be replaced by calling JsfHelper from the provpopup bean
     public void showProvError() {
-        JH.addMessage(FacesMessage.SEVERITY_ERROR, JH.localize("file.metadataTab.provenance.error"));
+        JH.addMessage(FacesMessage.SEVERITY_ERROR, BundleUtil.getStringFromBundle("file.metadataTab.provenance.error"));
     }
 
 }
