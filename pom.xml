@@ -544,6 +544,7 @@
             <artifactId>pinyin4j</artifactId>
             <version>2.5.1</version>
         <!--  Full text indexing -->
+        </dependency>
         <dependency>
             <groupId>org.apache.tika</groupId>
             <artifactId>tika-parsers</artifactId>
