@@ -66,5 +66,15 @@ public class IAAAGroupsProvider implements GroupProvider<Group> {
     public Set<Group> findGlobalGroups() {
         return Collections.singleton((Group)IAAAUsers.get());
     }
+
+    @Override
+    public Set<Group> groupsFor(RoleAssignee ra) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public Set<Group> groupsFor(DataverseRequest req) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
     
 }

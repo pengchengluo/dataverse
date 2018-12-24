@@ -350,6 +350,16 @@ public class DataverseUserPage implements java.io.Serializable {
                     UserNotification.Type.CREATEACC, null);
 
             // go back to where user came from
+            
+            // (but if they came from the login page, then send them to the 
+            // root dataverse page instead. the only situation where we do 
+            // want to send them back to the login page is if they hit 
+            // 'cancel'. 
+            
+            if ("/loginpage.xhtml".equals(redirectPage) || "loginpage.xhtml".equals(redirectPage)) {
+                redirectPage = "/dataverse.xhtml";
+            }
+            
             if ("dataverse.xhtml".equals(redirectPage)) {
                 redirectPage = redirectPage + "?alias=" + dataverseService.findRootDataverse().getAlias();
             }
@@ -719,5 +729,17 @@ public class DataverseUserPage implements java.io.Serializable {
             this.userDisplayInfo.setUserType(UserType.ADVANCE);
         }
         FacesContext.getCurrentInstance().renderResponse();
+    }
+
+    public String getRequestorName(UserNotification notification) {
+        if(notification == null) return BundleUtil.getStringFromBundle("notification.email.info.unavailable");
+        if(notification.getRequestor() == null) return BundleUtil.getStringFromBundle("notification.email.info.unavailable");;
+        return (notification.getRequestor().getLastName() != null && notification.getRequestor().getLastName() != null) ? notification.getRequestor().getFirstName() + " " + notification.getRequestor().getLastName() : BundleUtil.getStringFromBundle("notification.email.info.unavailable");
+    }
+    
+    public String getRequestorEmail(UserNotification notification) {
+        if(notification == null) return BundleUtil.getStringFromBundle("notification.email.info.unavailable");;
+        if(notification.getRequestor() == null) return BundleUtil.getStringFromBundle("notification.email.info.unavailable");;
+        return notification.getRequestor().getEmail() != null ? notification.getRequestor().getEmail() : BundleUtil.getStringFromBundle("notification.email.info.unavailable");
     }
 }
