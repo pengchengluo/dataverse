@@ -74,4 +74,9 @@ public class BuiltInGroupsProvider implements GroupProvider<Group> {
     public Set<Group> findGlobalGroups() {
         return CollectionHelper.asSet(AllUsers.get(), AuthenticatedUsers.get());
     }
+    
+    public Group getByIdentifier(String identifier){
+        return identifier.equals(AllUsers.get().getIdentifier()) ? AllUsers.get()
+                : (identifier.equals(AuthenticatedUsers.get().getIdentifier()) ? AuthenticatedUsers.get() : null);
+    }
 }

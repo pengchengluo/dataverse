@@ -7,7 +7,11 @@
         <resource-bundle>
             <base-name>Bundle</base-name>
             <var>bundle</var>
-        </resource-bundle>
+        </resource-bundle>     
+        <resource-bundle>
+            <base-name>cn.edu.pku.lib.dataverse.authorization.providers.iaaa.PKUIAAALogin</base-name>
+            <var>pkuiaaalogin</var>
+        </resource-bundle>    
         <locale-config>
             <default-locale>en</default-locale>
             <supported-locale>fr</supported-locale>

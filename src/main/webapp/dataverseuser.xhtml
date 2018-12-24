@@ -201,6 +201,33 @@
                                                         </o:param>
                                                     </h:outputFormat>
                                                 </ui:fragment>
+                                                <ui:fragment rendered="#{item.type == 'REQUESTJOINGROUP'}">
+                                                    <i class="icon-dataset text-icon-inline text-muted"></i>
+                                                    <h:outputFormat value="#{bundle['notification.requestJoinGroup']}" escape="false">
+                                                        <o:param>
+                                                            <a href="/user-group-manage.xhtml?groupId=#{item.theObject.id}" title="#{item.theObject.displayName}">#{item.theObject.displayName}</a>
+                                                        </o:param>
+                                                    </h:outputFormat>
+                                                </ui:fragment>
+                                                <ui:fragment rendered="#{item.type == 'GRANTJOINGROUP'}">
+                                                    <i class="icon-dataset text-icon-inline text-muted"></i>
+                                                    <h:outputFormat value="#{bundle['notification.grantJoinGroup']}" escape="false">
+                                                        <o:param>
+                                                            <i>#{item.theObject.displayName}</i>
+                                                        </o:param>
+                                                    </h:outputFormat>
+                                                </ui:fragment>
+                                                <ui:fragment rendered="#{item.type == 'REJECTJOINGROUP'}">
+                                                    <i class="icon-dataset text-icon-inline text-muted"></i>
+                                                    <h:outputFormat value="#{bundle['notification.rejectJoinGroup']}" escape="false">
+                                                        <o:param>
+                                                            <i>#{item.theObject.displayName}</i>
+                                                        </o:param>
+                                                        <o:param>
+                                                            <i>#{item.message}</i>
+                                                        </o:param>
+                                                    </h:outputFormat>
+                                                </ui:fragment>
                                                 <ui:fragment rendered="#{item.type == 'MAPLAYERUPDATED'}">
                                                     <i class="icon-dataset text-icon-inline text-muted"></i>
                                                     <h:outputFormat value="#{bundle['notification.worldMap.added']}" escape="false">
@@ -365,41 +392,25 @@
                                 </div>
                                 <!-- Username -->
                                 <div class="form-group">
-                                    <label for="userNameEmail" class="col-sm-3 control-label">
+                                    <label for="userNameEmail" class="col-sm-2 control-label">
                                         #{bundle['user.username']}
                                     </label>
-                                    <div class="col-sm-9">
+                                    <div class="col-sm-10">
                                         <p class="form-control-static">#{DataverseUserPage.currentUser.identifier.replaceFirst("@", "")}</p>
                                     </div>
                                 </div>
-                                <!-- First Name -->
-                                <div class="form-group">
-                                    <label for="firstName" class="col-sm-3 control-label">
-                                        #{bundle['user.firstName']}
-                                    </label>
-                                    <div class="col-sm-9">
-                                        <p class="form-control-static">#{DataverseUserPage.currentUser.firstName}</p>
-                                    </div>
-                                </div>
-                                <!-- Last Name -->
-                                <div class="form-group">
-                                    <label for="lastName" class="col-sm-3 control-label">
-                                        #{bundle['user.lastName']}
-                                    </label>
-                                    <div class="col-sm-9">
-                                        <p class="form-control-static">#{DataverseUserPage.currentUser.lastName}</p>
-                                    </div>
-                                </div>
                                 <!-- Email -->
-                                <div class="form-group">
-                                    <label for="email" class="col-sm-3 control-label">
+                                <div class="form-group col-sm-6">
+                                    <label for="email" class="col-sm-4 control-label">
                                         #{bundle.email}
                                     </label>
-                                    <div class="col-sm-9 form-col-container">
+                                    <div class="col-sm-8">
+                                        <p class="form-control-static">#{DataverseUserPage.currentUser.email}</p>
+                                    </div>
+                                </div>
+                                <div class="form-group col-sm-6">
+                                    <div class="col-sm-12 form-col-container">
                                         <div class="col-sm-4 form-col-container">
-                                            <p class="form-control-static">#{DataverseUserPage.currentUser.email}</p>
-                                        </div>
-                                        <div class="col-sm-2 form-col-container">
                                             <p class="form-control-static #{DataverseUserPage.emailIsVerified ? 'text-success' : 'text-danger'}">
                                                 <ui:fragment rendered="#{DataverseUserPage.emailNotVerified}">
                                                     <span class="glyphicon glyphicon-ban-circle"/> #{bundle['confirmEmail.notVerified']}
@@ -409,19 +420,37 @@
                                                 </ui:fragment>
                                             </p>
                                         </div>
-                                        <div class="col-sm-1">
+                                        <div class="col-sm-8">
                                             <h:commandLink rendered="#{DataverseUserPage.showVerifyEmailButton()}" styleClass="btn btn-default" action="#{DataverseUserPage.sendConfirmEmail()}">
                                                 <span class="glyphicon glyphicon-ok"></span> #{bundle['confirmEmail.submitRequest']}
                                             </h:commandLink>
                                         </div>
                                     </div>
                                 </div>
+                                <!-- Last Name -->
+                                <div class="form-group col-sm-6">
+                                    <label for="lastName" class="col-sm-4 control-label">
+                                        #{bundle['user.lastName']}
+                                    </label>
+                                    <div class="col-sm-8">
+                                        <p class="form-control-static">#{DataverseUserPage.currentUser.lastName}</p>
+                                    </div>
+                                </div>
+                                <!-- First Name -->
+                                <div class="form-group col-sm-6">
+                                    <label for="firstName" class="col-sm-4 control-label">
+                                        #{bundle['user.firstName']}
+                                    </label>
+                                    <div class="col-sm-8">
+                                        <p class="form-control-static">#{DataverseUserPage.currentUser.firstName}</p>
+                                    </div>
+                                </div>
                                 <!-- ORCID iD, for example -->
-                                <div class="form-group" jsf:rendered="#{DataverseUserPage.userAuthProvider.displayIdentifier}">
-                                    <label for="userPersistentId" class="col-sm-3 control-label">
+                                <div class="form-group col-sm-6" jsf:rendered="#{DataverseUserPage.userAuthProvider.displayIdentifier}">
+                                    <label for="userPersistentId" class="col-sm-4 control-label">
                                         #{DataverseUserPage.userAuthProvider.persistentIdName}
                                     </label>
-                                    <div class="col-sm-9">
+                                    <div class="col-sm-8">
                                         <p class="form-control-static">
                                             <h:graphicImage value="#{DataverseUserPage.userAuthProvider.logo}" height="16" width="16"/>&#160;
                                             <h:outputLink value="#{DataverseUserPage.userAuthProvider.persistentIdUrlPrefix}#{DataverseUserPage.currentUser.authenticatedUserLookup.persistentUserId}" title="#{DataverseUserPage.userAuthProvider.persistentIdName}" target="_blank">
@@ -431,23 +460,193 @@
                                     </div>
                                 </div>
                                 <!-- Affiliation -->
-                                <div class="form-group" jsf:rendered="#{!empty DataverseUserPage.currentUser.affiliation}">
-                                    <label for="affiliation" class="col-sm-3 control-label">
+                                <div class="form-group col-sm-6" jsf:rendered="#{!empty DataverseUserPage.currentUser.affiliation}">
+                                    <label for="affiliation" class="col-sm-4 control-label">
                                         #{bundle.affiliation}
                                     </label>
-                                    <div class="col-sm-9">
+                                    <div class="col-sm-8">
                                         <p class="form-control-static">#{DataverseUserPage.currentUser.affiliation}</p>
                                     </div>
                                 </div>
-                                <!-- Position (not populated for Shibboleth users) -->
-                                <div class="form-group" jsf:rendered="#{!empty DataverseUserPage.currentUser.position}">
-                                    <label for="position" class="col-sm-3 control-label">
-                                        #{bundle['user.position']}
+                                <!-- Department -->
+                                <div class="form-group col-sm-6">
+                                    <label for="department" class="col-sm-4 control-label">
+                                        #{bundle['user.department']}
                                     </label>
-                                    <div class="col-sm-9">
-                                        <p class="form-control-static">#{DataverseUserPage.currentUser.position}</p>
+                                    <div class="col-sm-8">
+                                        <p class="form-control-static">#{DataverseUserPage.currentUser.department}</p>
                                     </div>
                                 </div>
+                                <!-- Position -->
+                                <div class="form-group col-sm-6">
+                                    <label for="position" class="col-sm-4 control-label">
+                                        #{bundle['user.position']}
+                                    </label>
+                                    <div class="col-sm-8">
+                                        <p class="form-control-static" jsf:rendered="#{DataverseUserPage.currentUser.position == 'student'}">#{bundle['user.position.student']}</p>
+                                        <p class="form-control-static" jsf:rendered="#{DataverseUserPage.currentUser.position == 'faculty'}">#{bundle['user.position.faculty']}</p>
+                                        <p class="form-control-static" jsf:rendered="#{DataverseUserPage.currentUser.position == 'government_organization'}">#{bundle['user.position.governmentOrganization']}</p>
+                                        <p class="form-control-static" jsf:rendered="#{DataverseUserPage.currentUser.position == 'international_organization'}">#{bundle['user.position.internationalOrganization']}</p>
+                                        <p class="form-control-static" jsf:rendered="#{DataverseUserPage.currentUser.position == 'research_institutions'}">#{bundle['user.position.researchInstitutions']}</p>
+                                        <p class="form-control-static" jsf:rendered="#{DataverseUserPage.currentUser.position == 'corporation'}">#{bundle['user.position.corporation']}</p>
+                                        <p class="form-control-static" jsf:rendered="#{DataverseUserPage.currentUser.position == 'nongovernmental_organization'}">#{bundle['user.position.nongovernmentalOrganization']}</p>
+                                        <p class="form-control-static" jsf:rendered="#{DataverseUserPage.currentUser.position == 'other'}">#{bundle['user.position.other']}</p>
+                                    </div>
+                                </div>
+                                <!-- Speciality -->
+                                <div class="form-group col-sm-6">
+                                    <label for="speciality" class="col-sm-4 control-label">
+                                        #{bundle['user.speciality']}
+                                    </label>
+                                    <div class="col-sm-8">
+                                        <p class="form-control-static">#{DataverseUserPage.currentUser.speciality}</p>
+                                    </div>
+                                </div>
+                                <!-- Research Interest -->
+                                <div class="form-group col-sm-6">
+                                    <label for="researchInterest" class="col-sm-4 control-label">
+                                        #{bundle['user.researchinterest']}
+                                    </label>
+                                    <div class="col-sm-8">
+                                        <p class="form-control-static">#{DataverseUserPage.currentUser.researchInterest}</p>
+                                    </div>
+                                </div>
+                                <!-- Gender -->
+                                <div class="form-group col-sm-6" jsf:rendered="#{DataverseUserPage.currentUser.userType == 'ADVANCE'}">
+                                    <label for="gender" class="col-sm-4 control-label">
+                                        #{bundle['user.gender']}
+                                    </label>
+                                    <div class="col-sm-8">
+                                        <p class="form-control-static" jsf:rendered="#{DataverseUserPage.currentUser.gender == 'male'}">#{bundle['user.gender.male']}</p>
+                                        <p class="form-control-static" jsf:rendered="#{DataverseUserPage.currentUser.gender == 'female'}">#{bundle['user.gender.female']}</p>
+                                    </div>
+                                </div>
+                                <!-- Education -->
+                                <div class="form-group col-sm-6" jsf:rendered="#{DataverseUserPage.currentUser.userType == 'ADVANCE'}">
+                                    <label for="education" class="col-sm-4 control-label">
+                                        #{bundle['user.education']}
+                                    </label>
+                                    <div class="col-sm-8">
+                                        <p class="form-control-static" jsf:rendered="#{DataverseUserPage.currentUser.education == 'bachelor'}">#{bundle['user.education.bachelor']}</p>
+                                        <p class="form-control-static" jsf:rendered="#{DataverseUserPage.currentUser.education == 'master'}">#{bundle['user.education.master']}</p>
+                                        <p class="form-control-static" jsf:rendered="#{DataverseUserPage.currentUser.education == 'doctor'}">#{bundle['user.education.doctor']}</p>
+                                        <p class="form-control-static" jsf:rendered="#{DataverseUserPage.currentUser.education == 'other'}">#{bundle['user.education.other']}</p>
+                                    </div>
+                                </div>
+                                <!-- Professional Title -->
+                                <div class="form-group col-sm-6" jsf:rendered="#{DataverseUserPage.currentUser.userType == 'ADVANCE'}">
+                                    <label for="professionalTitle" class="col-sm-4 control-label">
+                                        #{bundle['user.professionalTitle']}
+                                    </label>
+                                    <div class="col-sm-8">
+                                        <p class="form-control-static">#{DataverseUserPage.currentUser.professionalTitle}</p>
+                                    </div>
+                                </div>
+                                <!-- Supervisor -->
+                                <div class="form-group col-sm-6" jsf:rendered="#{DataverseUserPage.currentUser.userType == 'ADVANCE'}">
+                                    <label for="supervisor" class="col-sm-4 control-label">
+                                        #{bundle['user.supervisor']}
+                                    </label>
+                                    <div class="col-sm-8">
+                                        <p class="form-control-static">#{DataverseUserPage.currentUser.supervisor}</p>
+                                    </div>
+                                </div>
+                                <!-- Certificate Type -->
+                                <div class="form-group col-sm-6" jsf:rendered="#{DataverseUserPage.currentUser.userType == 'ADVANCE'}">
+                                    <label for="certificateType" class="col-sm-4 control-label">
+                                        #{bundle['user.certificateType']}
+                                    </label>
+                                    <div class="col-sm-8">
+                                        <p class="form-control-static">#{DataverseUserPage.currentUser.certificateType}</p>
+                                    </div>
+                                </div>
+                                <!-- Certificate Number -->
+                                <div class="form-group col-sm-6" jsf:rendered="#{DataverseUserPage.currentUser.userType == 'ADVANCE'}">
+                                    <label for="certificateNumber" class="col-sm-4 control-label">
+                                        #{bundle['user.certificateNumber']}
+                                    </label>
+                                    <div class="col-sm-8">
+                                        <p class="form-control-static">#{DataverseUserPage.currentUser.certificateNumber}</p>
+                                    </div>
+                                </div>
+                                <!-- Office Phone -->
+                                <div class="form-group col-sm-6" jsf:rendered="#{DataverseUserPage.currentUser.userType == 'ADVANCE'}">
+                                    <label for="officePhone" class="col-sm-4 control-label">
+                                        #{bundle['user.officePhone']}
+                                    </label>
+                                    <div class="col-sm-8">
+                                        <p class="form-control-static">#{DataverseUserPage.currentUser.officePhone}</p>
+                                    </div>
+                                </div>
+                                <!-- Cellphone -->
+                                <div class="form-group col-sm-6" jsf:rendered="#{DataverseUserPage.currentUser.userType == 'ADVANCE'}">
+                                    <label for="cellphone" class="col-sm-4 control-label">
+                                        #{bundle['user.cellphone']}
+                                    </label>
+                                    <div class="col-sm-8">
+                                        <p class="form-control-static">#{DataverseUserPage.currentUser.cellphone}</p>
+                                    </div>
+                                </div>
+                                <!-- Other Email -->
+                                <div class="form-group col-sm-6" jsf:rendered="#{DataverseUserPage.currentUser.userType == 'ADVANCE'}">
+                                    <label for="otherEmail" class="col-sm-4 control-label">
+                                        #{bundle['user.otherEmail']}
+                                    </label>
+                                    <div class="col-sm-8">
+                                        <p class="form-control-static">#{DataverseUserPage.currentUser.otherEmail}</p>
+                                    </div>
+                                </div>
+
+                                <!-- Country -->
+                                <div class="form-group col-sm-6" jsf:rendered="#{DataverseUserPage.currentUser.userType == 'ADVANCE'}">
+                                    <label for="country" class="col-sm-4 control-label">
+                                        #{bundle['user.country']}
+                                    </label>
+                                    <div class="col-sm-8">
+                                        <p class="form-control-static">#{DataverseUserPage.currentUser.country}</p>
+                                    </div>
+                                </div>
+
+                                <!-- Province -->
+                                <div class="form-group col-sm-6" jsf:rendered="#{DataverseUserPage.currentUser.userType == 'ADVANCE'}">
+                                    <label for="province" class="col-sm-4 control-label">
+                                        #{bundle['user.province']}
+                                    </label>
+                                    <div class="col-sm-8">
+                                        <p class="form-control-static">#{DataverseUserPage.currentUser.province}</p>
+                                    </div>
+                                </div>
+
+                                <!-- City -->
+                                <div class="form-group col-sm-6" jsf:rendered="#{DataverseUserPage.currentUser.userType == 'ADVANCE'}">
+                                    <label for="city" class="col-sm-4 control-label">
+                                        #{bundle['user.city']}
+                                    </label>
+                                    <div class="col-sm-8">
+                                        <p class="form-control-static">#{DataverseUserPage.currentUser.city}</p>
+                                    </div>
+                                </div>
+
+                                <!-- Address -->
+                                <div class="form-group col-sm-6" jsf:rendered="#{DataverseUserPage.currentUser.userType == 'ADVANCE'}">
+                                    <label for="address" class="col-sm-4 control-label">
+                                        #{bundle['user.address']}
+                                    </label>
+                                    <div class="col-sm-8">
+                                        <p class="form-control-static">#{DataverseUserPage.currentUser.address}</p>
+                                    </div>
+                                </div>
+
+                                <!-- ZipCode -->
+                                <div class="form-group col-sm-6" jsf:rendered="#{DataverseUserPage.currentUser.userType == 'ADVANCE'}">
+                                    <label for="zipCode" class="col-sm-4 control-label">
+                                        #{bundle['user.zipCode']}
+                                    </label>
+                                    <div class="col-sm-8">
+                                        <p class="form-control-static">#{DataverseUserPage.currentUser.zipCode}</p>
+                                    </div>
+                                </div>
+                                <div class="form-group"></div>
                             </div>
                         </p:tab>
                         <p:tab id="apiTokenTab" title="#{bundle['apitoken.title']}">
@@ -493,9 +692,28 @@
                                 </p>
                             </ui:fragment>
                             <div class="form-horizontal">
+                                <div class="col-sm-12" jsf:rendered="#{DataverseUserPage.editMode == 'CREATE'}">
+                                    <p style="color: red; text-align: center">#{bundle['user.register.tip']}（<a href="#" onclick="clickiaaa()">#{bundle['user.register.tip.clickhere']}</a>）</p>
+                                </div>
+                                <div class="form-group" jsf:rendered="#{DataverseUserPage.editMode == 'CREATE' or DataverseUserPage.editMode == 'EDIT'}">
+                                    <label for="userType" class="col-sm-5 control-label">
+                                        <span data-toggle="tooltip" data-placement="auto right" class="tooltiplabel text-info" data-original-title="#{bundle['user.userType.tip']}">
+                                            #{bundle['user.userType']}
+                                        </span>
+                                    </label>
+                                    <div class="col-sm-7">
+                                        <p:selectOneRadio id="userType" value="#{DataverseUserPage.userDisplayInfo.userType}" onchange="submit()" immediate="true"
+                                                          valueChangeListener="#{DataverseUserPage.userTypeChanged}"
+                                                          disabled="#{DataverseUserPage.editMode == 'EDIT' and DataverseUserPage.currentUser.userType == 'ADVANCE'}" tabindex="1">
+                                                            <f:selectItem itemLabel="#{bundle['user.userType.ordinary']}" itemValue="ORDINARY" />
+                                                            <f:selectItem itemLabel="#{bundle['user.userType.advance']}" itemValue="ADVANCE" />
+                                        </p:selectOneRadio>
+                                        <p:message for="userType" display="text" />
+                                    </div>
+                                </div>
                                 <div class="form-group" jsf:rendered="#{DataverseUserPage.editMode == 'CREATE' or DataverseUserPage.editMode == 'EDIT'}">
                                 <!-- Username -->
-                                    <label for="userNameEmail" class="col-sm-3 control-label">
+                                    <label for="userNameEmail" class="col-sm-2 control-label">
                                         <span data-toggle="tooltip" data-placement="auto right" class="tooltiplabel text-info" data-original-title="#{bundle['user.username.illegal.tip']}">
                                             #{bundle['user.username']} <span class="glyphicon glyphicon-asterisk text-danger"/>
                                         </span>
@@ -503,8 +721,8 @@
                                     <div class="col-sm-9">
                                         <p class="help-block">#{bundle['user.username.valid']}</p>
                                     </div>
-                                    <div class="col-sm-4 col-sm-offset-3">
-                                        <p:inputText id="userName" styleClass="form-control"
+                                    <div class="col-sm-4 col-sm-offset-2">
+                                        <p:inputText id="userName" styleClass="form-control" tabindex="1"
                                                         validator="#{DataverseUserPage.validateUserName}"
                                                         value="#{DataverseUserPage.username}"
                                                         disabled="#{DataverseUserPage.editMode != 'CREATE'}"
@@ -514,7 +732,7 @@
                                 </div>
                                 <div class="form-group" jsf:rendered="#{DataverseUserPage.editMode == DataverseUserPage.changePasswordMode}">
                                 <!-- Current Password -->
-                                    <label for="currentPassword" class="col-sm-3 control-label">
+                                    <label for="currentPassword" class="col-sm-2 control-label">
                                         <span data-toggle="tooltip" data-placement="auto right" class="tooltiplabel text-info" data-original-title="#{bundle['user.currentPasswd.tip']}">
                                             #{bundle['user.currentPasswd']} <span class="glyphicon glyphicon-asterisk text-danger"/>
                                         </span>
@@ -526,7 +744,7 @@
                                 </div>
                                 <div class="form-group" jsf:rendered="#{DataverseUserPage.editMode == 'CREATE' or DataverseUserPage.editMode == DataverseUserPage.changePasswordMode}">
                                 <!-- Password -->
-                                    <label for="inputPassword" class="col-sm-3 control-label">
+                                    <label for="inputPassword" class="col-sm-2 control-label">
                                         <span data-toggle="tooltip" data-placement="auto right" class="tooltiplabel text-info" data-original-title="#{bundle['user.passwd.illegal.tip']}">
                                             <h:outputText value="#{DataverseUserPage.editMode == 'CREATE' ? bundle['user.password'] : bundle['user.newPassword']}" />
                                             <span class="glyphicon glyphicon-asterisk text-danger"></span>
@@ -546,7 +764,7 @@
                                 </div>
                                 <div class="form-group" jsf:rendered="#{DataverseUserPage.editMode == 'CREATE' or DataverseUserPage.editMode == DataverseUserPage.changePasswordMode}">
                                     <!-- Retype Password -->
-                                    <label for="retypePassword" class="col-sm-3 control-label">
+                                    <label for="retypePassword" class="col-sm-2 control-label">
                                         <span data-toggle="tooltip" data-placement="auto right" class="tooltiplabel text-info" data-original-title="#{bundle['user.rePasswd.tip']}">
                                             #{bundle['user.rePasswd']} <span class="glyphicon glyphicon-asterisk text-danger"/>
                                         </span>
@@ -582,27 +800,58 @@
                                 </div>
                                 <div class="form-group" jsf:rendered="#{DataverseUserPage.editMode == 'CREATE' or DataverseUserPage.editMode == 'EDIT'}">
                                     <!-- Email -->
-                                    <label for="email" class="col-sm-3 control-label">
+                                    <label for="email" class="col-sm-2 control-label">
                                         <span data-toggle="tooltip" data-placement="auto right" class="tooltiplabel text-info" data-original-title="#{user.email.tip}">
                                             #{bundle.email} <span class="glyphicon glyphicon-asterisk text-danger"/>
                                         </span>
                                     </label>
-                                    <div class="col-sm-4">
-                                        <p:inputText id="email" styleClass="form-control"
+                                    <div class="col-sm-9">
+                                        <p class="help-block">#{bundle['user.email.tip']}</p>
+                                    </div>
+                                    <div class="col-sm-4 col-sm-offset-2">
+                                        <p:inputText id="email" tabindex="6" styleClass="form-control"
                                                      validator="#{DataverseUserPage.validateUserEmail}"
                                                      value="#{DataverseUserPage.userDisplayInfo.emailAddress}" />
                                         <p:message for="email" display="text" />
                                     </div>
                                 </div>
+                                <div class="form-group col-sm-6" jsf:rendered="#{DataverseUserPage.editMode == 'CREATE' or DataverseUserPage.editMode == 'EDIT'}">
+                                    <!-- Last Name -->
+                                    <label for="lastName" class="col-sm-4 control-label">
+                                        <span data-toggle="tooltip" data-placement="auto right" class="tooltiplabel text-info" data-original-title="#{bundle['user.lastName.tip']}">
+                                            #{bundle['user.lastName']} <span class="glyphicon glyphicon-asterisk text-danger"/>
+                                        </span>
+                                    </label>
+                                    <div class="col-sm-8">
+                                        <p:inputText id="lastName" tabindex="5" styleClass="form-control" value="#{DataverseUserPage.userDisplayInfo.lastName}">
+                                            <f:validator validatorId="cn.edu.pku.lib.dataverse.validation.NotBlankValidator"/>
+                                        </p:inputText>
+                                        <p:message for="lastName" display="text" />
+                                    </div>
+                                </div>
+                                <div class="form-group col-sm-6" jsf:rendered="#{DataverseUserPage.editMode == 'CREATE' or DataverseUserPage.editMode == 'EDIT'}">
+                                <!-- First Name -->
+                                    <label for="firstName" class="col-sm-4 control-label">
+                                        <span data-toggle="tooltip" data-placement="auto right" class="tooltiplabel text-info" data-original-title="#{bundle['user.firstName.tip']}">
+                                            #{bundle['user.firstName']} <span class="glyphicon glyphicon-asterisk text-danger"/>
+                                        </span>
+                                    </label>
+                                    <div class="col-sm-8">
+                                        <p:inputText id="firstName" tabindex="4" styleClass="form-control" value="#{DataverseUserPage.userDisplayInfo.firstName}">
+                                            <f:validator validatorId="cn.edu.pku.lib.dataverse.validation.NotBlankValidator"/>
+                                        </p:inputText>
+                                        <p:message for="firstName" display="text" />
+                                    </div>
+                                </div>
                                 <!--FIXME: refactor to remove need for EDIT? userAuthProvider is null on CREATE-->
-                                <div class="form-group" jsf:rendered="#{DataverseUserPage.editMode == 'EDIT' and DataverseUserPage.userAuthProvider.displayIdentifier}">
+                                <div class="form-group col-sm-6" jsf:rendered="#{DataverseUserPage.editMode == 'EDIT' and DataverseUserPage.userAuthProvider.displayIdentifier}">
                                     <!-- ORCID iD, for example -->
-                                    <label for="userPersistentId" class="col-sm-3 control-label">
+                                    <label for="userPersistentId" class="col-sm-4 control-label">
                                         <span data-toggle="tooltip" data-placement="auto right" class="tooltiplabel text-info" data-original-title="#{DataverseUserPage.userAuthProvider.persistentIdDescription}">
                                             #{DataverseUserPage.userAuthProvider.persistentIdName}
                                         </span>
                                     </label>
-                                    <div class="col-sm-4">
+                                    <div class="col-sm-8">
                                         <p class="form-control-static">
                                             <h:graphicImage value="#{DataverseUserPage.userAuthProvider.logo}" height="16" width="16"/>&#160;
                                             <h:outputLink value="#{DataverseUserPage.userAuthProvider.persistentIdUrlPrefix}#{DataverseUserPage.currentUser.authenticatedUserLookup.persistentUserId}" title="#{DataverseUserPage.userAuthProvider.persistentIdName}" target="_blank">
@@ -611,28 +860,284 @@
                                         </p>
                                     </div>
                                 </div>
-                                <div class="form-group" jsf:rendered="#{DataverseUserPage.editMode == 'CREATE' or DataverseUserPage.editMode == 'EDIT'}">
+                                <div class="form-group col-sm-6" jsf:rendered="#{DataverseUserPage.editMode == 'CREATE' or DataverseUserPage.editMode == 'EDIT'}">
                                     <!-- Affiliation -->
-                                    <label for="affiliation" class="col-sm-3 control-label">
+                                    <label for="affiliation" class="col-sm-4 control-label">
                                         <span data-toggle="tooltip" data-placement="auto right" class="tooltiplabel text-info" data-original-title="#{bundle['user.affiliation.tip']}">
                                             #{bundle.affiliation}
                                         </span>
                                     </label>
-                                    <div class="col-sm-4">
-                                        <p:inputText id="affiliation" styleClass="form-control" value="#{DataverseUserPage.userDisplayInfo.affiliation}" />
+                                    <div class="col-sm-8">
+                                        <p:inputText id="affiliation" required="rue" tabindex="7" styleClass="form-control" value="#{DataverseUserPage.userDisplayInfo.affiliation}">
+                                            <f:validator validatorId="cn.edu.pku.lib.dataverse.validation.NotBlankValidator"/>
+                                        </p:inputText>
                                         <p:message for="affiliation" display="text" />
+                                        <label class="text-warning">#{bundle['user.affiliation.info']}</label>
                                     </div>
                                 </div>
-                                <div class="form-group" jsf:rendered="#{DataverseUserPage.editMode == 'CREATE' or DataverseUserPage.editMode == 'EDIT'}">
+                                <div class="form-group col-sm-6" jsf:rendered="#{DataverseUserPage.editMode == 'CREATE' or DataverseUserPage.editMode == 'EDIT'}">
+                                    <!-- Department -->
+                                    <label for="department" class="col-sm-4 control-label">
+                                        <span data-toggle="tooltip" data-placement="auto right" class="tooltiplabel text-info" data-original-title="#{bundle['user.department.tip']}">
+                                            #{bundle['user.department']} <span class="glyphicon glyphicon-asterisk text-danger"/>
+                                        </span>
+                                    </label>
+                                    <div class="col-sm-8">
+                                        <p:inputText id="department" tabindex="7" styleClass="form-control" value="#{DataverseUserPage.userDisplayInfo.department}">
+                                            <f:validator validatorId="cn.edu.pku.lib.dataverse.validation.NotBlankValidator"/>
+                                        </p:inputText>
+                                        <p:message for="department" display="text" />
+                                        <label class="text-warning">#{bundle['user.department.info']}</label>
+                                    </div>
+                                </div>
+                                <div class="form-group col-sm-6" jsf:rendered="#{DataverseUserPage.editMode == 'CREATE' or DataverseUserPage.editMode == 'EDIT'}">
                                 <!-- Position -->
-                                    <label for="position" class="col-sm-3 control-label">
+                                    <label for="position" class="col-sm-4 control-label">
                                         <span data-toggle="tooltip" data-placement="auto right" class="tooltiplabel text-info" data-original-title="#{bundle['user.position.tip']}">
                                             #{bundle['user.position']}
                                         </span>
                                     </label>
-                                    <div class="col-sm-4">
-                                        <p:inputText id="position" styleClass="form-control" value="#{DataverseUserPage.userDisplayInfo.position}" />
+                                    <div class="col-sm-8">
+                                        <p:selectOneMenu id="position" tabindex="8" styleClass="form-control" value="#{DataverseUserPage.userDisplayInfo.position}">
+                                            <f:selectItem itemLabel="--" itemValue=""/>
+                                            <f:selectItem itemLabel="#{bundle['user.position.student']}" itemValue="student"/>
+                                            <f:selectItem itemLabel="#{bundle['user.position.faculty']}" itemValue="faculty"/>
+                                            <f:selectItem itemLabel="#{bundle['user.position.governmentOrganization']}" itemValue="government_organization"/>
+                                            <f:selectItem itemLabel="#{bundle['user.position.internationalOrganization']}" itemValue="international_organization"/>
+                                            <f:selectItem itemLabel="#{bundle['user.position.researchInstitutions']}" itemValue="research_institutions"/>
+                                            <f:selectItem itemLabel="#{bundle['user.position.corporation']}" itemValue="corporation"/>
+                                            <f:selectItem itemLabel="#{bundle['user.position.nongovernmentalOrganization']}" itemValue="nongovernmental_organization"/>
+                                            <f:selectItem itemLabel="#{bundle['user.position.other']}" itemValue="other"/>
+                                            <f:validator validatorId="cn.edu.pku.lib.dataverse.validation.NotBlankValidator"/>
+                                        </p:selectOneMenu>
                                         <p:message for="position" display="text" />
+                                    </div>
+                                </div>
+                                <div class="form-group col-sm-6" jsf:rendered="#{DataverseUserPage.editMode == 'CREATE' or DataverseUserPage.editMode == 'EDIT'}">
+                                <!-- Speciality -->
+                                    <label for="speciality" class="col-sm-4 control-label">
+                                        <span data-toggle="tooltip" data-placement="auto right" class="tooltiplabel text-info" data-original-title="#{bundle['user.speciality.tip']}">
+                                            #{bundle['user.speciality']} <span class="glyphicon glyphicon-asterisk text-danger"/>
+                                        </span>
+                                    </label>
+                                    <div class="col-sm-8">
+                                        <p:inputText id="speciality" tabindex="9" styleClass="form-control" value="#{DataverseUserPage.userDisplayInfo.speciality}">
+                                            <f:validator validatorId="cn.edu.pku.lib.dataverse.validation.NotBlankValidator"/>
+                                        </p:inputText>
+                                        <p:message for="speciality" display="text" />
+                                    </div>
+                                </div>
+                                <div class="form-group col-sm-6" jsf:rendered="#{DataverseUserPage.editMode == 'CREATE' or DataverseUserPage.editMode == 'EDIT'}">
+                                <!-- Research Interest -->
+                                    <label for="researchInterest" class="col-sm-4 control-label">
+                                        <span data-toggle="tooltip" data-placement="auto right" class="tooltiplabel text-info" data-original-title="#{bundle['user.researchinterest.tip']}">
+                                            #{bundle['user.researchinterest']} <span class="glyphicon glyphicon-asterisk text-danger"/>
+                                        </span>
+                                    </label>
+                                    <div class="col-sm-8">
+                                        <p:inputText id="researchInterest" tabindex="10" styleClass="form-control" value="#{DataverseUserPage.userDisplayInfo.researchInterest}">
+                                            <f:validator validatorId="cn.edu.pku.lib.dataverse.validation.NotBlankValidator"/>
+                                        </p:inputText>
+                                        <p:message for="researchInterest" display="text" />
+                                    </div>
+                                </div>
+                                <div class="form-group col-sm-6" jsf:rendered="#{(DataverseUserPage.editMode == 'CREATE' or DataverseUserPage.editMode == 'EDIT') and DataverseUserPage.userDisplayInfo.userType == 'ADVANCE'}">
+                                <!-- Gender -->
+                                    <label for="gender" class="col-sm-4 control-label">
+                                        <span data-toggle="tooltip" data-placement="auto right" class="tooltiplabel text-info" data-original-title="#{bundle['user.gender.tip']}">
+                                        #{bundle['user.gender']} <span class="glyphicon glyphicon-asterisk text-danger"/>
+                                        </span>
+                                    </label>
+                                    <div class="col-sm-8">
+                                        <p:selectOneMenu id="gender" tabindex="11" styleClass="form-control" value="#{DataverseUserPage.userDisplayInfo.gender}">
+                                            <f:selectItem itemLabel="--" itemValue=""/>
+                                            <f:selectItem itemLabel="#{bundle['user.gender.male']}" itemValue="male"/>
+                                            <f:selectItem itemLabel="#{bundle['user.gender.female']}" itemValue="female"/>
+                                            <f:validator validatorId="cn.edu.pku.lib.dataverse.validation.NotBlankValidator"/>
+                                        </p:selectOneMenu>
+                                        <p:message for="gender" display="text"/>
+                                    </div>
+                                </div>
+                                <div class="form-group col-sm-6" jsf:rendered="#{(DataverseUserPage.editMode == 'CREATE' or DataverseUserPage.editMode == 'EDIT') and DataverseUserPage.userDisplayInfo.userType == 'ADVANCE'}">
+                                <!-- Education -->
+                                    <label for="education" class="col-sm-4 control-label">
+                                        <span data-toggle="tooltip" data-placement="auto right" class="tooltiplabel text-info" data-original-title="#{bundle['user.education.tip']}">
+                                        #{bundle['user.education']} <span class="glyphicon glyphicon-asterisk text-danger"/>
+                                        </span>
+                                    </label>
+                                    <div class="col-sm-8">
+                                        <p:selectOneMenu id="education" tabindex="12" styleClass="form-control" value="#{DataverseUserPage.userDisplayInfo.education}">
+                                            <f:selectItem itemLabel="--" itemValue=""/>
+                                            <f:selectItem itemLabel="#{bundle['user.education.bachelor']}" itemValue="bachelor"/>
+                                            <f:selectItem itemLabel="#{bundle['user.education.master']}" itemValue="master"/>
+                                            <f:selectItem itemLabel="#{bundle['user.education.doctor']}" itemValue="doctor"/>
+                                            <f:selectItem itemLabel="#{bundle['user.education.other']}" itemValue="other"/>
+                                            <f:validator validatorId="cn.edu.pku.lib.dataverse.validation.NotBlankValidator"/>
+                                        </p:selectOneMenu>
+                                        <p:message for="education" display="text"/>
+                                    </div>
+                                </div>
+                                <div class="form-group col-sm-6" jsf:rendered="#{(DataverseUserPage.editMode == 'CREATE' or DataverseUserPage.editMode == 'EDIT') and DataverseUserPage.userDisplayInfo.userType == 'ADVANCE'}">
+                                <!-- Professional Title -->
+                                    <label for="professionalTitle" class="col-sm-4 control-label">
+                                        <span data-toggle="tooltip" data-placement="auto right" class="tooltiplabel text-info" data-original-title="#{bundle['user.professionalTitle.tip']}">
+                                        #{bundle['user.professionalTitle']} <span class="glyphicon glyphicon-asterisk text-danger"/>
+                                        </span>
+                                    </label>
+                                    <div class="col-sm-8">
+                                        <p:inputText id="professionalTitle" tabindex="13" styleClass="form-control" value="#{DataverseUserPage.userDisplayInfo.professionalTitle}">
+                                            <f:validator validatorId="cn.edu.pku.lib.dataverse.validation.NotBlankValidator"/>
+                                        </p:inputText>
+                                        <p:message for="professionalTitle" display="text"/>
+                                        <label class="text-warning">#{bundle['user.professionalTitle.tip']}</label>
+                                    </div>
+                                </div>
+                                <div class="form-group col-sm-6" jsf:rendered="#{(DataverseUserPage.editMode == 'CREATE' or DataverseUserPage.editMode == 'EDIT') and DataverseUserPage.userDisplayInfo.userType == 'ADVANCE'}">
+                                <!-- supervisor -->
+                                    <label for="supervisor" class="col-sm-4 control-label">
+                                        <span data-toggle="tooltip" data-placement="auto right" class="tooltiplabel text-info" data-original-title="#{bundle['user.supervisor.tip']}">
+                                        #{bundle['user.supervisor']}
+                                        </span>
+                                    </label>
+                                    <div class="col-sm-8">
+                                        <p:inputText id="supervisor" tabindex="14" styleClass="form-control" value="#{DataverseUserPage.userDisplayInfo.supervisor}"/>
+                                        <p:message for="supervisor" display="text"/>
+                                    </div>
+                                </div>
+                                <div class="form-group col-sm-6" jsf:rendered="#{(DataverseUserPage.editMode == 'CREATE' or DataverseUserPage.editMode == 'EDIT') and DataverseUserPage.userDisplayInfo.userType == 'ADVANCE'}">
+                                <!-- Certificate Type -->
+                                    <label for="certificateType" class="col-sm-4 control-label">
+                                        <span data-toggle="tooltip" data-placement="auto right" class="tooltiplabel text-info" data-original-title="#{bundle['user.certificateType.tip']}">
+                                        #{bundle['user.certificateType']}
+                                        </span>
+                                    </label>
+                                    <div class="col-sm-8">
+                                        <p:inputText id="certificateType" tabindex="15" styleClass="form-control" value="#{DataverseUserPage.userDisplayInfo.certificateType}"/>
+                                        <p:message for="certificateType" display="text"/>
+                                    </div>
+                                </div>
+                                <div class="form-group col-sm-6" jsf:rendered="#{(DataverseUserPage.editMode == 'CREATE' or DataverseUserPage.editMode == 'EDIT') and DataverseUserPage.userDisplayInfo.userType == 'ADVANCE'}">
+                                <!-- Certificate Number -->
+                                    <label for="certificateNumber" class="col-sm-4 control-label">
+                                        <span data-toggle="tooltip" data-placement="auto right" class="tooltiplabel text-info" data-original-title="#{bundle['user.certificateNumber.tip']}">
+                                        #{bundle['user.certificateNumber']}
+                                        </span>
+                                    </label>
+                                    <div class="col-sm-8">
+                                        <p:inputText id="certificateNumber" tabindex="16" styleClass="form-control" value="#{DataverseUserPage.userDisplayInfo.certificateNumber}"/>
+                                        <p:message for="certificateNumber" display="text"/>
+                                    </div>
+                                </div>
+                                <div class="form-group col-sm-6" jsf:rendered="#{(DataverseUserPage.editMode == 'CREATE' or DataverseUserPage.editMode == 'EDIT') and DataverseUserPage.userDisplayInfo.userType == 'ADVANCE'}">
+                                <!-- Office Phone -->
+                                    <label for="officePhone" class="col-sm-4 control-label">
+                                        <span data-toggle="tooltip" data-placement="auto right" class="tooltiplabel text-info" data-original-title="#{bundle['user.officePhone.tip']}">
+                                        #{bundle['user.officePhone']} <span class="glyphicon glyphicon-asterisk text-danger"/>
+                                        </span>
+                                    </label>
+                                    <div class="col-sm-8">
+                                        <p:inputText id="officePhone" tabindex="17" styleClass="form-control" value="#{DataverseUserPage.userDisplayInfo.officePhone}">
+                                            <f:validator validatorId="cn.edu.pku.lib.dataverse.validation.NotBlankValidator"/>
+                                        </p:inputText>
+                                        <p:message for="officePhone" display="text"/>
+                                    </div>
+                                </div>
+                                <div class="form-group col-sm-6" jsf:rendered="#{(DataverseUserPage.editMode == 'CREATE' or DataverseUserPage.editMode == 'EDIT') and DataverseUserPage.userDisplayInfo.userType == 'ADVANCE'}">
+                                <!-- Cell Phone -->
+                                    <label for="cellphone" class="col-sm-4 control-label">
+                                        <span data-toggle="tooltip" data-placement="auto right" class="tooltiplabel text-info" data-original-title="#{bundle['user.cellphone.tip']}">
+                                        #{bundle['user.cellphone']} <span class="glyphicon glyphicon-asterisk text-danger"/>
+                                        </span>
+                                    </label>
+                                    <div class="col-sm-8">
+                                        <p:inputText id="cellphone" tabindex="18" styleClass="form-control" value="#{DataverseUserPage.userDisplayInfo.cellphone}">
+                                            <f:validator validatorId="cn.edu.pku.lib.dataverse.validation.NotBlankValidator"/>
+                                        </p:inputText>
+                                        <p:message for="cellphone" display="text"/>
+                                    </div>
+                                </div>
+                                <div class="form-group col-sm-6" jsf:rendered="#{(DataverseUserPage.editMode == 'CREATE' or DataverseUserPage.editMode == 'EDIT') and DataverseUserPage.userDisplayInfo.userType == 'ADVANCE'}">
+                                <!-- Other Email -->
+                                    <label for="otherEmail" class="col-sm-4 control-label">
+                                        <span data-toggle="tooltip" data-placement="auto right" class="tooltiplabel text-info" data-original-title="#{bundle['user.otherEmail.tip']}">
+                                        #{bundle['user.otherEmail']} <span class="glyphicon glyphicon-asterisk text-danger"/>
+                                        </span>
+                                    </label>
+                                    <div class="col-sm-8">
+                                        <p:inputText id="otherEmail" tabindex="19" styleClass="form-control" value="#{DataverseUserPage.userDisplayInfo.otherEmail}">
+                                            <f:validator validatorId="cn.edu.pku.lib.dataverse.validation.NotBlankValidator"/>
+                                        </p:inputText>
+                                        <p:message for="otherEmail" display="text"/>
+                                    </div>
+                                </div>
+                                <div class="form-group col-sm-6" jsf:rendered="#{(DataverseUserPage.editMode == 'CREATE' or DataverseUserPage.editMode == 'EDIT') and DataverseUserPage.userDisplayInfo.userType == 'ADVANCE'}">
+                                <!-- Country -->
+                                    <label for="country" class="col-sm-4 control-label">
+                                        <span data-toggle="tooltip" data-placement="auto right" class="tooltiplabel text-info" data-original-title="#{bundle['user.country.tip']}">
+                                        #{bundle['user.country']} <span class="glyphicon glyphicon-asterisk text-danger"/>
+                                        </span>
+                                    </label>
+                                    <div class="col-sm-8">
+                                        <p:inputText id="country" tabindex="20" styleClass="form-control" value="#{DataverseUserPage.userDisplayInfo.country}">
+                                            <f:validator validatorId="cn.edu.pku.lib.dataverse.validation.NotBlankValidator"/>
+                                        </p:inputText>
+                                        <p:message for="country" display="text"/>
+                                    </div>
+                                </div>
+                                <div class="form-group col-sm-6" jsf:rendered="#{(DataverseUserPage.editMode == 'CREATE' or DataverseUserPage.editMode == 'EDIT') and DataverseUserPage.userDisplayInfo.userType == 'ADVANCE'}">
+                                <!-- Province -->
+                                    <label for="province" class="col-sm-4 control-label">
+                                        <span data-toggle="tooltip" data-placement="auto right" class="tooltiplabel text-info" data-original-title="#{bundle['user.province.tip']}">
+                                        #{bundle['user.province']} <span class="glyphicon glyphicon-asterisk text-danger"/>
+                                        </span>
+                                    </label>
+                                    <div class="col-sm-8">
+                                        <p:inputText id="province" tabindex="21" styleClass="form-control" value="#{DataverseUserPage.userDisplayInfo.province}">
+                                            <f:validator validatorId="cn.edu.pku.lib.dataverse.validation.NotBlankValidator"/>
+                                        </p:inputText>
+                                        <p:message for="province" display="text"/>
+                                    </div>
+                                </div>
+                                <div class="form-group col-sm-6" jsf:rendered="#{(DataverseUserPage.editMode == 'CREATE' or DataverseUserPage.editMode == 'EDIT') and DataverseUserPage.userDisplayInfo.userType == 'ADVANCE'}">
+                                <!-- City -->
+                                    <label for="city" class="col-sm-4 control-label">
+                                        <span data-toggle="tooltip" data-placement="auto right" class="tooltiplabel text-info" data-original-title="#{bundle['user.city.tip']}">
+                                        #{bundle['user.city']} <span class="glyphicon glyphicon-asterisk text-danger"/>
+                                        </span>
+                                    </label>
+                                    <div class="col-sm-8">
+                                        <p:inputText id="city" tabindex="22" styleClass="form-control" value="#{DataverseUserPage.userDisplayInfo.city}">
+                                            <f:validator validatorId="cn.edu.pku.lib.dataverse.validation.NotBlankValidator"/>
+                                        </p:inputText>
+                                        <p:message for="city" display="text"/>
+                                    </div>
+                                </div>
+                                <div class="form-group col-sm-6" jsf:rendered="#{(DataverseUserPage.editMode == 'CREATE' or DataverseUserPage.editMode == 'EDIT') and DataverseUserPage.userDisplayInfo.userType == 'ADVANCE'}">
+                                <!-- Address -->
+                                    <label for="address" class="col-sm-4 control-label">
+                                        <span data-toggle="tooltip" data-placement="auto right" class="tooltiplabel text-info" data-original-title="#{bundle['user.address.tip']}">
+                                        #{bundle['user.address']} <span class="glyphicon glyphicon-asterisk text-danger"/>
+                                        </span>
+                                    </label>
+                                    <div class="col-sm-8">
+                                        <p:inputText id="address" tabindex="23" styleClass="form-control" value="#{DataverseUserPage.userDisplayInfo.address}">
+                                            <f:validator validatorId="cn.edu.pku.lib.dataverse.validation.NotBlankValidator"/>
+                                        </p:inputText>
+                                        <p:message for="address" display="text"/>
+                                    </div>
+                                </div>
+                                <div class="form-group col-sm-6" jsf:rendered="#{(DataverseUserPage.editMode == 'CREATE' or DataverseUserPage.editMode == 'EDIT') and DataverseUserPage.userDisplayInfo.userType == 'ADVANCE'}">
+                                <!-- zipCode -->
+                                    <label for="zipCode" class="col-sm-4 control-label">
+                                        <span data-toggle="tooltip" data-placement="auto right" class="tooltiplabel text-info" data-original-title="#{bundle['user.zipCode.zip']}">
+                                        #{bundle['user.zipCode']} <span class="glyphicon glyphicon-asterisk text-danger"/>
+                                        </span>
+                                    </label>
+                                    <div class="col-sm-8">
+                                        <p:inputText id="zipCode" tabindex="24" styleClass="form-control" value="#{DataverseUserPage.userDisplayInfo.zipCode}">
+                                            <f:validator validatorId="cn.edu.pku.lib.dataverse.validation.NotBlankValidator"/>
+                                        </p:inputText>
+                                        <p:message for="zipCode" display="text"/>
                                     </div>
                                 </div>
                                 <ui:fragment rendered="#{DataverseUserPage.editMode == 'CREATE'}">
@@ -640,8 +1145,8 @@
                                     <ui:include src="termsofuse.xhtml"/>
                                 </ui:fragment>
                                 <div class="form-group">
-                                    <div class="col-sm-12 button-block">
-                                        <p:commandButton id="save" styleClass="btn btn-default"
+                                    <div class="col-sm-10 col-sm-offset-2 button-block">
+                                        <p:commandButton id="save" styleClass="btn btn-default" tabindex="9"
                                                          value="#{DataverseUserPage.editMode == 'CREATE' ? bundle['user.createBtn']:bundle.saveChanges}"
                                                          action="#{DataverseUserPage.save}" update="@form,:messagePanel,:userDisplayInfoTitle" />
                                         <p:commandButton id="cancel" styleClass="btn btn-default" value="#{bundle.cancel}"
@@ -654,6 +1159,18 @@
                         </p:tab>
                     </p:tabView>
                 </h:form>
+              
+               <form action='https://iaaa.pku.edu.cn/iaaa/oauth.jsp' method='post' id="pkuiaaa" class="hidden">
+                    <input type='hidden' name='appID' value="#{pkuiaaalogin['appID']}"/>
+                    <input type='hidden' name='appName' value="#{pkuiaaalogin['appName']}"/>
+                    <input type='hidden' name='redirectUrl' value="#{pkuiaaalogin['redirectUrl']}"/>
+                    <input type='submit' class='btn btn-default' value="#{bundle['login.method.pkuiaaa.loginmsg']}"/>
+                </form>
+                <script type="text/javascript" language="javascript">
+                    function clickiaaa(){
+                        $("#pkuiaaa").submit();
+                    }
+                </script>
             </ui:define>
         </ui:composition>
     </h:body>

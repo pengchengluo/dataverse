@@ -545,6 +545,7 @@
             <version>2.5.1</version>
         </dependency>
         <!--  Full text indexing -->
+        </dependency>
         <dependency>
             <groupId>org.apache.tika</groupId>
             <artifactId>tika-parsers</artifactId>

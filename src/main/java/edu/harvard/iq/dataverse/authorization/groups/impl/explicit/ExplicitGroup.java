@@ -10,6 +10,7 @@ import edu.harvard.iq.dataverse.authorization.groups.GroupException;
 import edu.harvard.iq.dataverse.authorization.groups.impl.builtin.AuthenticatedUsers;
 import edu.harvard.iq.dataverse.engine.command.DataverseRequest;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import java.util.TreeSet;
@@ -43,6 +44,8 @@ import org.hibernate.validator.constraints.NotBlank;
 @NamedQueries({
     @NamedQuery( name="ExplicitGroup.findAll",
                  query="SELECT eg FROM ExplicitGroup eg"),
+    @NamedQuery( name="ExplicitGroup.findById",
+                 query="SELECT eg FROM ExplicitGroup eg WHERE eg.id=:id"),
     @NamedQuery( name="ExplicitGroup.findByOwnerIdAndAlias",
                  query="SELECT eg FROM ExplicitGroup eg WHERE eg.owner.id=:ownerId AND eg.groupAliasInOwner=:alias"),
     @NamedQuery( name="ExplicitGroup.findByAlias",
@@ -125,6 +128,15 @@ public class ExplicitGroup implements Group, java.io.Serializable {
     
     @Transient
     private ExplicitGroupProvider provider;
+    
+    /**restrict the user type for request join the group*/
+    private AuthenticatedUser.UserType requestJoinUserType;
+    
+    @ManyToMany
+    @JoinTable(name = "joingrouprequests",
+    joinColumns = @JoinColumn(name = "group_id"),
+    inverseJoinColumns = @JoinColumn(name = "authenticated_user_id"))
+    private List<AuthenticatedUser> joinGroupRequesters;
     
     public ExplicitGroup( ExplicitGroupProvider prv ) {
         provider = prv;
@@ -388,7 +400,7 @@ public class ExplicitGroup implements Group, java.io.Serializable {
         return provider;
     }
     
-    void setProvider( ExplicitGroupProvider c ) {
+    public void setProvider( ExplicitGroupProvider c ) {
         provider = c;
     }
 
@@ -472,8 +484,24 @@ public class ExplicitGroup implements Group, java.io.Serializable {
      * to allow the {@link ExplicitGroupServiceBean} to clean up this collection.
      * @return the strings of the role assignees in this group.
      */
-    Set<String> getContainedRoleAssignees() {
+    public Set<String> getContainedRoleAssignees() {
         return containedRoleAssignees;
+    }
+    
+    public AuthenticatedUser.UserType getRequestJoinUserType() {
+        return requestJoinUserType;
+    }
+
+    public void setRequestJoinUserType(AuthenticatedUser.UserType requestJoinUserType) {
+        this.requestJoinUserType = requestJoinUserType;
+    }
+    
+    public List<AuthenticatedUser> getJoinGroupRequesters() {
+        return joinGroupRequesters;
+    }
+
+    public void setJoinGroupRequesters(List<AuthenticatedUser> joinGroupRequesters) {
+        this.joinGroupRequesters = joinGroupRequesters;
     }
     
     @Override
