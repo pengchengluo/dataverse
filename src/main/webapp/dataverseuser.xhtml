@@ -391,11 +391,11 @@
                                     </div>
                                 </div>
                                 <!-- Username -->
-                                <div class="form-group">
+                                <div class="form-group col-sm-6">
                                     <label for="userNameEmail" class="col-sm-2 control-label">
                                         #{bundle['user.username']}
                                     </label>
-                                    <div class="col-sm-10">
+                                    <div class="col-sm-8">
                                         <p class="form-control-static">#{DataverseUserPage.currentUser.identifier.replaceFirst("@", "")}</p>
                                     </div>
                                 </div>
@@ -406,25 +406,6 @@
                                     </label>
                                     <div class="col-sm-8">
                                         <p class="form-control-static">#{DataverseUserPage.currentUser.email}</p>
-                                    </div>
-                                </div>
-                                <div class="form-group col-sm-6">
-                                    <div class="col-sm-12 form-col-container">
-                                        <div class="col-sm-4 form-col-container">
-                                            <p class="form-control-static #{DataverseUserPage.emailIsVerified ? 'text-success' : 'text-danger'}">
-                                                <ui:fragment rendered="#{DataverseUserPage.emailNotVerified}">
-                                                    <span class="glyphicon glyphicon-ban-circle"/> #{bundle['confirmEmail.notVerified']}
-                                                </ui:fragment>
-                                                <ui:fragment rendered="#{!DataverseUserPage.emailNotVerified}">
-                                                    <span class="glyphicon glyphicon-ok"/> #{bundle['confirmEmail.verified']}
-                                                </ui:fragment>
-                                            </p>
-                                        </div>
-                                        <div class="col-sm-8">
-                                            <h:commandLink rendered="#{DataverseUserPage.showVerifyEmailButton()}" styleClass="btn btn-default" action="#{DataverseUserPage.sendConfirmEmail()}">
-                                                <span class="glyphicon glyphicon-ok"></span> #{bundle['confirmEmail.submitRequest']}
-                                            </h:commandLink>
-                                        </div>
                                     </div>
                                 </div>
                                 <!-- Last Name -->
@@ -772,30 +753,6 @@
                                     <div class="col-sm-4">
                                         <p:password id="retypePassword" label="#{bundle['user.rePasswd']}" styleClass="form-control" value="#{DataverseUserPage.inputPassword}" />
                                         <p:message for="retypePassword" display="text" />
-                                    </div>
-                                </div>
-                                <div class="form-group" jsf:rendered="#{DataverseUserPage.editMode == 'CREATE' or DataverseUserPage.editMode == 'EDIT'}">
-                                <!-- First Name -->
-                                    <label for="firstName" class="col-sm-3 control-label">
-                                        <span data-toggle="tooltip" data-placement="auto right" class="tooltiplabel text-info" data-original-title="#{bundle['user.firstName.tip']}">
-                                            #{bundle['user.firstName']} <span class="glyphicon glyphicon-asterisk text-danger"/>
-                                        </span>
-                                    </label>
-                                    <div class="col-sm-4">
-                                        <p:inputText id="firstName" styleClass="form-control" value="#{DataverseUserPage.userDisplayInfo.firstName}" />
-                                        <p:message for="firstName" display="text" />
-                                    </div>
-                                </div>
-                                <div class="form-group" jsf:rendered="#{DataverseUserPage.editMode == 'CREATE' or DataverseUserPage.editMode == 'EDIT'}">
-                                    <!-- Last Name -->
-                                    <label for="lastName" class="col-sm-3 control-label">
-                                        <span data-toggle="tooltip" data-placement="auto right" class="tooltiplabel text-info" data-original-title="#{bundle['user.lastName.tip']}">
-                                            #{bundle['user.lastName']} <span class="glyphicon glyphicon-asterisk text-danger"/>
-                                        </span>
-                                    </label>
-                                    <div class="col-sm-4">
-                                        <p:inputText id="lastName" styleClass="form-control" value="#{DataverseUserPage.userDisplayInfo.lastName}" />
-                                        <p:message for="lastName" display="text" />
                                     </div>
                                 </div>
                                 <div class="form-group" jsf:rendered="#{DataverseUserPage.editMode == 'CREATE' or DataverseUserPage.editMode == 'EDIT'}">

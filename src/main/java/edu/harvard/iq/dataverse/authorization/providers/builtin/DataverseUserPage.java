@@ -128,6 +128,9 @@ public class DataverseUserPage implements java.io.Serializable {
     
     @EJB
     ExplicitGroupServiceBean explicitGroupService;
+    
+    @EJB
+    edu.harvard.iq.dataverse.MailServiceBean mailService;
 
     private AuthenticatedUser currentUser;
     private BuiltinUser builtinUser;    
@@ -318,6 +321,7 @@ public class DataverseUserPage implements java.io.Serializable {
         }
         if (editMode == EditMode.CREATE) {
             // Create a new built-in user.
+            inputPassword = cn.edu.pku.lib.dataverse.util.StringUtils.generateRandomString(10);
             BuiltinUser builtinUser = new BuiltinUser();
             builtinUser.setUserName( getUsername() );
             builtinUser.updateEncryptedPassword(PasswordEncryption.get().encrypt(inputPassword),
@@ -340,15 +344,27 @@ public class DataverseUserPage implements java.io.Serializable {
             
             // Authenticated user registered. Save the new bulitin, and log in.
             builtinUserService.save(builtinUser);
-            session.setUser(au);
+//            session.setUser(au);
             /**
              * @todo Move this to
              * AuthenticationServiceBean.createAuthenticatedUser
              */
-            userNotificationService.sendNotification(au,
-                    new Timestamp(new Date().getTime()),
-                    UserNotification.Type.CREATEACC, null);
+//            userNotificationService.sendNotification(au,
+//                    new Timestamp(new Date().getTime()),
+//                    UserNotification.Type.CREATEACC, null);
 
+            if (au != null) {
+                java.util.Locale locale = FacesContext.getCurrentInstance().getViewRoot().getLocale();
+                String[] paramArray = {au.getUserIdentifier(), inputPassword};
+                mailService.sendSystemEmail(au.getEmail(),
+                        ResourceBundle.getBundle("Bundle", locale).getString("notification.email.register.subject"),
+                        com.ibm.icu.text.MessageFormat.format(ResourceBundle.getBundle("Bundle", locale).getString("notification.email.register.content"), paramArray),
+                        locale );
+                String[] param = {au.getEmail()};
+                edu.harvard.iq.dataverse.util.JsfHelper.addSuccessMessage(
+                    com.ibm.icu.text.MessageFormat.format(java.util.ResourceBundle.getBundle("Bundle", locale).getString("login.newRegisteredUser"), param));
+                return "/loginpage.xhtml?redirectPage=dataverse.xhtml&faces-redirect=true";
+            }
             // go back to where user came from
             
             // (but if they came from the login page, then send them to the 
