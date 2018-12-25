@@ -23,9 +23,7 @@
                         <span class="icon-bar"></span>
                     </button>                       
                     <a href="/">
-                        <ui:fragment rendered="#{empty settingsWrapper.get(':LogoCustomizationFile')}">
-                            <span class="navbar-brand" tabindex="1"><i id="icon-dataverse" class="icon-dataverse"></i> #{bundle.dataverse}</span>
-                        </ui:fragment>
+                        <img style="margin:5px 0 5px 0;height:40px" src="/resources/images/home/logo.png"/>
                         <h:graphicImage rendered="#{!empty settingsWrapper.get(':LogoCustomizationFile')}"
                             url="#{settingsWrapper.get(':LogoCustomizationFile')}" styleClass="navbar-brand custom-logo"/>
                     </a>

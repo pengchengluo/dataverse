@@ -16,7 +16,7 @@
     </error-page>
     <!-- Welcome page -->
     <welcome-file-list>
-        <welcome-file>Homepage</welcome-file>
+        <welcome-file>index.xhtml</welcome-file>
     </welcome-file-list>
     <context-param>
         <param-name>org.jboss.weld.context.conversation.lazy</param-name>
