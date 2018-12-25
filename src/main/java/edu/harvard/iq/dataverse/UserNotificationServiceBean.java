@@ -92,6 +92,7 @@ public class UserNotificationServiceBean {
         userNotification.setType(type);
         userNotification.setObjectId(objectId);
         userNotification.setRequestor(requestor);
+        userNotification.setMessage(comment);
         
         if (mailService.sendNotificationEmail(userNotification, comment, requestor)) {
             logger.fine("email was sent");

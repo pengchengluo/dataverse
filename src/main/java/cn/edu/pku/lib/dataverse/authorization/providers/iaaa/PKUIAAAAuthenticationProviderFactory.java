@@ -14,8 +14,8 @@ public class PKUIAAAAuthenticationProviderFactory implements AuthenticationProvi
     
     private final PKUIAAAAuthenticationProvider provider;
 
-    public PKUIAAAAuthenticationProviderFactory( PKUIAAAUserServiceBean bean ) {
-        provider = new PKUIAAAAuthenticationProvider( bean );
+    public PKUIAAAAuthenticationProviderFactory() {
+        provider = new PKUIAAAAuthenticationProvider();
     }
     
     @Override

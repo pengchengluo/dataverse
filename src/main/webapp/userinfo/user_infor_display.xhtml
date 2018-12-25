@@ -27,7 +27,7 @@
                 </span>
             </label>
             <div class="col-sm-8">
-                <p class="form-control-static">#{user.userName}</p>
+                <p class="form-control-static">#{user.userIdentifier}</p>
             </div>
         </div>
 
@@ -83,7 +83,7 @@
         <div class="col-sm-4">
             <label for="department" class="col-sm-4 control-label">
                 <span data-toggle="tooltip" data-placement="auto right" class="tooltiplabel text-info" data-original-title="#{bundle['user.department.tip']}">
-                    #{bundle.department}
+                    #{bundle['user.department']}
                 </span>
             </label>
             <div class="col-sm-8">
@@ -156,10 +156,12 @@
                 </span>
             </label>
             <div class="col-sm-8">
-                <p class="form-control-static" jsf:rendered="#{user.education == 'bachelor'}">#{bundle['user.education.bachelor']}</p>
-                <p class="form-control-static" jsf:rendered="#{user.education == 'master'}">#{bundle['user.education.master']}</p>
-                <p class="form-control-static" jsf:rendered="#{user.education == 'doctor'}">#{bundle['user.education.doctor']}</p>
-                <p class="form-control-static" jsf:rendered="#{user.education == 'other'}">#{bundle['user.education.other']}</p>
+                <p class="form-control-static">
+                    <h:outputText rendered="#{user.education == 'bachelor'}">#{bundle['user.education.bachelor']}</h:outputText>
+                    <h:outputText rendered="#{user.education == 'master'}">#{bundle['user.education.master']}</h:outputText>
+                    <h:outputText rendered="#{user.education == 'doctor'}">#{bundle['user.education.doctor']}</h:outputText>
+                    <h:outputText rendered="#{user.education == 'other'}">#{bundle['user.education.other']}</h:outputText>
+                </p>
             </div>
         </div>
 

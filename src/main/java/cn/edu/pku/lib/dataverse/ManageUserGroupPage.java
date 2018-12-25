@@ -6,7 +6,6 @@
 package cn.edu.pku.lib.dataverse;
 
 import cn.edu.pku.lib.dataverse.authorization.providers.iaaa.PKUIAAAUser;
-import cn.edu.pku.lib.dataverse.authorization.providers.iaaa.PKUIAAAUserServiceBean;
 import cn.edu.pku.lib.dataverse.util.UserUtils;
 import edu.harvard.iq.dataverse.Dataverse;
 import edu.harvard.iq.dataverse.DataverseHeaderFragment;
@@ -100,8 +99,6 @@ public class ManageUserGroupPage implements Serializable {
     @EJB
     BuiltinUserServiceBean builtinUserService;
     @EJB
-    PKUIAAAUserServiceBean pkuIAAAUserService;
-    @EJB
     cn.edu.pku.lib.dataverse.usage.EventBuilder eventBuilder;
     @EJB
     cn.edu.pku.lib.dataverse.usage.UsageIndexServiceBean usageIndexService;
@@ -117,11 +114,11 @@ public class ManageUserGroupPage implements Serializable {
 
     private String searchIdentifier = "";
     private List<AuthenticatedUser> searchUsers = Collections.EMPTY_LIST;
-    private BuiltinUser builtinUser;
-    private PKUIAAAUser pkuIAAAUser;
+    private AuthenticatedUser viewedUser;
     
     private String rejectReason;
     private String otherRejectReason;
+    private AuthenticatedUser rejectedUser;
 
     public String init() {
         if (groupId != null) {
@@ -315,20 +312,12 @@ public class ManageUserGroupPage implements Serializable {
         return searchUsers;
     }
 
-    public BuiltinUser getBuiltinUser() {
-        return builtinUser;
+    public AuthenticatedUser getViewedUser() {
+        return viewedUser;
     }
 
-    public void setBuiltinUser(BuiltinUser builtinUser) {
-        this.builtinUser = builtinUser;
-    }
-
-    public PKUIAAAUser getPkuIAAAUser() {
-        return pkuIAAAUser;
-    }
-
-    public void setPkuIAAAUser(PKUIAAAUser pkuIAAAUser) {
-        this.pkuIAAAUser = pkuIAAAUser;
+    public void setViewedUser(AuthenticatedUser user) {
+        this.viewedUser = user;
     }
 
     public void setSearchUsers(List<AuthenticatedUser> searchUsers) {
@@ -345,6 +334,14 @@ public class ManageUserGroupPage implements Serializable {
 
     public String getOtherRejectReason() {
         return otherRejectReason;
+    }
+
+    public AuthenticatedUser getRejectedUser() {
+        return rejectedUser;
+    }
+
+    public void setRejectedUser(AuthenticatedUser rejectedUser) {
+        this.rejectedUser = rejectedUser;
     }
 
     public void setOtherRejectReason(String otherRejectReason) {
@@ -411,6 +408,13 @@ public class ManageUserGroupPage implements Serializable {
                 JH.addMessage(FacesMessage.SEVERITY_FATAL, "The group was not able to be updated.");
                 logger.log(Level.SEVERE, "Error request user remove: " + ex.getMessage(), ex);
             }
+        }
+    }
+    
+    public void rejectJoinGroupToRequests() {
+        if(this.rejectedUser != null){
+            rejectJoinGroupToRequests(this.rejectedUser);
+            this.rejectedUser = null;
         }
     }
 
@@ -481,16 +485,6 @@ public class ManageUserGroupPage implements Serializable {
             }
         } else {
             JsfHelper.addInfoMessage("Group " + explicitGroup.getDisplayName() + " doesn't contain user " + roleAssignee.getIdentifier());
-        }
-    }
-    
-    public void viewUserDetail(AuthenticatedUser user){
-        builtinUser = null;
-        pkuIAAAUser = null;
-        if(UserUtils.isBuiltInUser(user)){
-            builtinUser = builtinUserService.findByUserName(user.getUserIdentifier());
-        }else if(UserUtils.isPKUIAAAUser(user)){
-            pkuIAAAUser = pkuIAAAUserService.findByUserName(user.getUserIdentifier());
         }
     }
     

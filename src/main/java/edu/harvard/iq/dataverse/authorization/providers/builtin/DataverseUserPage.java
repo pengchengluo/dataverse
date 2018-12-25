@@ -1,8 +1,5 @@
 package edu.harvard.iq.dataverse.authorization.providers.builtin;
 
-import cn.edu.pku.lib.dataverse.authorization.providers.iaaa.PKUIAAAUser;
-import cn.edu.pku.lib.dataverse.authorization.providers.iaaa.PKUIAAAUserServiceBean;
-import cn.edu.pku.lib.dataverse.util.UserUtils;
 import edu.harvard.iq.dataverse.DataFile;
 import edu.harvard.iq.dataverse.DataFileServiceBean;
 import edu.harvard.iq.dataverse.Dataset;
@@ -104,8 +101,6 @@ public class DataverseUserPage implements java.io.Serializable {
     PermissionServiceBean permissionService;
     @EJB
     BuiltinUserServiceBean builtinUserService;
-    @EJB
-    PKUIAAAUserServiceBean pkuIAAAUserService;
     @EJB
     AuthenticationServiceBean authenticationService;
     @EJB
