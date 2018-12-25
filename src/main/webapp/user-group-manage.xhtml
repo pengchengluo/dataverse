@@ -180,8 +180,8 @@
                                         <p:column width="20%" headerText="#{bundle['user.username']}" class="text-center">
                                             <h:form>
                                                 <p:commandLink type="button" id="createGroup" styleClass="btn btn-default"
-                                                               title="#{bundle['dataverse.permissions.user.viewDetail']}" actionListener="#{manageUserGroupPage.viewUserDetail(user)}"
-                                                               update=":#{p:component('explicitGroupNewDialog')}" oncomplete="explicitGroupForm.show();handleResizeDialog('explicitGroupNewDialog');bind_bsui_components();">
+                                                               title="#{bundle['dataverse.permissions.user.viewDetail']}" actionListener="#{manageUserGroupPage.setViewedUser(user)}"
+                                                               update=":#{p:component('explicitGroupNewDialog')}" oncomplete="PF('explicitGroupForm').show();handleResizeDialog('explicitGroupNewDialog');bind_bsui_components();">
                                                     <h:outputText value="#{user.lastName} #{user.firstName}"/>
                                                 </p:commandLink>
                                             </h:form>
@@ -203,33 +203,11 @@
                                                                    update=":#{p:component('authUsers')} :#{p:component('roleMessages')} :#{p:component('requestUsers')}">
                                                         <span class="glyphicon glyphicon-ok"/> #{bundle['dataverse.permissionsFiles.assignDialog.grantBtn']}
                                                     </p:commandLink>
-                                                    <h:link outcome="#" type="button" styleClass="btn btn-default" onclick="rejectDialog_#{user.id}.show();">
+                                                    <p:commandLink type="button" styleClass="btn btn-default"
+                                                                   actionListener="#{manageUserGroupPage.setRejectedUser(user)}"
+                                                                   oncomplete="PF('rejectDialog').show();">
                                                         <span class="glyphicon glyphicon-ban-circle"/> #{bundle['dataverse.permissionsFiles.assignDialog.rejectBtn']}
-                                                    </h:link>
-                                                </div>
-                                                <div class="col-md-4 col-md-offset-4">
-                                                    <p:dialog header="#{bundle['dataverse.permissionsFiles.assignDialog.rejectReason']}" widgetVar="rejectDialog_#{user.id}" modal="true">
-                                                        <div>
-                                                            <div class="col-md-12">
-                                                                <p:selectOneRadio id="customRadio" value="#{manageUserGroupPage.rejectReason}" layout="pageDirection">
-                                                                    <f:selectItem itemLabel="信息不完整，请补充完整" itemValue="信息不完整，请补充完整" />
-                                                                    <f:selectItem itemLabel="信息不真实，请填写真实信息" itemValue="信息不真实，请填写真实信息" />
-                                                                    <f:selectItem itemLabel="身份不符合" itemValue="身份不符合" />
-                                                                    <f:selectItem itemLabel="非机构邮箱或工作邮箱:.edu,.org,.gov.cn" itemValue="非机构邮箱或工作邮箱:.edu,.org,.gov.cn" />
-                                                                    <f:selectItem itemLabel="其它" itemValue="other"></f:selectItem>
-                                                                </p:selectOneRadio>
-                                                            </div>
-                                                            <div class="col-md-12">
-                                                                <p:inputText size="50" value="#{manageUserGroupPage.otherRejectReason}" placeholder="#{bundle['dataverse.permissionsFiles.assignDialog.rejectReason.other.tip']}" />
-                                                            </div>
-                                                        </div>
-                                                        <div class="button-block">
-                                                            <p:commandLink type="button" onclick="rejectDialog_#{user.id}.hide()" class="btn btn-default pull-right"
-                                                                           actionListener="#{manageUserGroupPage.rejectJoinGroupToRequests(user)}"
-                                                                           update=":#{p:component('authUsers')} :#{p:component('roleMessages')} :#{p:component('requestUsers')}">#{bundle.continue}</p:commandLink>
-                                                            <h:link type="button" onclick="rejectDialog_#{user.id}.hide()" outcome="#" class="btn btn-default pull-right">#{bundle.close}</h:link>
-                                                        </div>
-                                                    </p:dialog>
+                                                    </p:commandLink>
                                                 </div>
                                             </h:form>
                                         </p:column>
@@ -237,12 +215,33 @@
                                 </div>
                                 <div>
                                     <p:dialog id="explicitGroupNewDialog" header="#{bundle['account.info']}" widgetVar="explicitGroupForm" modal="true">
-                                        <ui:include src="userinfo/user_infor_display.xhtml" rendered="#{!empty manageUserGroupPage.builtinUser}">
-                                            <ui:param name="user" value="#{manageUserGroupPage.builtinUser}"/>
+                                        <ui:include src="userinfo/user_infor_display.xhtml">
+                                            <ui:param name="user" value="#{manageUserGroupPage.viewedUser}"/>
                                         </ui:include>
-                                        <ui:include src="userinfo/user_infor_display.xhtml" rendered="#{!empty manageUserGroupPage.pkuIAAAUser}">
-                                            <ui:param name="user" value="#{manageUserGroupPage.pkuIAAAUser}"/>
-                                        </ui:include>
+                                    </p:dialog>
+                                    <p:dialog id="rejectDialog" header="#{bundle['dataverse.permissionsFiles.assignDialog.rejectReason']}" widgetVar="rejectDialog" modal="true">
+                                        <h:form>
+                                        <div>
+                                            <div class="col-md-12">
+                                                <p:selectOneRadio id="customRadio" value="#{manageUserGroupPage.rejectReason}" layout="pageDirection">
+                                                    <f:selectItem itemLabel="信息不完整，请补充完整" itemValue="信息不完整，请补充完整" />
+                                                    <f:selectItem itemLabel="信息不真实，请填写真实信息" itemValue="信息不真实，请填写真实信息" />
+                                                    <f:selectItem itemLabel="身份不符合" itemValue="身份不符合" />
+                                                    <f:selectItem itemLabel="非机构邮箱或工作邮箱:.edu,.org,.gov.cn" itemValue="非机构邮箱或工作邮箱:.edu,.org,.gov.cn" />
+                                                    <f:selectItem itemLabel="其它" itemValue="other"></f:selectItem>
+                                                </p:selectOneRadio>
+                                            </div>
+                                            <div class="col-md-12">
+                                                <p:inputText size="50" value="#{manageUserGroupPage.otherRejectReason}" placeholder="#{bundle['dataverse.permissionsFiles.assignDialog.rejectReason.other.tip']}" />
+                                            </div>
+                                        </div>
+                                        <div class="button-block">
+                                            <p:commandLink type="button" onclick="PF('rejectDialog').hide()" class="btn btn-default pull-right"
+                                                           actionListener="#{manageUserGroupPage.rejectJoinGroupToRequests()}"
+                                                           update=":#{p:component('authUsers')} :#{p:component('roleMessages')} :#{p:component('requestUsers')}">#{bundle.continue}</p:commandLink>
+                                            <h:link type="button" onclick="PF('rejectDialog').hide()" outcome="#" class="btn btn-default pull-right">#{bundle.close}</h:link>
+                                        </div>
+                                        </h:form>
                                     </p:dialog>
                                 </div>
                             </div>

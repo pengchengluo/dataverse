@@ -26,13 +26,10 @@ public class PKUIAAAAuthenticationProvider implements CredentialsAuthenticationP
     private static final List<Credential> CREDENTIALS_LIST = 
             Arrays.asList(new Credential(KEY_TOKEN),
                     new Credential(KEY_RAND));
-      
-    final PKUIAAAUserServiceBean bean;
     @EJB
     AuthenticationServiceBean authenticationService;
 
-    public PKUIAAAAuthenticationProvider( PKUIAAAUserServiceBean bean ) {
-        this.bean = bean;
+    public PKUIAAAAuthenticationProvider() {
     }
 
     @Override
@@ -53,11 +50,6 @@ public class PKUIAAAAuthenticationProvider implements CredentialsAuthenticationP
     @Override
     public boolean isUserDeletionAllowed() {
         return true;
-    }
-    
-    @Override
-    public void deleteUser(String userIdInProvider) {
-        bean.removeUser(userIdInProvider);
     }
     
     @Override
